@@ -9,7 +9,7 @@ export const Logo = styled.img`
 `;
 
 export const StyledNavbar = styled(Navbar)`
-  background-color: ${(props) => props.theme.color.lightGray};
+  background-color: ${(props) => props.theme.color.turquoise};
   border-bottom: 1px solid ${(props) => props.theme.color.darkGray};
 
   .nav-link {
@@ -25,7 +25,7 @@ export const StyledNavbar = styled(Navbar)`
 
     &.active {
       font-weight: bold;
-      color: ${(props) => props.theme.color.linkHoverColor};
+      color: ${(props) => props.theme.color.white};
       text-decoration: none;
     }
   }

@@ -1,5 +1,6 @@
 import '../../App.css';
 import { NavLink } from 'react-router-dom';
+import * as S from '../../styles/GlobalStyle';
 
 function Home() {
   return (
@@ -50,6 +51,9 @@ function Home() {
           </NavLink>
         </li>
       </ul>
+      <S.OrangeButton>Orange Button</S.OrangeButton>
+      <S.BlueButton>Blue Button</S.BlueButton>
+      <S.RedButton>Red Button</S.RedButton>
     </div>
   );
 }

@@ -7,7 +7,6 @@ function Profile() {
       <h1>Profile Page</h1>
       <h2>Dette er en h2</h2>
       <p>Dette er en liten paragraf</p>
-
       <ul>
         <li>
           <NavLink

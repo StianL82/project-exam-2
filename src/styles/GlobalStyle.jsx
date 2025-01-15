@@ -7,30 +7,56 @@ export const ButtonBase = styled.button`
   border-radius: 4px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
-  color: ${(props) => props.theme.color.white}
-;
+  margin: 10px;
+  transition:
+    background-color 0.3s,
+    border 0.3s ease;
+  color: ${(props) => props.theme.color.white};
+`;
 
+// Orange Button
+export const OrangeButton = styled(ButtonBase)`
+  background: ${(props) => props.theme.color.secondaryColor};
+  &:hover {
+    background: ${(props) => props.theme.color.buttonHoverOrange};
+  }
+`;
+
+// Blue Button
+export const BlueButton = styled(ButtonBase)`
+  background: ${(props) => props.theme.color.primaryColor};
+  &:hover {
+    background: ${(props) => props.theme.color.buttonHoverBlue};
+  }
+`;
+
+// Red Button
+export const RedButton = styled(ButtonBase)`
+  background: ${(props) => props.theme.color.dangerColor};
+  &:hover {
+    background: ${(props) => props.theme.color.buttonHoverRed};
+  }
 `;
 
 const GlobalStyle = createGlobalStyle`
 
   html {
-    --color-bodyBg: #fffBF8;
-    --color-darkGray: #333333;
-    --color-white: #fff;
-    --color-primary: #0056B3;
-    --color-secondary: #ff6347;
+    --color-bodyBg: #f2f2f2;
+    --color-white: #ffffff;
+    --color-beige: #D9D0BF;
+    --color-turquoise: #3CAAB4;
+    --color-lightYellow: #FCF5AB;
+    --color-primary: #397EE6;
+    --color-secondary: #FF7F3F;
     --color-danger: #dc3545;
     --color-lightGray: #E3DDDD;
     --color-mediumGray: #AAAAAA;
-    --color-cardBg: #f8f9fa;
-    --color-formBg: #f8f1e4;
-    --color-orangeButton: #ffc107;
-    --color-orangeButtonHover: #e0a800;
-    --color-buttonHoverBg: #003F7A;
-    --color-linkHover: #0056b3;
-    --color-success: #28a745;
+    --color-darkGray: #333333;
+    --color-buttonHoverOrange: #F06621;
+    --color-buttonHoverBlue: #0355A3;
+    --color-buttonHoverRed: #B12121;
+    --color-success: #41AD49;
+    --color-stroke: #A6A6A6;
 
     height: 100%;
   }
@@ -38,7 +64,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: 'Open Sans', Arial, sans-serif;
+    font-family: 'Nunito', Arial, sans-serif;
     background-color: ${(props) => props.theme.color.bodyBg};
     display: flex;
     flex-direction: column;
@@ -59,18 +85,24 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1{
     margin: 0;
     padding: 10px 0;
     font-weight: 700;
     font-family: 'Lobster', cursive;
-    color: ${(props) => props.theme.color.primaryColor};
+  }
+
+    h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 10px 0;
+    font-weight: 700;
+    font-family: 'Montserrat', cursive;
   }
 
   p {
     line-height: 1.6;
     margin: 10px 0;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Nunito', sans-serif;
   }
 
   .sr-only {
