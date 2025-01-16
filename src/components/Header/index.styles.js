@@ -13,6 +13,8 @@ export const StyledNavbar = styled(Navbar)`
   border-bottom: 1px solid ${(props) => props.theme.color.darkGray};
 
   .nav-link {
+    color: ${(props) => props.theme.color.darkGray};
+    font-size: 24px;
     font-weight: normal;
     transition:
       color 0.3s ease,
@@ -25,8 +27,7 @@ export const StyledNavbar = styled(Navbar)`
 
     &.active {
       font-weight: bold;
-      color: ${(props) => props.theme.color.white};
-      text-decoration: none;
+      text-decoration: underline;
     }
   }
 
