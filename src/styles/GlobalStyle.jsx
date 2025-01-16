@@ -11,7 +11,6 @@ export const ButtonBase = styled.button`
   transition:
     background-color 0.3s,
     border 0.3s ease;
-  color: ${(props) => props.theme.color.white};
 `;
 
 // Orange Button
@@ -33,6 +32,7 @@ export const BlueButton = styled(ButtonBase)`
 // Red Button
 export const RedButton = styled(ButtonBase)`
   background: ${(props) => props.theme.color.dangerColor};
+  color: ${(props) => props.theme.color.white};
   &:hover {
     background: ${(props) => props.theme.color.buttonHoverRed};
   }
@@ -43,8 +43,10 @@ const GlobalStyle = createGlobalStyle`
   html {
     --color-bodyBg: #f2f2f2;
     --color-white: #ffffff;
+    --color-black: #000000;
     --color-beige: #D9D0BF;
     --color-turquoise: #3CAAB4;
+    --color-darkTurquoise: #29757A;
     --color-lightYellow: #FCF5AB;
     --color-primary: #397EE6;
     --color-secondary: #FF7F3F;
@@ -117,8 +119,8 @@ const GlobalStyle = createGlobalStyle`
 }
 
   a {
-    color: ${(props) => props.theme.color.primaryColor};
     text-decoration: none;
+    color: ${(props) => props.theme.color.primaryColor};
     &:hover {
       text-decoration: underline;
     }

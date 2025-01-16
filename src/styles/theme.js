@@ -2,8 +2,10 @@ const theme = {
   color: {
     bodyBg: 'var(--color-bodyBg)',
     white: 'var(--color-white)',
+    black: 'var(--color-black)',
     beige: 'var(--color-beige)',
     turquoise: 'var(--color-turquoise)',
+    darkTurquoise: 'var(--color-darkTurquoise)',
     lightYellow: 'var(--color-lightYellow)',
     primaryColor: 'var(--color-primary)',
     secondaryColor: 'var(--color-secondary)',
@@ -14,7 +16,7 @@ const theme = {
     buttonHoverOrange: 'var(--color-buttonHoverOrange)',
     buttonHoverBlue: 'var(--color-buttonHoverBlue)',
     buttonHoverRed: 'var(--color-buttonHoverRed)',
-    successColor: 'var(--color-success)',
+    success: 'var(--color-success)',
     strokeColor: 'var(--color-stroke)',
   },
   spacing: {
