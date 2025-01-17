@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import '../../App.css';
-import { NavLink } from 'react-router-dom';
-import * as B from '../../styles/GlobalStyle';
 import * as S from './index.styles';
+import * as B from '../../styles/GlobalStyle';
 import useAPI from '../../hooks/useAPI';
 import VenueGrid from '../../components/VenueGrid';
 
@@ -27,14 +27,6 @@ function Home() {
     }
   }, [data]);
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (isError) {
-    return <p>Error loading data. Please try again later.</p>;
-  }
-
   return (
     <div>
       <S.HeroSection>
@@ -42,54 +34,52 @@ function Home() {
       </S.HeroSection>
       <div className="container">
         <S.TopDestinations>Some of our Top Destinations</S.TopDestinations>
-        <VenueGrid venues={filteredVenues} />
-        <p>Dette er en liten paragraf</p>
-
-        <ul>
-          <li>
-            <NavLink
-              to="/"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Home Page
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/venues"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Venues Page
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/venue/:id"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Single Venue Page
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/profile"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Profile Page
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/contact"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              Contact Page
-            </NavLink>
-          </li>
-        </ul>
-        <B.OrangeButton>Orange Button</B.OrangeButton>
-        <B.BlueButton>Blue Button</B.BlueButton>
-        <B.RedButton>Red Button</B.RedButton>
+        {isLoading ? (
+          <S.LoadingSpinner />
+        ) : isError ? (
+          <div className="error">
+            <p>
+              We encountered an error while loading the venues. Please try again
+              later.
+            </p>
+          </div>
+        ) : (
+          <VenueGrid venues={filteredVenues} />
+        )}
+      </div>
+      <div>
+        <div>
+          <S.dividerContainer />
+        </div>
+        <div>
+          <S.CTAContainer>
+            <h2>Find your next dream vacation</h2>
+            <p>Book a trip to one of our most beautiful destinations</p>
+            <B.OrangeButton as={Link} to="/venues">
+              Discover more venues
+            </B.OrangeButton>
+          </S.CTAContainer>
+        </div>
+        <div className="container">
+          <S.FlexSection>
+            <S.ImageContainer>
+              <img
+                src="/images/contact-section.png"
+                alt="Beach view of a sunset from one of our tropical destinations"
+              />
+            </S.ImageContainer>
+            <S.TextContainer>
+              <h2>Contact Us</h2>
+              <p>
+                Have any questions? Feel free to reach out to us for more
+                information about your dream vacation.
+              </p>
+              <B.OrangeButton as={Link} to="/contact">
+                Contact
+              </B.OrangeButton>
+            </S.TextContainer>
+          </S.FlexSection>
+        </div>
       </div>
     </div>
   );

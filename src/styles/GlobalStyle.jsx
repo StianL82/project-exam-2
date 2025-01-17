@@ -8,6 +8,14 @@ export const ButtonBase = styled.button`
   border: none;
   cursor: pointer;
   margin: 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: break-word;
+  height: auto;
+  max-width: fit-content;
   transition:
     background-color 0.3s,
     border 0.3s ease;
@@ -120,10 +128,22 @@ const GlobalStyle = createGlobalStyle`
 
   a {
     text-decoration: none;
-    color: ${(props) => props.theme.color.primaryColor};
+    color: ${(props) => props.theme.color.black};
     &:hover {
-      text-decoration: underline;
+      text-decoration: none;
     }
+  }
+
+  .error {
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+    background: rgba(220, 53, 69, 0.1);
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 1rem;
   }
 `;
 

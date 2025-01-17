@@ -1,6 +1,24 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
-// Hero section container
+const spin = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+export const LoadingSpinner = styled.div`
+  border: 4px solid var(--color-lightGray);
+  border-top: 4px solid var(--color-turquoise);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: ${spin} 1s linear infinite;
+  margin: 20px auto;
+`;
+
 export const HeroSection = styled.div`
   position: relative;
   width: 100%;
@@ -9,18 +27,17 @@ export const HeroSection = styled.div`
   justify-content: center;
   align-items: center;
   background-image: url('/images/homepage-hero.png');
-  background-size: cover; 
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   overflow: hidden;
 `;
 
-// Hero text
 export const HeroText = styled.h1`
   position: relative;
   z-index: 2;
   font-size: clamp(2rem, 7vw, 3rem);
-  color: ${(props) => props.theme.color.darkgray};
+  color: ${(props) => props.theme.color.black};
   text-align: center;
   padding: 20px;
   border-radius: 8px;
@@ -58,5 +75,89 @@ export const LoadMoreButton = styled.button`
   &:disabled {
     background-color: ${(props) => props.theme.color.lightGray};
     cursor: not-allowed;
+  }
+`;
+
+export const dividerContainer = styled.div`
+  width: 50%;
+  min-height: 75px;
+  background-image: url('/images/home-divider.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  margin-top: 30px;
+
+  @media (max-width: 1158px) {
+    width: 65%;
+  }
+
+  @media (max-width: 768px) {
+    width: 75%;
+  }
+`;
+
+export const CTAContainer = styled.div`
+  width: 100%;
+  padding: 40px 20px;
+  background: linear-gradient(
+    to bottom,
+    var(--color-turquoise),
+    var(--color-lightYellow)
+  );
+  text-align: center;
+  color: ${(props) => props.theme.color.darkGray};
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin-bottom: 20px;
+  }
+`;
+
+export const FlexSection = styled.div`
+  display: flex;
+  width: 100%;
+  height: 300px;
+  margin: 40px 0;
+  border: 1px solid var(--color-stroke);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+  }
+`;
+
+export const ImageContainer = styled.div`
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+export const TextContainer = styled.div`
+  flex: 1;
+  background-color: var(--color-lightYellow);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+
+  p {
+    margin-bottom: 20px;
   }
 `;
