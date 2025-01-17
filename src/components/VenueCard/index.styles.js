@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { ButtonBase } from '../../styles/GlobalStyle';
 
 export const Card = styled.div`
   display: flex;
@@ -10,6 +9,7 @@ export const Card = styled.div`
   background-color: var(--color-white);
   overflow: hidden;
   text-decoration: none;
+  font-weight: bold;
   color: inherit;
   height: 100%;
   width: 100%;
@@ -57,7 +57,9 @@ export const InfoContainer = styled.div`
   padding: 16px;
   background-color: var(--color-white);
   text-align: center;
+  width: 100%;
   flex-grow: 1;
+  box-sizing: border-box;
 `;
 
 export const Title = styled.h2`
@@ -82,13 +84,17 @@ export const Icon = styled.img`
   height: 24px;
 `;
 
-export const Button = styled(ButtonBase)`
+export const Button = styled.button`
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: var(--color-beige);
   color: var(--color-darkGray);
   text-align: center;
   padding: 12px;
   font-weight: bold;
-  width: 100%;
+  width: 100% !important;
   border: none;
   margin: 0;
   box-sizing: border-box;
