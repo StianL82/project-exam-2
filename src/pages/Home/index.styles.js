@@ -86,7 +86,7 @@ export const dividerContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   margin: 0 auto;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
   margin-top: 30px;
 
   @media (max-width: 1158px) {
@@ -98,13 +98,13 @@ export const dividerContainer = styled.div`
   }
 `;
 
-export const CTAContainer = styled.div`
+export const DiscoverVenuesContainer = styled.div`
   width: 100%;
-  padding: 40px 20px;
+  padding: 50px 20px;
   background: linear-gradient(
     to bottom,
-    var(--color-turquoise),
-    var(--color-lightYellow)
+    rgba(64, 224, 208, 0.5),
+    rgba(255, 255, 102, 0.5)
   );
   text-align: center;
   color: ${(props) => props.theme.color.darkGray};
@@ -123,6 +123,8 @@ export const FlexSection = styled.div`
   width: 100%;
   height: 300px;
   margin: 40px 0;
+  margin-top: 60px;
+  margin-bottom: 10px;
   border: 1px solid var(--color-stroke);
 
   @media (max-width: 768px) {
