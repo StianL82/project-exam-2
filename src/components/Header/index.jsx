@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { NavLink } from 'react-router-dom';
 import * as S from './index.styles';
+import * as B from '../../styles/GlobalStyle';
 
 function HeaderNav() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -44,11 +45,11 @@ function HeaderNav() {
           <Nav className="ms-auto">
             <Nav.Link
               as={NavLink}
-              to="/"
+              to="venues"
               className="nav-link me-0 me-sm-5"
               onClick={() => setIsExpanded(false)}
             >
-              Home
+              Venues
             </Nav.Link>
             <Nav.Link
               as={NavLink}
@@ -58,6 +59,15 @@ function HeaderNav() {
             >
               Contact
             </Nav.Link>
+            <Nav.Link
+              as={NavLink}
+              to="/profile"
+              className="nav-link me-0 me-sm-5"
+              onClick={() => setIsExpanded(false)}
+            >
+              Profile
+            </Nav.Link>
+            <B.OrangeButton>Log in</B.OrangeButton>
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -14,8 +14,10 @@ export const StyledNavbar = styled(Navbar)`
 
   .nav-link {
     color: ${(props) => props.theme.color.darkGray};
-    font-size: 24px;
+    font-size: 20px;
     font-weight: normal;
+    margin-right: 5px !important;
+    padding: 0;
     transition:
       color 0.3s ease,
       font-weight 0.3s ease;
@@ -41,6 +43,12 @@ export const StyledNavbar = styled(Navbar)`
 
   .navbar-collapse {
     order: 3;
+  }
+
+  .navbar-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   @media (max-width: 179px) {
