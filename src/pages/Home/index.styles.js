@@ -80,7 +80,7 @@ export const LoadMoreButton = styled.button`
 
 export const dividerContainer = styled.div`
   width: 50%;
-  min-height: 75px;
+  min-height: clamp(70px, 10vw, 95px);
   background-image: url('/images/home-divider.png');
   background-size: cover;
   background-position: center;
