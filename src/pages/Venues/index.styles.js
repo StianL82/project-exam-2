@@ -41,6 +41,7 @@ export const HeroText = styled.h1`
   text-align: center;
   padding: 20px;
   border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.01);
 `;
 
 export const SearchHeading = styled.h2`
