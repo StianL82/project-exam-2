@@ -14,15 +14,16 @@ function Home() {
   const [filteredVenues, setFilteredVenues] = useState([]);
 
   useEffect(() => {
-    if (data) {
+    if (data.length > 0) {
       console.log('Fetched data:', data);
-
-      const ratedFive = data.data.filter((venue) => venue.rating === 5);
-
-      const sortedByDate = ratedFive.sort(
-        (a, b) => new Date(b.created) - new Date(a.created)
-      );
-
+  
+      // Filtrer venues med rating 5
+      const ratedFive = data.filter((venue) => venue.rating === 5);
+  
+      // Sorter etter siste opprettet (basert på 'created' property hvis tilgjengelig)
+      const sortedByDate = ratedFive.sort((a, b) => new Date(b.created) - new Date(a.created));
+  
+      // Ta de tre siste
       setFilteredVenues(sortedByDate.slice(0, 4));
     }
   }, [data]);
