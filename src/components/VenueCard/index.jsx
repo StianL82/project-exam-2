@@ -19,12 +19,12 @@ function VenueCard({ venue }) {
       <S.ImageContainer>
         <S.Image
           src={media?.[0]?.url || defaultImage}
-          alt={name}
+          alt={media?.[0]?.alt || `this is the venue image for ${name}`}
           onError={(e) => (e.target.src = defaultImage)}
         />
         <S.Rating>
           {[...Array(Math.round(rating || 0))].map((_, i) => (
-            <S.StarIcon key={i} src="/images/icons/star.svg" alt="star" />
+            <S.StarIcon key={i} src="/images/icons/star.svg" alt="" />
           ))}
         </S.Rating>
       </S.ImageContainer>
@@ -37,7 +37,7 @@ function VenueCard({ venue }) {
               <S.Icon
                 key={index}
                 src={icon}
-                alt={`${key.replace('.svg', '')} icon`}
+                alt=""
               />
             ) : null
           )}
