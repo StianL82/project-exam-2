@@ -15,7 +15,7 @@ export default function useAPI(url, sort = null) {
 
         let allData = [];
         let page = 1;
-        const limit = 100; // Hent 100 poster per side (API-begrensning)
+        const limit = 100;
 
         while (true) {
           const paginatedUrl = `${url}?limit=${limit}&page=${page}`;
@@ -27,7 +27,6 @@ export default function useAPI(url, sort = null) {
 
           const json = await response.json();
 
-          // Valider `media`-feltet og legg til fallback om nødvendig
           const validatedData = json.data.map((venue) => ({
             ...venue,
             media: venue.media?.filter((media) => media.url && media.url.startsWith('http')) || [],
@@ -36,26 +35,25 @@ export default function useAPI(url, sort = null) {
           allData = [...allData, ...validatedData];
 
           if (json.data.length < limit) {
-            break; // Slutt hvis vi har hentet siste side
+            break;
           }
 
-          page++; // Gå til neste side
+          page++;
         }
 
-        // Sorter data hvis sorteringsalternativ er angitt
         if (sort) {
           allData.sort((a, b) => {
             if (sort === 'created:desc') {
-              return new Date(b.created) - new Date(a.created); // Nyeste først
+              return new Date(b.created) - new Date(a.created);
             } else if (sort === 'created:asc') {
-              return new Date(a.created) - new Date(b.created); // Eldste først
+              return new Date(a.created) - new Date(b.created);
             }
-            return 0; // Ingen sortering
+            return 0;
           });
         }
 
         if (isMounted) {
-          setData(allData); // Lagre alle data lokalt
+          setData(allData);
         }
       } catch (error) {
         if (isMounted) {
