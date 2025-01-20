@@ -1,23 +1,4 @@
-import styled, { keyframes } from 'styled-components';
-
-const spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
-
-export const LoadingSpinner = styled.div`
-  border: 4px solid var(--color-lightGray);
-  border-top: 4px solid var(--color-turquoise);
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: ${spin} 1s linear infinite;
-  margin: 20px auto;
-`;
+import styled from 'styled-components';
 
 export const HeroSection = styled.div`
   position: relative;

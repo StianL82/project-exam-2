@@ -33,7 +33,7 @@ function Home() {
       <div className="container">
         <S.TopDestinations>Some of our Top Destinations</S.TopDestinations>
         {isLoading ? (
-          <S.LoadingSpinner />
+          <B.LoadingSpinner />
         ) : isError ? (
           <div className="error">
             <p>

@@ -12,10 +12,11 @@ function Venues() {
   const [filteredVenues, setFilteredVenues] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { data: allVenues, isLoading, isError } = useAPI(
-    'https://v2.api.noroff.dev/holidaze/venues',
-    'created:desc'
-  );
+  const {
+    data: allVenues,
+    isLoading,
+    isError,
+  } = useAPI('https://v2.api.noroff.dev/holidaze/venues', 'created:desc');
 
   useEffect(() => {
     if (allVenues) {
@@ -33,7 +34,10 @@ function Venues() {
   }, [allVenues, searchTerm]);
 
   const startIndex = (currentPage - 1) * venuesPerPage;
-  const currentVenues = filteredVenues.slice(startIndex, startIndex + venuesPerPage);
+  const currentVenues = filteredVenues.slice(
+    startIndex,
+    startIndex + venuesPerPage
+  );
 
   const totalPages = Math.ceil(filteredVenues.length / venuesPerPage);
 
@@ -91,18 +95,19 @@ function Venues() {
       <S.VenuesContainer>
         <div className="container">
           {isLoading ? (
-            <S.LoadingSpinner />
+            <B.LoadingSpinner />
           ) : isError ? (
             <div className="error">
               <p>
-                We encountered an error while loading the venues. Please try again later.
+                We encountered an error while loading the venues. Please try
+                again later.
               </p>
             </div>
           ) : (
             <>
               {navigationButtons}
               <VenueGrid venues={currentVenues} />
-              {navigationButtons} 
+              {navigationButtons}
             </>
           )}
         </div>
@@ -112,7 +117,3 @@ function Venues() {
 }
 
 export default Venues;
-
-
-
-
