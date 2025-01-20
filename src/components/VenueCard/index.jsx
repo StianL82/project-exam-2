@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 function VenueCard({ venue }) {
   const { name, media, price, rating, meta } = venue;
 
-  // Display icons only if meta properties are true
+  const defaultImage = '/images/contact-section.png';
+
   const icons = {
     wifi: meta?.wifi ? '/images/icons/wifi.svg' : null,
     parking: meta?.parking ? '/images/icons/parking.svg' : null,
@@ -16,7 +17,11 @@ function VenueCard({ venue }) {
   return (
     <S.Card as={Link} to={`/venue/${venue.id}`}>
       <S.ImageContainer>
-        <S.Image src={media[0]?.url || '/images/placeholder.jpg'} alt={name} />
+        <S.Image
+          src={media?.[0]?.url || defaultImage}
+          alt={name}
+          onError={(e) => (e.target.src = defaultImage)}
+        />
         <S.Rating>
           {[...Array(Math.round(rating || 0))].map((_, i) => (
             <S.StarIcon key={i} src="/images/icons/star.svg" alt="star" />
