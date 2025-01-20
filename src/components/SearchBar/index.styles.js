@@ -2,8 +2,9 @@ import styled from 'styled-components';
 
 export const SearchContainer = styled.div`
   position: relative;
-  width: 100%;
+  max-width: 660px;
   height: 42px;
+  margin: 0 auto;
 
   .search-icon {
     position: absolute;
