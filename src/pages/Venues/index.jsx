@@ -5,6 +5,7 @@ import * as B from '../../styles/GlobalStyle';
 import useAPI from '../../hooks/useAPI';
 import SearchBar from '../../components/SearchBar';
 import VenueGrid from '../../components/VenueGrid';
+import NavigationButtons from '../../components/NavigationButtons';
 
 function Venues() {
   const venuesPerPage = 20;
@@ -53,32 +54,6 @@ function Venues() {
     }
   };
 
-  const navigationButtons = (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: '20px',
-      }}
-    >
-      <B.BlueButton
-        onClick={() => handleNavigation('previous')}
-        disabled={currentPage === 1}
-      >
-        Previous
-      </B.BlueButton>
-      <span style={{ margin: '0 15px', alignSelf: 'center' }}>
-        Page {currentPage} of {totalPages}
-      </span>
-      <B.BlueButton
-        onClick={() => handleNavigation('next')}
-        disabled={currentPage === totalPages}
-      >
-        Next
-      </B.BlueButton>
-    </div>
-  );
-
   return (
     <div>
       <div>
@@ -105,9 +80,17 @@ function Venues() {
             </div>
           ) : (
             <>
-              {navigationButtons}
+              <NavigationButtons
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onNavigate={handleNavigation}
+              />
               <VenueGrid venues={currentVenues} />
-              {navigationButtons}
+              <NavigationButtons
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onNavigate={handleNavigation}
+              />
             </>
           )}
         </div>
