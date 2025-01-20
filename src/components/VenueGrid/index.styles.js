@@ -13,4 +13,8 @@ export const GridContainer = styled.div`
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
   }
+
+  @media (max-width: 360px) {
+    padding: 16px 0px;
+  }
 `;

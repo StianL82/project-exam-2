@@ -34,7 +34,7 @@ export const SearchHeading = styled.h2`
 
 export const VenuesContainer = styled.div`
   width: 100%;
-  padding: 50px 20px;
+  padding: 30px 20px;
   background: linear-gradient(
     to bottom,
     rgba(64, 224, 208, 0.5),
@@ -49,6 +49,10 @@ export const VenuesContainer = styled.div`
 
   p {
     margin-bottom: 20px;
+  }
+
+  @media (max-width: 360px) {
+    padding: 30px 10px;
   }
 `;
 
