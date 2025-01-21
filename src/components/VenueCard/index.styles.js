@@ -4,9 +4,9 @@ export const Card = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid var(--color-stroke);
+  border: 1px solid ${(props) => props.theme.color.stroke};
   border-radius: 8px;
-  background-color: var(--color-white);
+  background-color: ${(props) => props.theme.color.white};
   overflow: hidden;
   text-decoration: none;
   font-weight: bold;
@@ -20,7 +20,7 @@ export const Card = styled.div`
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 6px 10px rgba(160, 123, 123, 0.12);
     text-decoration: none;
   }
 `;
@@ -55,7 +55,7 @@ export const StarIcon = styled.img`
 
 export const InfoContainer = styled.div`
   padding: 16px;
-  background-color: var(--color-white);
+  background-color: ${(props) => props.theme.color.white};
   text-align: center;
   width: 100%;
   flex-grow: 1;
@@ -69,7 +69,7 @@ export const Title = styled.h2`
 
 export const Price = styled.p`
   font-weight: bold;
-  color: var(--color-darkGray);
+  color: ${(props) => props.theme.color.darkGray};
 `;
 
 export const IconContainer = styled.div`
@@ -89,8 +89,8 @@ export const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--color-beige);
-  color: var(--color-darkGray);
+  background-color: ${(props) => props.theme.color.beige};
+  color: ${(props) => props.theme.color.darkGray};
   text-align: center;
   padding: 12px;
   font-weight: bold;
@@ -98,9 +98,9 @@ export const Button = styled.button`
   border: none;
   margin: 0;
   box-sizing: border-box;
-  border-top: 1px solid var(--color-stroke);
+  border-top: 1px solid ${(props) => props.theme.color.stroke};
 
   &:hover {
-    background-color: var(--color-lightGray);
+    background-color: ${(props) => props.theme.color.lightGray};
   }
 `;
