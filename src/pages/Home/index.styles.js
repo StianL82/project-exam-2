@@ -127,7 +127,7 @@ export const ImageContainer = styled.div`
 
 export const TextContainer = styled.div`
   flex: 1;
-  background-color: var(--color-lightYellow);
+  background-color: ${(props) => props.theme.color.lightYellow};
   display: flex;
   flex-direction: column;
   justify-content: center;
