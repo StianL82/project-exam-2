@@ -24,6 +24,7 @@ export const ButtonBase = styled.button`
 // Orange Button
 export const OrangeButton = styled(ButtonBase)`
   background: ${(props) => props.theme.color.secondaryColor};
+  color: ${(props) => props.theme.color.black};
   &:hover {
     background: ${(props) => props.theme.color.buttonHoverOrange};
   }
@@ -74,7 +75,7 @@ const GlobalStyle = createGlobalStyle`
     --color-beige: #D9D0BF;
     --color-turquoise: #3CAAB4;
     --color-darkTurquoise: #29757A;
-    --color-lightYellow: #FCF5AB;
+    --color-lightYellow: #FFFBD4;
     --color-primary: #397EE6;
     --color-secondary: #FF7F3F;
     --color-danger: #dc3545;
