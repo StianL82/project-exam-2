@@ -37,38 +37,16 @@ export const Paragraph = styled.p`
   text-align: center;
 `;
 
-export const LoadMoreButton = styled.button`
-  margin: 20px auto;
-  display: block;
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: ${(props) => props.theme.color.primaryColor};
-  color: ${(props) => props.theme.color.white};
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: ${(props) => props.theme.color.buttonHoverBg};
-  }
-
-  &:disabled {
-    background-color: ${(props) => props.theme.color.lightGray};
-    cursor: not-allowed;
-  }
-`;
-
 export const dividerContainer = styled.div`
-  width: 50%;
-  min-height: clamp(70px, 10vw, 95px);
-  background-image: url('/images/home-divider.png');
+  width: 40%;
+  min-height: clamp(70px, 8vw, 300px);
+  background-image: url('/images/city-divider.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   margin: 0 auto;
-  margin-bottom: 50px;
-  margin-top: 30px;
+  margin-bottom: 70px;
+  margin-top: 50px;
 
   @media (max-width: 1158px) {
     width: 65%;
@@ -106,7 +84,7 @@ export const FlexSection = styled.div`
   margin: 40px 0;
   margin-top: 60px;
   margin-bottom: 10px;
-  border: 1px solid var(--color-stroke);
+  border: 1px solid ${(props) => props.theme.color.stroke};
 
   @media (max-width: 768px) {
     flex-direction: column;
