@@ -1,55 +1,103 @@
-import '../../App.css';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import * as S from './index.styles';
+import * as B from '../../styles/GlobalStyle';
+
+const schema = yup
+  .object({
+    name: yup
+      .string()
+      .min(2, 'Name must be at least 2 characters.')
+      .required('Name is required.'),
+    subject: yup
+      .string()
+      .min(3, 'Subject must be at least 3 characters.')
+      .required('Subject is required.'),
+    email: yup
+      .string()
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        'Must be a valid email address'
+      )
+      .required('Email is required.'),
+    message: yup
+      .string()
+      .min(3, 'Message must be at least 3 characters.')
+      .required('Message is required.'),
+  })
+  .required();
 
 function Contact() {
-  return (
-    <div className="container">
-      <h1>Contact Page</h1>
-      <h2>Dette er en h2</h2>
-      <p>Dette er en liten paragraf</p>
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-      <ul>
-        <li>
-          <NavLink
-            to="/"
-            className={({ isActive }) => (isActive ? 'active' : '')}
-          >
-            Home Page
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/venues"
-            className={({ isActive }) => (isActive ? 'active' : '')}
-          >
-            Venues Page
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/venue/:id"
-            className={({ isActive }) => (isActive ? 'active' : '')}
-          >
-            Single Venue Page
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/profile"
-            className={({ isActive }) => (isActive ? 'active' : '')}
-          >
-            Profile Page
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/contact"
-            className={({ isActive }) => (isActive ? 'active' : '')}
-          >
-            Contact Page
-          </NavLink>
-        </li>
-      </ul>
+  const [showAlert, setShowAlert] = useState(false);
+
+  const onSubmit = (data) => {
+    console.log(data);
+    setShowAlert(true);
+    reset();
+    setTimeout(() => setShowAlert(false), 3000);
+  };
+
+  return (
+    <div>
+      <div>
+        <S.HeroSection>
+          <S.HeroText>Contact Us</S.HeroText>
+        </S.HeroSection>
+      </div>
+      <div className="container">
+        <S.ContactHeading>
+          Please contact us if you have any questions or feedback
+        </S.ContactHeading>
+      </div>
+      <div>
+        <S.dividerContainer />
+      </div>
+      <S.FormBackground>
+        <S.FormContainer>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <label htmlFor="name">Name:</label>
+            <input id="name" {...register('name')} />
+            <p className="alert-danger">{errors.name?.message}</p>
+            <label htmlFor="email">Email:</label>
+            <input id="email" {...register('email')} />
+            <p className="alert-danger">{errors.email?.message}</p>
+            <label htmlFor="subject">Subject:</label>
+            <input id="subject" {...register('subject')} />
+            <p className="alert-danger">{errors.subject?.message}</p>
+            <label htmlFor="message">Messange:</label>
+            <textarea id="message" {...register('message')} />
+            <p className="alert-danger">{errors.message?.message}</p>
+            <S.ButtonContainer>
+              <B.OrangeButton type="submit" className="btn btn-success">
+                Send In
+              </B.OrangeButton>
+            </S.ButtonContainer>
+          </form>
+          {showAlert && (
+            <div className="alert alert-success mt-3" role="alert">
+              Your message has been successfully sent!
+            </div>
+          )}
+        </S.FormContainer>
+      </S.FormBackground>
+      <S.ImageContainer>
+        <img
+          src="images/contact-logo.png"
+          alt="A logo for the Holidaze site."
+        />
+      </S.ImageContainer>
+      <S.ContactEnding>Thank you for visiting us</S.ContactEnding>
     </div>
   );
 }
