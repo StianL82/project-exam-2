@@ -1,15 +1,44 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { NavLink } from 'react-router-dom';
+import Login from '../Login';
+import Register from '../Register';
+import logOutUser from '../../auth/handlers/logout';
 import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
 
+/**
+ * HeaderNav - A navigation component for the Holidaze application.
+ * It handles user login, registration, and logout, as well as navigation links.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered navigation bar.
+ */
 function HeaderNav() {
   const [isExpanded, setIsExpanded] = useState(false);
-  const navRef = useRef(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
 
+  const navRef = useRef(null);
+  const navigate = useNavigate();
+
+  /**
+   * Updates the login state by checking for a token in localStorage.
+   */
+  const updateLoggedInStatus = () => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  };
+
+  /**
+   * Handles closing the navigation menu if clicked outside.
+   * @param {Event} event - The click event.
+   */
   useEffect(() => {
     function handleClickOutside(event) {
       if (navRef.current && !navRef.current.contains(event.target)) {
@@ -22,6 +51,47 @@ function HeaderNav() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  /**
+   * Initializes the login state when the component is mounted.
+   */
+  useEffect(() => {
+    updateLoggedInStatus();
+  }, []);
+
+  /**
+   * Opens the Login modal with an optional pre-filled email.
+   * @param {string} [prefillEmail=''] - The email to prefill in the login form.
+   */
+  const openLogin = (prefillEmail = '') => {
+    setEmail(prefillEmail);
+    setShowLogin(true);
+    setShowRegister(false);
+  };
+
+  /**
+   * Opens the Register modal.
+   */
+  const openRegister = () => {
+    setShowRegister(true);
+    setShowLogin(false);
+  };
+
+  /**
+   * Closes both Login and Register modals and clears the pre-filled email.
+   */
+  const closeModal = () => {
+    setShowLogin(false);
+    setShowRegister(false);
+    setEmail('');
+  };
+
+  /**
+   * Logs out the user by removing tokens and navigating to the homepage.
+   */
+  const handleLogout = () => {
+    logOutUser(setIsLoggedIn, navigate);
+  };
 
   return (
     <S.StyledNavbar
@@ -59,18 +129,38 @@ function HeaderNav() {
             >
               Contact
             </Nav.Link>
-            <Nav.Link
-              as={NavLink}
-              to="/profile"
-              className="nav-link me-0 me-sm-5"
-              onClick={() => setIsExpanded(false)}
-            >
-              Profile
-            </Nav.Link>
-            <B.OrangeButton>Log in</B.OrangeButton>
+            {isLoggedIn && (
+              <Nav.Link
+                as={NavLink}
+                to="/profile"
+                className="nav-link me-0 me-sm-5"
+                onClick={() => setIsExpanded(false)}
+              >
+                Profile
+              </Nav.Link>
+            )}
+            {isLoggedIn ? (
+              <B.RedButton onClick={handleLogout}>Log out</B.RedButton>
+            ) : (
+              <B.OrangeButton onClick={() => openLogin()}>Log in</B.OrangeButton>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
+
+      <Login
+        showModal={showLogin}
+        closeModal={closeModal}
+        setLoggedIn={setIsLoggedIn}
+        openRegister={openRegister}
+        prefillEmail={email}
+      />
+
+      <Register
+        showModal={showRegister}
+        closeModal={closeModal}
+        openLogin={openLogin}
+      />
     </S.StyledNavbar>
   );
 }
