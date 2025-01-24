@@ -5,22 +5,23 @@ import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
 import useAPI from '../../hooks/useAPI';
 import VenueGrid from '../../components/VenueGrid';
+import { API_HOLIDAZE_URL } from '../../auth/constants';
 
 function Home() {
-  const { data, isLoading, isError } = useAPI(
-    'https://v2.api.noroff.dev/holidaze/venues'
-  );
+  const { data, isLoading, isError } = useAPI(`${API_HOLIDAZE_URL}/venues`);
 
   const [filteredVenues, setFilteredVenues] = useState([]);
 
   useEffect(() => {
     if (data.length > 0) {
       console.log('Fetched data:', data);
-  
+
       const ratedFive = data.filter((venue) => venue.rating === 5);
-  
-      const sortedByDate = ratedFive.sort((a, b) => new Date(b.created) - new Date(a.created));
-  
+
+      const sortedByDate = ratedFive.sort(
+        (a, b) => new Date(b.created) - new Date(a.created)
+      );
+
       setFilteredVenues(sortedByDate.slice(0, 4));
     }
   }, [data]);

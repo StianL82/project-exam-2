@@ -6,6 +6,7 @@ import useAPI from '../../hooks/useAPI';
 import SearchBar from '../../components/SearchBar';
 import VenueGrid from '../../components/VenueGrid';
 import NavigationButtons from '../../components/NavigationButtons';
+import { API_HOLIDAZE_URL } from '../../auth/constants';
 
 function Venues() {
   const venuesPerPage = 20;
@@ -17,7 +18,7 @@ function Venues() {
     data: allVenues,
     isLoading,
     isError,
-  } = useAPI('https://v2.api.noroff.dev/holidaze/venues', 'created:desc');
+  } = useAPI(`${API_HOLIDAZE_URL}/venues`, 'created:desc');
 
   useEffect(() => {
     if (allVenues) {
