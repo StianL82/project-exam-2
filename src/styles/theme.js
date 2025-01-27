@@ -9,6 +9,7 @@ const theme = {
     lightYellow: 'var(--color-lightYellow)',
     primaryColor: 'var(--color-primary)',
     secondaryColor: 'var(--color-secondary)',
+    darkOrange: 'var(--color-darkOrange)',
     dangerColor: 'var(--color-danger)',
     lightGray: 'var(--color-lightGray)',
     mediumGray: 'var(--color-mediumGray)',
