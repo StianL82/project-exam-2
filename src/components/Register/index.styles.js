@@ -52,6 +52,14 @@ export const FormBackground = styled.div`
       border-radius: 5px;
 `;
 
+export const ModalLink = styled.div`
+  .link {
+    font-size: 20px;
+    text-decoration: none;
+    color: ${(props) => props.theme.color.success};
+  }
+`;
+
 export const FormContainer = styled.div`
   form {
     display: flex;

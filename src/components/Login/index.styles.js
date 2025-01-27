@@ -48,8 +48,16 @@ export const ModalContent = styled.div`
 export const FormBackground = styled.div`
   background: ${(props) => props.theme.color.lightYellow};
   padding: 20px 20px 40px 20px;
-        border: 1px solid ${(props) => props.theme.color.stroke};
-      border-radius: 5px;
+  border: 1px solid ${(props) => props.theme.color.stroke};
+  border-radius: 5px;
+`;
+
+export const ModalLink = styled.div`
+  .link {
+    font-size: 20px;
+    text-decoration: none;
+    color: ${(props) => props.theme.color.success};
+  }
 `;
 
 export const FormContainer = styled.div`

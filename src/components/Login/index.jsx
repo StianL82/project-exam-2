@@ -112,13 +112,17 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail }) => {
             {message && <div className="alert alert-success">{message}</div>}
           </S.FormContainer>
         </S.FormBackground>
-        <p>
-          or{' '}
-          <span className="link" onClick={openRegister}>
-            register
-          </span>{' '}
-          if you don't have an account
-        </p>
+        <S.ModalLink>
+          <p>
+            or{' '}
+            <strong>
+              <span className="link" onClick={openRegister}>
+                register
+              </span>{' '}
+            </strong>
+            if you don't have an account
+          </p>
+        </S.ModalLink>
       </S.ModalContent>
     </S.ModalBackdrop>
   );

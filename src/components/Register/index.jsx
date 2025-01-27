@@ -139,21 +139,25 @@ const Register = ({ showModal, closeModal, openLogin }) => {
             {message}
           </div>
         )}
-        <p>
-          or{' '}
-          <span
-            className="link"
-            onClick={() => {
-              reset();
-              setMessage('');
-              closeModal();
-              openLogin();
-            }}
-          >
-            log in
-          </span>{' '}
-          if you already have an account
-        </p>
+        <S.ModalLink>
+          <p>
+            or{' '}
+            <strong>
+              <span
+                className="link"
+                onClick={() => {
+                  reset();
+                  setMessage('');
+                  closeModal();
+                  openLogin();
+                }}
+              >
+                log in
+              </span>{' '}
+            </strong>
+            if you already have an account
+          </p>
+        </S.ModalLink>
       </S.ModalContent>
     </S.ModalBackdrop>
   );
