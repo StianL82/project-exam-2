@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -9,6 +9,7 @@ import Register from '../Register';
 import logOutUser from '../../auth/handlers/logout';
 import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
+import { useAuth } from '../../auth/AuthContext';
 
 /**
  * HeaderNav - A navigation component for the Holidaze application.
@@ -21,43 +22,11 @@ function HeaderNav() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
 
+  const { isLoggedIn, updateLoggedInStatus } = useAuth();
   const navRef = useRef(null);
   const navigate = useNavigate();
-
-  /**
-   * Updates the login state by checking for a token in localStorage.
-   */
-  const updateLoggedInStatus = () => {
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
-  };
-
-  /**
-   * Handles closing the navigation menu if clicked outside.
-   * @param {Event} event - The click event.
-   */
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (navRef.current && !navRef.current.contains(event.target)) {
-        setIsExpanded(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  /**
-   * Initializes the login state when the component is mounted.
-   */
-  useEffect(() => {
-    updateLoggedInStatus();
-  }, []);
 
   /**
    * Opens the Login modal with an optional pre-filled email.
@@ -90,7 +59,7 @@ function HeaderNav() {
    * Logs out the user by removing tokens and navigating to the homepage.
    */
   const handleLogout = () => {
-    logOutUser(setIsLoggedIn, navigate);
+    logOutUser(updateLoggedInStatus, navigate);
   };
 
   return (
@@ -142,7 +111,9 @@ function HeaderNav() {
             {isLoggedIn ? (
               <B.RedButton onClick={handleLogout}>Log out</B.RedButton>
             ) : (
-              <B.OrangeButton onClick={() => openLogin()}>Log in</B.OrangeButton>
+              <B.OrangeButton onClick={() => openLogin()}>
+                Log in
+              </B.OrangeButton>
             )}
           </Nav>
         </Navbar.Collapse>
@@ -151,7 +122,6 @@ function HeaderNav() {
       <Login
         showModal={showLogin}
         closeModal={closeModal}
-        setLoggedIn={setIsLoggedIn}
         openRegister={openRegister}
         prefillEmail={email}
       />
@@ -166,3 +136,4 @@ function HeaderNav() {
 }
 
 export default HeaderNav;
+

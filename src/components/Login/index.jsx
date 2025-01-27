@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import loginUser from '../../auth/handlers/login';
 import * as S from './index.styles';
+import { useAuth } from '../../auth/AuthContext';
 
 const schema = yup.object({
   email: yup
@@ -24,18 +25,11 @@ const schema = yup.object({
  *
  * @param {boolean} showModal - Whether the modal is visible.
  * @param {function} closeModal - Function to close the modal.
- * @param {function} setLoggedIn - Function to set login status.
  * @param {function} openRegister - Function to open the register modal.
  * @param {string} prefillEmail - Email to pre-fill in the form.
  */
 
-const Login = ({
-  showModal,
-  closeModal,
-  setLoggedIn,
-  openRegister,
-  prefillEmail,
-}) => {
+const Login = ({ showModal, closeModal, openRegister, prefillEmail }) => {
   const {
     register,
     handleSubmit,
@@ -45,6 +39,8 @@ const Login = ({
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const { updateLoggedInStatus } = useAuth();
 
   useEffect(() => {
     if (prefillEmail) {
@@ -58,10 +54,10 @@ const Login = ({
     try {
       const result = await loginUser(data);
       const { accessToken, ...profile } = result.data;
-      localStorage.setItem('token', accessToken);
+      localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('profile', JSON.stringify(profile));
 
-      setLoggedIn(true);
+      updateLoggedInStatus();
       setMessage('Login successful!');
       reset();
 

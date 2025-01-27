@@ -7,7 +7,7 @@ import { load } from '../storage/load';
  * @returns {Object} Headers object for API requests.
  */
 export function headers() {
-  const token = load('token');
+  const token = load('accessToken');
 
   return {
     'Content-Type': 'application/json',
@@ -48,4 +48,3 @@ export async function authFetch(url, options = {}) {
     throw error;
   }
 }
-

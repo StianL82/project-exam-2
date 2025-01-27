@@ -1,5 +1,6 @@
 import { authFetch } from '../authFetch';
 import { API_AUTH_URL } from '../constants';
+import { save } from '../../storage/save';
 
 /**
  * Authenticates a user by sending their credentials to the login endpoint.
@@ -11,12 +12,23 @@ import { API_AUTH_URL } from '../constants';
  * @returns {Promise<Object>} The user data returned from the API.
  * @throws {Error} If the login fails or if the credentials are incorrect.
  */
-const loginUser = async (credentials) => {
+const loginUser = async (credentials, updateLoggedInStatus) => {
   try {
     const result = await authFetch(`${API_AUTH_URL}/login`, {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
+
+    console.log('Login result:', result);
+
+    if (result.data && result.data.accessToken) {
+      save('accessToken', result.data.accessToken);
+      save('profile', result.data);
+
+      if (updateLoggedInStatus) {
+        updateLoggedInStatus();
+      }
+    }
 
     return result;
   } catch (error) {
@@ -28,4 +40,3 @@ const loginUser = async (credentials) => {
 };
 
 export default loginUser;
-
