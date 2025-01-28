@@ -7,6 +7,7 @@ import { API_HOLIDAZE_URL } from '../../auth/constants';
 import { useAuth } from '../../auth/AuthContext';
 import Login from '../../components/Login';
 import Register from '../../components/Register';
+import VenueCarousel from '../../components/Carousel';
 
 function Venue() {
   const { id } = useParams();
@@ -234,12 +235,7 @@ function Venue() {
               </div>
             </div>
             <div className="carousel">
-              {/* Placeholder for the carousel */}
-              <img
-                src={media[0]?.url || '/images/placeholder.jpg'}
-                alt="Venue Media"
-                className="carousel-image"
-              />
+              <VenueCarousel media={media} />
             </div>
           </div>
           <h3>View the calendar for information about available dates</h3>

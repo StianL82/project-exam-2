@@ -150,8 +150,9 @@ export const DetailsSection = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+    align-items: center;
 
-    @media (max-width: 768px) {
+    @media (max-width: 992px) {
       grid-template-columns: 1fr;
     }
   }
