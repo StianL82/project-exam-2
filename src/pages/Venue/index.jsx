@@ -8,6 +8,7 @@ import { useAuth } from '../../auth/AuthContext';
 import Login from '../../components/Login';
 import Register from '../../components/Register';
 import VenueCarousel from '../../components/Carousel';
+import BookingModal from '../../components/BookingModal';
 
 function Venue() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ function Venue() {
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
   const [email, setEmail] = useState('');
 
   useEffect(() => {
@@ -41,6 +43,14 @@ function Venue() {
     setShowLogin(false);
     setShowRegister(false);
     setEmail('');
+  };
+
+  const openBookingModal = () => {
+    setShowBookingModal(true);
+  };
+
+  const closeBookingModal = () => {
+    setShowBookingModal(false);
   };
 
   useEffect(() => {
@@ -135,11 +145,11 @@ function Venue() {
             </div>
             <div className="info-right">
               {isLoggedIn ? (
-                <B.BlueButton onClick={() => console.log('Open Booking Modal')}>
+                <B.BlueButton onClick={openBookingModal}>
                   Book your stay
                 </B.BlueButton>
               ) : (
-                <B.OrangeButton onClick={() => openLogin()}>
+                <B.OrangeButton onClick={openLogin}>
                   Log in to Book your stay
                 </B.OrangeButton>
               )}
@@ -245,11 +255,11 @@ function Venue() {
           </div>
           <div className="centered-button">
             {isLoggedIn ? (
-              <B.BlueButton onClick={() => console.log('Open Booking Modal')}>
+              <B.BlueButton onClick={openBookingModal}>
                 Book your stay
               </B.BlueButton>
             ) : (
-              <B.OrangeButton onClick={() => openLogin()}>
+              <B.OrangeButton onClick={openLogin}>
                 Log in to Book your stay
               </B.OrangeButton>
             )}
@@ -269,6 +279,15 @@ function Venue() {
           showModal={showRegister}
           closeModal={closeModal}
           openLogin={openLogin}
+        />
+
+        {/* Booking Modal */}
+        <BookingModal
+          show={showBookingModal}
+          onClose={closeBookingModal}
+          unavailableDates={venueData.unavailableDates || []}
+          price={venueData.price}
+          maxGuests={venueData.maxGuests}
         />
       </div>
     );
