@@ -95,16 +95,18 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail }) => {
         <S.FormBackground>
           <S.FormContainer>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <label>Email:</label>
-              <input type="email" {...register('email')} />
+              <label htmlFor="email">Email:</label>
+              <input id="email" type="email" {...register('email')} />
               {errors.email && (
                 <p className="alert-danger">{errors.email.message}</p>
               )}
-              <label>Password:</label>
-              <input type="password" {...register('password')} />
+
+              <label htmlFor="password">Password:</label>
+              <input id="password" type="password" {...register('password')} />
               {errors.password && (
                 <p className="alert-danger">{errors.password.message}</p>
               )}
+
               <S.ButtonContainer>
                 <S.LoginButton type="submit">Login</S.LoginButton>
               </S.ButtonContainer>

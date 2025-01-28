@@ -101,11 +101,13 @@ export const ButtonContainer = styled.div`
 `;
 
 export const LoginButton = styled.button`
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
   background-color: ${(props) => props.theme.color.secondaryColor};
   color: ${(props) => props.theme.color.black};
   border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
+  padding: 10px 20px;
+  border-radius: 4px;
   cursor: pointer;
   margin-top: 10px;
   width: 100%;

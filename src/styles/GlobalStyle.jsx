@@ -86,7 +86,7 @@ const GlobalStyle = createGlobalStyle`
     --color-buttonHoverOrange: #F06621;
     --color-buttonHoverBlue: #0355A3;
     --color-buttonHoverRed: #B12121;
-    --color-success: #41AD49;
+    --color-success: #318136;
     --color-stroke: #A6A6A6;
 
     height: 100%;

@@ -99,35 +99,45 @@ const Register = ({ showModal, closeModal, openLogin }) => {
         <S.FormBackground>
           <S.FormContainer>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <label>Name:</label>
-              <input type="text" {...register('name')} />
+              <label htmlFor="name">Name:</label>
+              <input id="name" type="text" {...register('name')} />
               {errors.name && (
                 <p className="alert-danger">{errors.name.message}</p>
               )}
-              <label>Email:</label>
-              <input type="email" {...register('email')} />
+
+              <label htmlFor="email">Email:</label>
+              <input id="email" type="email" {...register('email')} />
               {errors.email && (
                 <p className="alert-danger">{errors.email.message}</p>
               )}
-              <label>Password:</label>
-              <input type="password" {...register('password')} />
+
+              <label htmlFor="password">Password:</label>
+              <input id="password" type="password" {...register('password')} />
               {errors.password && (
                 <p className="alert-danger">{errors.password.message}</p>
               )}
-              <label>Avatar URL (optional):</label>
-              <input type="url" {...register('avatar')} />
+
+              <label htmlFor="avatar">Avatar URL (optional):</label>
+              <input id="avatar" type="url" {...register('avatar')} />
               {errors.avatar && (
                 <p className="alert-danger">{errors.avatar.message}</p>
               )}
-              <label>Avatar Alt Text (optional):</label>
-              <input type="text" {...register('avatarAlt')} />
+
+              <label htmlFor="avatarAlt">Avatar Alt Text (optional):</label>
+              <input id="avatarAlt" type="text" {...register('avatarAlt')} />
               {errors.avatarAlt && (
                 <p className="alert-danger">{errors.avatarAlt.message}</p>
               )}
-              <label>
-                <input type="checkbox" {...register('venueManager')} />
+
+              <label htmlFor="venueManager">
+                <input
+                  id="venueManager"
+                  type="checkbox"
+                  {...register('venueManager')}
+                />
                 Are you a Venue Manager?
               </label>
+
               <S.ButtonContainer>
                 <S.RegisterButton type="submit">Register</S.RegisterButton>
               </S.ButtonContainer>

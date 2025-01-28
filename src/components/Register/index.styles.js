@@ -48,8 +48,8 @@ export const ModalContent = styled.div`
 export const FormBackground = styled.div`
   background: ${(props) => props.theme.color.lightYellow};
   padding: 20px 20px 40px 20px;
-        border: 1px solid ${(props) => props.theme.color.stroke};
-      border-radius: 5px;
+  border: 1px solid ${(props) => props.theme.color.stroke};
+  border-radius: 5px;
 `;
 
 export const ModalLink = styled.div`
@@ -106,11 +106,13 @@ export const ButtonContainer = styled.div`
 `;
 
 export const RegisterButton = styled.button`
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
   background-color: ${(props) => props.theme.color.secondaryColor};
-  color: ${(props) => props.theme.color.white};
+  color: ${(props) => props.theme.color.black};
   border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
+  padding: 10px 20px;
+  border-radius: 4px;
   cursor: pointer;
   margin-top: 10px;
   width: 100%;
@@ -119,4 +121,3 @@ export const RegisterButton = styled.button`
     background-color: ${(props) => props.theme.color.buttonHoverOrange};
   }
 `;
-
