@@ -35,6 +35,7 @@ export const BlueButton = styled(ButtonBase)`
   background: ${(props) => props.theme.color.primaryColor};
   &:hover {
     background: ${(props) => props.theme.color.buttonHoverBlue};
+    color: ${(props) => props.theme.color.white};
   }
 `;
 

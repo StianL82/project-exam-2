@@ -33,8 +33,6 @@ export const NavigationButton = styled.button`
 
   &:hover:not(:disabled) {
     background-color: ${(props) => props.theme.color.buttonHoverBlue};
+    color: ${(props) => props.theme.color.white};
   }
 `;
-
-
-
