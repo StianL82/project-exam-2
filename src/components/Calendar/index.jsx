@@ -11,6 +11,7 @@ import * as S from './index.styles';
  * @param {Function} props.onDateChange - Callback for date change
  * @param {Array} props.disabledDates - Dates that are unavailable (ISO date strings)
  * @param {Date} props.minDate - The earliest selectable date
+ * @param {Function} props.tileClassName - Function to apply custom classNames to tiles
  * @returns {JSX.Element} The rendered calendar component
  */
 const BookingCalendar = ({
@@ -18,8 +19,8 @@ const BookingCalendar = ({
   onDateChange,
   disabledDates = [],
   minDate,
+  tileClassName,
 }) => {
-
   const isDateDisabled = (date) => {
     const dateString = date.toISOString().split('T')[0];
     return disabledDates.includes(dateString);
@@ -32,6 +33,7 @@ const BookingCalendar = ({
         onChange={onDateChange}
         tileDisabled={({ date }) => isDateDisabled(date)}
         minDate={minDate}
+        tileClassName={tileClassName}
       />
     </S.CalendarContainer>
   );
@@ -42,7 +44,7 @@ BookingCalendar.propTypes = {
   onDateChange: PropTypes.func.isRequired,
   disabledDates: PropTypes.arrayOf(PropTypes.string),
   minDate: PropTypes.instanceOf(Date),
+  tileClassName: PropTypes.func,
 };
 
 export default BookingCalendar;
-

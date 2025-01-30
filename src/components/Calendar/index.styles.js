@@ -17,6 +17,18 @@ export const CalendarContainer = styled.div`
     padding: 10px;
   }
 
+  .react-calendar__tile--active,
+  .selected-range {
+    background-color: ${(props) => props.theme.color.primaryColor};
+    color: ${(props) => props.theme.color.black};
+  }
+
+  .selected-in-between {
+    background-color: ${(props) => props.theme.color.primaryColor};
+    color: ${(props) => props.theme.color.black};
+    opacity: 0.7;
+  }
+
   .react-calendar__navigation {
     display: flex;
     justify-content: center;
