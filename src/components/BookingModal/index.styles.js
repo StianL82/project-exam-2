@@ -17,6 +17,15 @@ export const ModalContainer = styled.div`
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 480px) {
+    width: 95%;
+    padding: 0px 10px 10px 10px;
+  }
+
+  @media (max-width: 360px) {
+    padding: 0px 5px 5px 5px;
+  }
 `;
 
 export const ModalHeader = styled.div`
@@ -55,16 +64,21 @@ export const ModalBody = styled.div`
     background: ${(props) => props.theme.color.bodyBg};
     border-radius: 5px;
     padding: 10px;
+    justify-content: center;
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
+      padding: 5px;
+      justify-items: center;
     }
 
     h3 {
       font-size: 1rem;
       padding: 5px 10px;
+      text-align: center;
     }
   }
+
 `;
 
 export const FormContainer = styled.div`
@@ -140,7 +154,7 @@ export const CloseLink = styled.span`
   display: block;
   text-align: right;
   margin-top: 5px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: ${(props) => props.theme.color.darkGray};
   cursor: pointer;
   text-decoration: none;
