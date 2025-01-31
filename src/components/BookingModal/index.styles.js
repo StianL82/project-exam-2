@@ -138,7 +138,12 @@ export const SummaryContainer = styled.div`
   p {
     margin: 2px 0;
   }
+
+  strong {
+    font-weight: bold !important;
+  }
 `;
+
 
 export const ButtonContainer = styled.div`
   display: flex;

@@ -5,15 +5,20 @@ import PropTypes from 'prop-types';
 import * as S from './index.styles';
 
 /**
- * Reusable Calendar Component
- * @param {Object} props - Component props
- * @param {Date} props.selectedDate - Currently selected date
- * @param {Function} props.onDateChange - Callback for date change
- * @param {Array} props.disabledDates - Dates that are unavailable (ISO date strings)
- * @param {Date} props.minDate - The earliest selectable date
- * @param {Function} props.tileClassName - Function to apply custom classNames to tiles
- * @returns {JSX.Element} The rendered calendar component
+ * BookingCalendar Component
+ *
+ * A reusable calendar component for selecting booking dates.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Date|null} props.selectedDate - The currently selected date.
+ * @param {Function} props.onDateChange - Callback function triggered when the user selects a date.
+ * @param {string[]} [props.disabledDates=[]] - An array of unavailable dates in ISO format (YYYY-MM-DD).
+ * @param {Date} [props.minDate] - The earliest selectable date.
+ * @param {Function} [props.tileClassName] - Function to apply custom CSS class names to specific dates.
+ * @returns {JSX.Element} The rendered calendar component.
  */
+
 const BookingCalendar = ({
   selectedDate,
   onDateChange,
@@ -22,8 +27,27 @@ const BookingCalendar = ({
   tileClassName,
 }) => {
   const isDateDisabled = (date) => {
-    const dateString = date.toISOString().split('T')[0];
-    return disabledDates.includes(dateString);
+    if (!(date instanceof Date)) return false;
+
+    const formattedDate = date.toISOString().split('T')[0];
+
+    return disabledDates.includes(formattedDate);
+  };
+
+  const modifiedTileClassName = ({ date }) => {
+    if (!(date instanceof Date)) return '';
+
+    const booked = isDateDisabled(date);
+
+    if (booked) {
+      return 'booked-date';
+    }
+
+    if (tileClassName) {
+      return tileClassName({ date });
+    }
+
+    return '';
   };
 
   return (
@@ -33,7 +57,7 @@ const BookingCalendar = ({
         onChange={onDateChange}
         tileDisabled={({ date }) => isDateDisabled(date)}
         minDate={minDate}
-        tileClassName={tileClassName}
+        tileClassName={modifiedTileClassName}
       />
     </S.CalendarContainer>
   );

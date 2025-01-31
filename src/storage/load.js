@@ -1,14 +1,16 @@
 /**
- * Loads a value from localStorage and parses it as JSON.
+ * Loads a value from localStorage and attempts to parse it as JSON.
+ * If parsing fails, the raw string value is returned instead.
  *
- * @param {string} key - The key of the item to load from localStorage.
- * @returns {any|null} - The parsed JSON value associated with the key, or null if the key does not exist or parsing fails.
+ * @function
+ * @param {string} key - The key of the item to retrieve from localStorage.
+ * @returns {any|null} - The parsed JSON value if successful, the raw string if parsing fails, or null if the key does not exist.
  */
 export function load(key) {
   try {
     const value = localStorage.getItem(key);
-    return JSON.parse(value);
+    return value ? JSON.parse(value) : null;
   } catch {
-    return null;
+    return localStorage.getItem(key);
   }
 }

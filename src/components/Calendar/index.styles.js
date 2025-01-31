@@ -29,6 +29,13 @@ export const CalendarContainer = styled.div`
     opacity: 0.7;
   }
 
+  .react-calendar__tile.booked-date {
+    background-color: #dc3545 !important;
+    color: white !important;
+    opacity: 1 !important;
+    pointer-events: none;
+  }
+
   .react-calendar__navigation {
     display: flex;
     justify-content: center;

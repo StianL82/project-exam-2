@@ -2,12 +2,13 @@ import { API_KEY } from './constants';
 import { load } from '../storage/load';
 
 /**
- * Generates headers for API requests, including content type, authorization, and API key.
+ * Generates headers for API requests, including content type, authorization (if available), and API key.
  *
- * @returns {Object} Headers object for API requests.
+ * @returns {Object} An object containing HTTP headers for API requests.
  */
 export function headers() {
   const token = load('accessToken');
+  console.log('Using token in headers:', token);
 
   return {
     'Content-Type': 'application/json',
@@ -17,20 +18,20 @@ export function headers() {
 }
 
 /**
- * A wrapper function for the Fetch API that includes default headers and handles errors.
+ * Performs a fetch request with authentication headers and error handling.
  *
  * @async
- * @param {string} url - The URL to fetch.
- * @param {Object} [options={}] - Additional options for the fetch request (e.g., method, body, headers).
- * @returns {Promise<Object>} - The parsed JSON response from the API.
- * @throws {Error} Throws an error if the response is not ok, including status and error message.
+ * @param {string} url - The API endpoint to send the request to.
+ * @param {Object} [options={}] - Optional configuration for the fetch request, including method, body, and additional headers.
+ * @returns {Promise<Object>} The parsed JSON response from the API.
+ * @throws {Error} If the response is not successful, throws an error including the status code, status text, and error message.
  */
 export async function authFetch(url, options = {}) {
   try {
     const response = await fetch(url, {
       ...options,
       headers: {
-        ...headers(),
+        ...headers(), // Merge default headers with any provided in options
         ...options.headers,
       },
     });

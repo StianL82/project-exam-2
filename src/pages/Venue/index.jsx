@@ -9,6 +9,7 @@ import Login from '../../components/Login';
 import Register from '../../components/Register';
 import VenueCarousel from '../../components/Carousel';
 import BookingModal from '../../components/BookingModal';
+import BookingCalendar from '../../components/Calendar';
 
 function Venue() {
   const { id } = useParams();
@@ -21,6 +22,7 @@ function Venue() {
   const [showRegister, setShowRegister] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [email, setEmail] = useState('');
+  const [bookedDates, setBookedDates] = useState([]);
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -56,12 +58,30 @@ function Venue() {
   useEffect(() => {
     async function fetchVenue() {
       try {
-        const response = await fetch(`${API_HOLIDAZE_URL}/venues/${id}`);
+        const response = await fetch(
+          `${API_HOLIDAZE_URL}/venues/${id}?_bookings=true`
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch venue details');
         }
         const data = await response.json();
         setVenueData(data.data);
+
+        // Hent opptatte datoer fra bookings
+        if (data.data.bookings) {
+          const unavailableDates = [];
+          data.data.bookings.forEach((booking) => {
+            const start = new Date(booking.dateFrom);
+            const end = new Date(booking.dateTo);
+
+            let currentDate = new Date(start);
+            while (currentDate <= end) {
+              unavailableDates.push(currentDate.toISOString().split('T')[0]);
+              currentDate.setDate(currentDate.getDate() + 1);
+            }
+          });
+          setBookedDates(unavailableDates);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -250,8 +270,10 @@ function Venue() {
           </div>
           <h3>View the calendar for information about available dates</h3>
           <div className="calendar">
-            {/* Placeholder for the calendar component */}
-            <p>Calendar will be displayed here.</p>
+            <BookingCalendar
+              disabledDates={bookedDates}
+              onDateChange={() => {}}
+            />
           </div>
           <div className="centered-button">
             {isLoggedIn ? (
@@ -285,9 +307,10 @@ function Venue() {
         <BookingModal
           show={showBookingModal}
           onClose={closeBookingModal}
-          unavailableDates={venueData.unavailableDates || []}
+          unavailableDates={bookedDates}
           price={venueData.price}
           maxGuests={venueData.maxGuests}
+          venueId={id}
         />
       </div>
     );
