@@ -8,12 +8,18 @@ import { load } from '../storage/load';
  */
 export function headers() {
   const token = load('accessToken');
-  console.log('Using token in headers:', token);
+  const envApiKey = process.env.REACT_APP_API_KEY; // Direkte fra miljøvariabler
+  const finalApiKey = API_KEY || envApiKey; // Prioriterer API_KEY fra constants.js
+
+  console.log('🔑 API Key from constants.js:', API_KEY);
+  console.log('🌍 API Key from process.env:', envApiKey);
+  console.log('✅ Final API Key used in headers:', finalApiKey);
+  console.log('🛠 Environment variables available in runtime:', process.env);
 
   return {
     'Content-Type': 'application/json',
     Authorization: token ? `Bearer ${token}` : '',
-    'X-Noroff-API-Key': API_KEY,
+    'X-Noroff-API-Key': finalApiKey,
   };
 }
 
@@ -28,24 +34,33 @@ export function headers() {
  */
 export async function authFetch(url, options = {}) {
   try {
+    const requestHeaders = headers();
+    console.log('📡 Sending request to:', url);
+    console.log('📡 Request headers:', requestHeaders);
+
     const response = await fetch(url, {
       ...options,
       headers: {
-        ...headers(), // Merge default headers with any provided in options
+        ...requestHeaders, // Merge default headers with any provided in options
         ...options.headers,
       },
     });
 
+    console.log('📡 Response status:', response.status);
+    console.log('📡 Response headers:', response.headers);
+
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('❌ Fetch failed with response:', errorData);
       throw new Error(
-        `Error: ${response.status} ${response.statusText} - ${errorData.message}`
+        `Error: ${response.status} ${response.statusText} - ${errorData.message || 'Unknown error'}`
       );
     }
 
+    console.log('✅ Fetch successful:', response);
     return response.json();
   } catch (error) {
-    console.error('authFetch error:', error);
+    console.error('❌ authFetch error:', error);
     throw error;
   }
 }
