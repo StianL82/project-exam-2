@@ -8,12 +8,13 @@ import { load } from '../storage/load';
  */
 export function headers() {
   const token = load('accessToken');
-  console.log('Using token in headers:', token);
+  const envApiKey = process.env.REACT_APP_API_KEY;
+  const finalApiKey = API_KEY || envApiKey;
 
   return {
     'Content-Type': 'application/json',
     Authorization: token ? `Bearer ${token}` : '',
-    'X-Noroff-API-Key': API_KEY,
+    'X-Noroff-API-Key': finalApiKey,
   };
 }
 
@@ -31,7 +32,7 @@ export async function authFetch(url, options = {}) {
     const response = await fetch(url, {
       ...options,
       headers: {
-        ...headers(), // Merge default headers with any provided in options
+        ...headers(),
         ...options.headers,
       },
     });
@@ -39,7 +40,7 @@ export async function authFetch(url, options = {}) {
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
-        `Error: ${response.status} ${response.statusText} - ${errorData.message}`
+        `Error: ${response.status} ${response.statusText} - ${errorData.message || 'Unknown error'}`
       );
     }
 
