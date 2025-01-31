@@ -49,3 +49,5 @@ export async function authFetch(url, options = {}) {
     throw error;
   }
 }
+
+console.log("📡 API Key in runtime:", API_KEY);
