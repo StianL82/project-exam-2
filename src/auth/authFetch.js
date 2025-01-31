@@ -1,3 +1,4 @@
+import { API_KEY } from './constants';
 import { load } from '../storage/load';
 
 /**
@@ -12,7 +13,7 @@ export function headers() {
   return {
     'Content-Type': 'application/json',
     Authorization: token ? `Bearer ${token}` : '',
-    'X-Noroff-API-Key': process.env.REACT_APP_API_KEY,
+    'X-Noroff-API-Key': API_KEY,
   };
 }
 
