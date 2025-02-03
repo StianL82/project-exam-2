@@ -32,7 +32,7 @@ export const ContactHeading = styled.h2`
   margin: 20px 0;
 `;
 
-export const dividerContainer = styled.div`
+export const DividerContainer = styled.div`
   width: 40%;
   min-height: clamp(70px, 8vw, 300px);
   background-image: url('/images/mountain-divider.png');
@@ -63,12 +63,12 @@ export const FormBackground = styled.div`
 `;
 
 export const FormContainer = styled.div`
-  background-color: #FFFBD4;
+  background-color: #fffbd4;
   padding: 24px;
   border-radius: 8px;
   border: 1px solid ${(props) => props.theme.color.stroke};
   max-width: 500px;
-  margin: 0 auto ;
+  margin: 0 auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   h2 {
@@ -122,8 +122,8 @@ export const ImageContainer = styled.div`
 
   img {
     max-width: 100%;
-    height: auto; 
-    max-height: 300px; 
+    height: auto;
+    max-height: 300px;
   }
 
   @media (max-width: 768px) {
@@ -146,4 +146,3 @@ export const ContactEnding = styled.h3`
   margin: 20px 0;
   padding: 0px;
 `;
-

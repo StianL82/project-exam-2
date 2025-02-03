@@ -37,7 +37,7 @@ export const Paragraph = styled.p`
   text-align: center;
 `;
 
-export const dividerContainer = styled.div`
+export const DividerContainer = styled.div`
   width: 40%;
   min-height: clamp(70px, 8vw, 300px);
   background-image: url('/images/city-divider.png');

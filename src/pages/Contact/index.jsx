@@ -61,7 +61,7 @@ function Contact() {
         </S.ContactHeading>
       </div>
       <div>
-        <S.dividerContainer />
+        <S.DividerContainer />
       </div>
       <S.FormBackground>
         <S.FormContainer>

@@ -48,7 +48,7 @@ function Home() {
       </div>
       <div>
         <div>
-          <S.dividerContainer />
+          <S.DividerContainer />
         </div>
         <div>
           <S.DiscoverVenuesContainer>
