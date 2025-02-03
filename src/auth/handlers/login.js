@@ -14,12 +14,12 @@ import { save } from '../../storage/save';
  */
 const loginUser = async (credentials, updateLoggedInStatus) => {
   try {
-    const result = await authFetch(`${API_AUTH_URL}/login`, {
+    const result = await authFetch(`${API_AUTH_URL}/login?_holidaze=true`, {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
 
-    console.log('Login result:', result);
+    console.log('Login result with _holidaze:', result); // Debug log
 
     if (result.data && result.data.accessToken) {
       save('accessToken', result.data.accessToken);
