@@ -54,9 +54,11 @@ function Home() {
           <S.DiscoverVenuesContainer>
             <h2>Find your next dream vacation</h2>
             <p>Book a trip to one of our most beautiful destinations</p>
-            <B.OrangeButton as={Link} to="/venues">
-              Discover more venues
-            </B.OrangeButton>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <B.OrangeButton as={Link} to="/venues">
+                Discover more venues
+              </B.OrangeButton>
+            </div>
           </S.DiscoverVenuesContainer>
         </div>
         <div className="container">
