@@ -13,10 +13,6 @@ import { useAuth } from '../../auth/AuthContext';
 
 /**
  * HeaderNav - A navigation component for the Holidaze application.
- * It handles user login, registration, and logout, as well as navigation links.
- *
- * @component
- * @returns {JSX.Element} The rendered navigation bar.
  */
 function HeaderNav() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -24,13 +20,12 @@ function HeaderNav() {
   const [showRegister, setShowRegister] = useState(false);
   const [email, setEmail] = useState('');
 
-  const { isLoggedIn, updateLoggedInStatus } = useAuth();
+  const { isLoggedIn, username, updateLoggedInStatus } = useAuth();
   const navRef = useRef(null);
   const navigate = useNavigate();
 
   /**
    * Opens the Login modal with an optional pre-filled email.
-   * @param {string} [prefillEmail=''] - The email to prefill in the login form.
    */
   const openLogin = (prefillEmail = '') => {
     setEmail(prefillEmail);
@@ -84,7 +79,7 @@ function HeaderNav() {
           <Nav className="ms-auto">
             <Nav.Link
               as={NavLink}
-              to="venues"
+              to="/venues"
               className="nav-link me-0 me-sm-5"
               onClick={() => setIsExpanded(false)}
             >
@@ -98,10 +93,10 @@ function HeaderNav() {
             >
               Contact
             </Nav.Link>
-            {isLoggedIn && (
+            {isLoggedIn && username && (
               <Nav.Link
                 as={NavLink}
-                to="/profile"
+                to={`/profile/${encodeURIComponent(username)}`} // 🔥 Riktig URL for profil
                 className="nav-link me-0 me-sm-5"
                 onClick={() => setIsExpanded(false)}
               >
@@ -136,4 +131,3 @@ function HeaderNav() {
 }
 
 export default HeaderNav;
-

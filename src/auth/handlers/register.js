@@ -1,42 +1,39 @@
-import { authFetch } from '../authFetch';
-import { API_AUTH_URL } from '../constants';
+import { registerUser } from '../auth/register';
 
 /**
- * Registers a new user by sending their data to the API.
- * @param {Object} userData - The user data to register.
- * @param {string} userData.name - The user's name.
- * @param {string} userData.email - The user's email address.
- * @param {string} userData.password - The user's password.
- * @param {string} [userData.avatar] - The URL of the user's avatar (optional).
- * @param {string} [userData.avatarAlt] - Alt text for the avatar (optional).
- * @param {boolean} [userData.venueManager] - Indicates if the user is a venue manager.
- * @returns {Promise<Object>} The registered user data.
- * @throws Will throw an error if the registration fails or the email is already registered.
+ * Setter event listener på registreringsskjemaet.
  */
-const registerUser = async (userData) => {
-  try {
-    if (userData.avatar) {
-      userData.avatar = {
-        url: userData.avatar || null,
-        alt: userData.avatarAlt || '',
-      };
-    } else {
-      delete userData.avatar;
-    }
-    delete userData.avatarAlt;
+export function setRegisterFormListener() {
+  const form = document.querySelector('#registerForm');
 
-    const result = await authFetch(`${API_AUTH_URL}/register`, {
-      method: 'POST',
-      body: JSON.stringify(userData),
+  if (form) {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const profile = Object.fromEntries(formData.entries());
+
+      // ✅ Sikrer at venueManager alltid er en boolean (true/false)
+      profile.venueManager = profile.venueManager === 'on';
+
+      // ✅ Fjerner avatar hvis ingen URL er oppgitt
+      if (profile.avatar_url?.trim()) {
+        profile.avatar = {
+          url: profile.avatar_url.trim(),
+          alt: profile.avatar_alt?.trim() || '',
+        };
+      } else {
+        profile.avatar = null; // API-et godtar null for avatar
+      }
+
+      delete profile.avatar_url;
+      delete profile.avatar_alt;
+
+      try {
+        await registerUser(profile);
+      } catch (error) {
+        console.error('❌ Registrering feilet:', error);
+      }
     });
-
-    return result;
-  } catch (error) {
-    if (error.message.includes('already exists')) {
-      throw new Error('The email address is already registered.');
-    }
-    throw error;
   }
-};
-
-export default registerUser;
+}

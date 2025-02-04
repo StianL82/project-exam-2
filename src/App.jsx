@@ -14,8 +14,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/venues" element={<Venues />} />
-        <Route path="/Venue/:id" element={<Venue />} />
-        <Route path="/Profile" element={<Profile />} />
+        <Route path="/venue/:id" element={<Venue />} />
+        <Route path="/profile/:name" element={<Profile />} />{' '}
+        {/* 🔥 Bruker dynamisk brukernavn */}
       </Routes>
     </Layout>
   );

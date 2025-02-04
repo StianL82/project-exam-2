@@ -2,43 +2,24 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import registerUser from '../../auth/handlers/register';
+import { registerUser } from '../../auth/register';
 import * as S from './index.styles';
 
 const schema = yup.object({
-  name: yup
-    .string()
-    .min(3, 'Name must be at least 3 characters.')
-    .matches(
-      /^[a-zA-Z0-9_]+$/,
-      'Username must only contain letters, numbers, and underscores (_).'
-    )
-    .required('Username is required.'),
+  name: yup.string().min(3, 'At least 3 characters.').required(),
   email: yup
     .string()
-    .email('Must be a valid email address.')
-    .matches(/@stud\.noroff\.no$/, 'Email must be a @stud.noroff.no address.')
-    .required('Email is required.'),
-  password: yup
-    .string()
-    .min(8, 'Password must be at least 8 characters.')
-    .required('Password is required.'),
-  avatar: yup.string().url('Avatar must be a valid URL.').nullable(),
-  avatarAlt: yup
-    .string()
-    .max(120, 'Alt text must be less than 120 characters.')
-    .nullable(),
+    .email()
+    .matches(/@stud\.noroff\.no$/, 'Must be @stud.noroff.no')
+    .required(),
+  password: yup.string().min(8, 'At least 8 characters.').required(),
+  avatar: yup.string().url().nullable(),
+  avatarAlt: yup.string().max(120).nullable(),
   venueManager: yup.boolean(),
 });
 
 /**
- * Register component for handling user registration.
- * Displays a modal where users can register a new account by providing
- * their username, email, password, and optional avatar details.
- *
- * @param {boolean} showModal - Whether the modal is visible.
- * @param {function} closeModal - Function to close the modal.
- * @param {function} openLogin - Function to open the login modal.
+ * Registreringskomponent for Holidaze.
  */
 const Register = ({ showModal, closeModal, openLogin }) => {
   const {
@@ -55,28 +36,38 @@ const Register = ({ showModal, closeModal, openLogin }) => {
 
   const onSubmit = async (data) => {
     try {
-      await registerUser(data);
+      console.log('🚀 Registrerer bruker (før transformasjon):', data);
+
+      // Sørger for riktig formatering av registreringsdata
+      const formattedData = {
+        name: data.name.trim().toLowerCase(), // Sikrer små bokstaver
+        email: data.email.trim(),
+        password: data.password,
+        venueManager: data.venueManager || false, // Setter false som standard
+        avatar: data.avatar
+          ? { url: data.avatar, alt: data.avatarAlt || '' }
+          : null,
+        banner: null, // Placeholder for fremtidig banner-støtte
+      };
+
+      console.log('📤 Sender registreringsdata til API:', formattedData);
+
+      const response = await registerUser(formattedData);
+      console.log('✅ Registrering fullført:', response);
 
       setMessage('Registration successful! You can now log in.');
       setShowAlert(true);
-
-      reset();
 
       setTimeout(() => {
         setShowAlert(false);
         closeModal();
         openLogin(data.email);
       }, 2000);
-    } catch (error) {
-      console.error('Error registering user:', error);
 
-      if (error.message === 'Email already registered') {
-        setMessage('This email is already registered. Please log in.');
-      } else if (error.message === 'Invalid username') {
-        setMessage('The username is invalid. Please try a different one.');
-      } else {
-        setMessage('Registration failed. Please try again.');
-      }
+      reset();
+    } catch (error) {
+      console.error('❌ Feil under registrering:', error);
+      setMessage('Registration failed. Please try again.');
     }
   };
 
@@ -163,8 +154,8 @@ const Register = ({ showModal, closeModal, openLogin }) => {
                 }}
               >
                 log in
-              </span>{' '}
-            </strong>
+              </span>
+            </strong>{' '}
             if you already have an account
           </p>
         </S.ModalLink>

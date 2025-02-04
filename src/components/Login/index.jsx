@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import loginUser from '../../auth/handlers/login';
+import { loginUser } from '../../auth/login';
 import * as S from './index.styles';
 import { useAuth } from '../../auth/AuthContext';
 
+/**
+ * Skjema for innlogging.
+ */
 const schema = yup.object({
   email: yup
     .string()
@@ -18,61 +21,47 @@ const schema = yup.object({
     .required('Password is required.'),
 });
 
-/**
- * Login component for handling user login functionality.
- * Displays a modal for users to input their email and password.
- * Pre-fills email field if provided and handles specific error messages.
- *
- * @param {boolean} showModal - Whether the modal is visible.
- * @param {function} closeModal - Function to close the modal.
- * @param {function} openRegister - Function to open the register modal.
- * @param {string} prefillEmail - Email to pre-fill in the form.
- */
-
-const Login = ({ showModal, closeModal, openRegister, prefillEmail }) => {
+const Login = ({ showModal, closeModal, openRegister }) => {
   const {
     register,
     handleSubmit,
-    setValue,
     reset,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
+  } = useForm({ resolver: yupResolver(schema) });
   const { updateLoggedInStatus } = useAuth();
-
-  useEffect(() => {
-    if (prefillEmail) {
-      setValue('email', prefillEmail);
-    }
-  }, [prefillEmail, setValue]);
-
   const [message, setMessage] = useState('');
 
   const onSubmit = async (data) => {
     try {
+      console.log('🔑 Prøver å logge inn:', data);
+
+      // 🔥 Logg inn brukeren
       const result = await loginUser(data);
-      const { accessToken, ...profile } = result.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('profile', JSON.stringify(profile));
+
+      console.log('✅ Innlogging vellykket:', result);
+
+      if (!result || !result.accessToken) {
+        throw new Error('❌ Mangler accessToken i API-respons.');
+      }
+
+      // 🔥 Oppdater localStorage
+      localStorage.setItem('accessToken', result.accessToken);
+      localStorage.setItem('profile', JSON.stringify(result));
+
+      // 🔥 Sjekk om token er lagret riktig
+      console.log('🔍 Lagret token:', localStorage.getItem('accessToken'));
 
       updateLoggedInStatus();
       setMessage('Login successful!');
-      reset();
 
       setTimeout(() => {
+        reset();
         setMessage('');
         closeModal();
       }, 1000);
     } catch (error) {
-      if (error.message === 'Invalid email or password') {
-        setMessage('Invalid email or password. Please try again.');
-      } else if (error.message === 'Account not found') {
-        setMessage('Account not found. Please register.');
-      } else {
-        setMessage('Login failed. Please try again.');
-      }
+      console.error('❌ Feil under innlogging:', error.message);
+      setMessage('Login failed. Please try again.');
     }
   };
 
@@ -120,8 +109,8 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail }) => {
             <strong>
               <span className="link" onClick={openRegister}>
                 register
-              </span>{' '}
-            </strong>
+              </span>
+            </strong>{' '}
             if you don't have an account
           </p>
         </S.ModalLink>
