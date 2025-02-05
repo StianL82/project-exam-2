@@ -1,80 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { authFetch } from '../../auth/authFetch';
 import * as S from './index.styles';
+import { API_HOLIDAZE_URL } from '../../auth/constants';
 
-const UpdateProfile = ({ showModal, closeModal }) => {
+const UpdateProfile = ({ showModal, closeModal, onProfileUpdate  }) => {
+  // ✅ Lagre profilnavnet i state for å unngå endeløs looping
   const storedProfile = localStorage.getItem('profile');
-  const profileData = storedProfile ? JSON.parse(storedProfile) : {};
+  const profileData = storedProfile ? JSON.parse(storedProfile) : null;
+  const profileName = profileData?.name || '';
 
-  const [avatar, setAvatar] = useState(profileData.avatar?.url || '');
-  const [avatarAlt, setAvatarAlt] = useState(profileData.avatar?.alt || '');
-  const [banner, setBanner] = useState(profileData.banner?.url || '');
-  const [bannerAlt, setBannerAlt] = useState(profileData.banner?.alt || '');
-  const [bio, setBio] = useState(profileData.bio || '');
+  const [avatar, setAvatar] = useState(profileData?.avatar?.url || '');
+  const [avatarAlt, setAvatarAlt] = useState(profileData?.avatar?.alt || '');
+  const [banner, setBanner] = useState(profileData?.banner?.url || '');
+  const [bannerAlt, setBannerAlt] = useState(profileData?.banner?.alt || '');
+  const [bio, setBio] = useState(profileData?.bio || '');
   const [venueManager, setVenueManager] = useState(
-    profileData.venueManager || false
+    profileData?.venueManager || false
   );
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!profileData.name) {
-      console.error('❌ Profile name is missing.');
-      return;
-    }
-    fetchProfile();
-  }, []);
-
   /** 🔍 Henter brukerprofil fra API */
-  const fetchProfile = async () => {
-    if (!profileData.name) {
+  const fetchProfile = useCallback(async () => {
+    if (!profileName) {
       setError('❌ Profile name is missing.');
-      console.error('⚠️ profileData.name er undefined eller tom:', profileData);
+      console.error('⚠️ Profile name is missing:', profileName);
       return;
     }
 
-    const encodedName = encodeURIComponent(profileData.name);
-    const profileUrl = `https://api.noroff.dev/api/v1/holidaze/profiles/${encodedName}?_bookings=true&_venues=true`;
+    const encodedName = encodeURIComponent(profileName);
+    const profileUrl = `${API_HOLIDAZE_URL}/profiles/${encodedName}?_bookings=true&_venues=true`;
 
-    console.log('🔍 Prøver å hente profilen med URL:', profileUrl);
-    console.log('📌 Bruker token:', localStorage.getItem('accessToken'));
+    console.log('🔍 Henter profil fra API:', profileUrl);
 
     try {
-      const response = await authFetch(profileUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          'X-Noroff-API-Key': '499331ba-2fa7-4908-bf07-4280374f9f87',
-        },
-      });
+      const response = await authFetch(profileUrl);
 
       if (response.errors) {
-        console.error('❌ API svarte med feil:', response.errors);
+        console.error('❌ API Feil:', response.errors);
         setError('Profile not found in API.');
         return;
       }
 
-      console.log('✅ Profile data mottatt fra API:', response);
+      console.log('✅ Profil hentet fra API:', response);
 
-      setAvatar(response.avatar?.url || '');
-      setAvatarAlt(response.avatar?.alt || '');
-      setBanner(response.banner?.url || '');
-      setBannerAlt(response.banner?.alt || '');
-      setBio(response.bio || '');
-      setVenueManager(response.venueManager || false);
+      setAvatar(response.data.avatar?.url || '');
+      setAvatarAlt(response.data.avatar?.alt || '');
+      setBanner(response.data.banner?.url || '');
+      setBannerAlt(response.data.banner?.alt || '');
+      setBio(response.data.bio || '');
+      setVenueManager(response.data.venueManager || false);
 
-      localStorage.setItem('profile', JSON.stringify(response));
+      localStorage.setItem('profile', JSON.stringify(response.data));
     } catch (error) {
       console.error('❌ Feil ved henting av profil:', error);
       setError('Failed to load profile.');
     }
-  };
+  }, [profileName]); // ❗ Bruker profileName, ikke profileData, for å unngå loop
+
+  /** 🚀 Kjører kun hvis `profileName` endres */
+  useEffect(() => {
+    if (!profileName) {
+      console.error('⚠️ Ingen profil funnet i localStorage!');
+      setError('No profile data found. Please log in again.');
+      return;
+    }
+    fetchProfile();
+  }, [profileName, fetchProfile]); // ✅ Bruker profileName som dependency, ikke hele profileData
 
   /** 🚀 Oppdaterer brukerprofil */
-  const handleUpdate = async () => {
-    if (!profileData.name) {
+  const handleUpdate = async (event) => {
+    event.preventDefault(); // Stopper standard submit-handling
+
+    if (!profileName) {
       setMessage('Profile update failed. Missing profile name.');
       return;
     }
@@ -82,8 +81,8 @@ const UpdateProfile = ({ showModal, closeModal }) => {
     setLoading(true);
     setError('');
 
-    const encodedName = encodeURIComponent(profileData.name);
-    const updateUrl = `https://api.noroff.dev/api/v1/holidaze/profiles/${encodedName}`;
+    const encodedName = encodeURIComponent(profileName);
+    const updateUrl = `${API_HOLIDAZE_URL}/profiles/${encodedName}`;
 
     const updatedProfile = {
       bio,
@@ -92,7 +91,7 @@ const UpdateProfile = ({ showModal, closeModal }) => {
       venueManager,
     };
 
-    console.log('🚀 Updating profile:', updatedProfile);
+    console.log('🚀 Oppdaterer profil:', updatedProfile);
 
     try {
       const response = await authFetch(updateUrl, {
@@ -100,24 +99,24 @@ const UpdateProfile = ({ showModal, closeModal }) => {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          'X-Noroff-API-Key': '499331ba-2fa7-4908-bf07-4280374f9f87',
         },
         body: JSON.stringify(updatedProfile),
       });
 
-      console.log('✅ Profile update response:', response);
+      console.log('✅ Respons fra API:', response);
 
       if (response.errors) {
         setError('Profile update failed.');
-        console.error('❌ Update error:', response.errors);
+        console.error('❌ Feil ved oppdatering:', response.errors);
         return;
       }
 
-      localStorage.setItem('profile', JSON.stringify(response)); // Lagre ny data
+      localStorage.setItem('profile', JSON.stringify(response.data));
       setMessage('Profile updated successfully!');
+      onProfileUpdate(response.data);
       setTimeout(() => closeModal(), 2000);
     } catch (error) {
-      console.error('❌ Error updating profile:', error);
+      console.error('❌ Feil ved oppdatering av profil:', error);
       setError('Profile update failed. Please try again.');
     } finally {
       setLoading(false);
@@ -135,52 +134,67 @@ const UpdateProfile = ({ showModal, closeModal }) => {
         <h2>Update Profile</h2>
         <S.FormBackground>
           <S.FormContainer>
-            <label>Avatar URL:</label>
-            <input
-              type="text"
-              value={avatar}
-              onChange={(e) => setAvatar(e.target.value)}
-            />
-
-            <label>Avatar Alt Text:</label>
-            <input
-              type="text"
-              value={avatarAlt}
-              onChange={(e) => setAvatarAlt(e.target.value)}
-            />
-
-            <label>Banner URL:</label>
-            <input
-              type="text"
-              value={banner}
-              onChange={(e) => setBanner(e.target.value)}
-            />
-
-            <label>Banner Alt Text:</label>
-            <input
-              type="text"
-              value={bannerAlt}
-              onChange={(e) => setBannerAlt(e.target.value)}
-            />
-
-            <label>Bio:</label>
-            <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
-
-            <label>
+            <form onSubmit={handleUpdate}>
+              <label htmlFor="avatar">Avatar URL:</label>
               <input
-                type="checkbox"
-                checked={venueManager}
-                onChange={() => setVenueManager(!venueManager)}
+                id="avatar"
+                type="text"
+                value={avatar}
+                onChange={(e) => setAvatar(e.target.value)}
               />
-              Are you a Venue Manager?
-            </label>
 
-            <S.UpdateButton onClick={handleUpdate} disabled={loading}>
-              {loading ? 'Updating...' : 'Update Profile'}
-            </S.UpdateButton>
+              <label htmlFor="avatarAlt">Avatar Alt Text:</label>
+              <input
+                id="avatarAlt"
+                type="text"
+                value={avatarAlt}
+                onChange={(e) => setAvatarAlt(e.target.value)}
+              />
 
-            {message && <p className="alert-success">{message}</p>}
-            {error && <p className="alert-danger">{error}</p>}
+              <label htmlFor="banner">Banner URL:</label>
+              <input
+                id="banner"
+                type="text"
+                value={banner}
+                onChange={(e) => setBanner(e.target.value)}
+              />
+
+              <label htmlFor="bannerAlt">Banner Alt Text:</label>
+              <input
+                id="bannerAlt"
+                type="text"
+                value={bannerAlt}
+                onChange={(e) => setBannerAlt(e.target.value)}
+              />
+
+              <label htmlFor="bio">Bio:</label>
+              <textarea
+                id="bio"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+              />
+
+              {!profileData?.venueManager && (
+                <label htmlFor="venueManager">
+                  <input
+                    id="venueManager"
+                    type="checkbox"
+                    checked={venueManager}
+                    onChange={() => setVenueManager(!venueManager)}
+                  />
+                  Are you a Venue Manager?
+                </label>
+              )}
+
+              <S.ButtonContainer>
+                <S.UpdateButton type="submit" disabled={loading}>
+                  {loading ? 'Updating...' : 'Update Profile'}
+                </S.UpdateButton>
+              </S.ButtonContainer>
+
+              {message && <p className="alert-success">{message}</p>}
+              {error && <p className="alert-danger">{error}</p>}
+            </form>
           </S.FormContainer>
         </S.FormBackground>
       </S.ModalContent>

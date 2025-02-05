@@ -37,6 +37,12 @@ export const ModalContent = styled.div`
     font-size: 1.5rem;
     cursor: pointer;
   }
+
+  .link {
+    color: ${(props) => props.theme.color.primaryColor};
+    cursor: pointer;
+    text-decoration: underline;
+  }
 `;
 
 export const FormBackground = styled.div`
@@ -44,6 +50,14 @@ export const FormBackground = styled.div`
   padding: 20px 20px 40px 20px;
   border: 1px solid ${(props) => props.theme.color.stroke};
   border-radius: 5px;
+`;
+
+export const ModalLink = styled.div`
+  .link {
+    font-size: 20px;
+    text-decoration: none;
+    color: ${(props) => props.theme.color.success};
+  }
 `;
 
 export const FormContainer = styled.div`

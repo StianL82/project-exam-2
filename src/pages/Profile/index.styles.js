@@ -14,7 +14,6 @@ export const HeroSection = styled.div`
   overflow: hidden;
 `;
 
-
 export const HeroText = styled.h1`
   position: relative;
   z-index: 2;
@@ -45,7 +44,7 @@ export const ProfileTitle = styled.h2`
   width: 100%;
   margin-bottom: 15px;
   word-break: break-word; /* Sikrer at lange ord brytes */
-  overflow-wrap: break-word;
+  overflow-wrap: break-word; /* Hindrer at tekst går utenfor container */
 `;
 
 export const ProfileGrid = styled.div`
@@ -72,23 +71,27 @@ export const ProfileImageContainer = styled.div`
 
 export const ProfileImage = styled.img`
   width: 150px;
-  height: auto;
+  height: 150px; /* 🔥 Sørger for at høyden alltid matcher bredden */
   border-radius: 50%;
   object-fit: cover;
   max-width: 100%; /* Hindrer at bildet blir for stort */
+  display: block; /* Hindrer ekstra mellomrom under bildet */
 
   @media (max-width: 768px) {
-    width: 90%; /* Skaler ned bildet på små skjermer */
-    max-width: 150px; /* Sikrer at det ikke blir for stort */
+    width: 90%;
+    height: auto; /* Dette er ok siden max-width sikrer at bildet ikke strekkes */
+    max-width: 150px;
+    aspect-ratio: 1 / 1; /* 🔥 Bevarer kvadratisk form på små skjermer */
   }
 `;
+
 
 export const ProfileDetails = styled.div`
   text-align: left;
   font-size: 1.1rem;
   word-break: break-word; /* Sikrer at lange ord brytes */
   overflow-wrap: break-word; /* Forhindrer at lange e-poster kuttes */
-  
+
   @media (max-width: 768px) {
     text-align: center;
   }
@@ -115,7 +118,6 @@ export const UpdateProfileButton = styled.button`
     background-color: darkorange;
   }
 `;
-
 
 export const DividerContainer = styled.div`
   width: 40%;

@@ -1,5 +1,4 @@
 import { API_AUTH_URL } from './constants';
-import { authFetch } from './authFetch';
 
 /**
  * Registrerer en ny bruker i API-et.
@@ -29,17 +28,25 @@ export async function registerUser(profile) {
 
     console.log('📤 Sender registreringsdata:', cleanProfile);
 
-    // Utfører API-kallet
-    const response = await authFetch(`${API_AUTH_URL}/register`, {
+    // 🔥 Bruk vanlig fetch, IKKE authFetch
+    const response = await fetch(`${API_AUTH_URL}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-Noroff-API-Key': '499331ba-2fa7-4908-bf07-4280374f9f87', // 🔑 API-nøkkel kreves for registrering
       },
       body: JSON.stringify(cleanProfile),
     });
 
-    console.log('✅ Registrering fullført:', response);
-    return response;
+    const data = await response.json();
+
+    console.log('✅ Registrering fullført:', data);
+
+    if (!response.ok) {
+      throw new Error(data.errors?.[0]?.message || 'Registrering feilet');
+    }
+
+    return data;
   } catch (error) {
     console.error('❌ Feil ved registrering:', error);
     throw error;

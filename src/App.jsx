@@ -15,7 +15,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/venues" element={<Venues />} />
         <Route path="/venue/:id" element={<Venue />} />
-        <Route path="/profile/:name" element={<Profile />} />{' '}
+        <Route path="/profile/:username" element={<Profile />} />{' '}
         {/* 🔥 Bruker dynamisk brukernavn */}
       </Routes>
     </Layout>
