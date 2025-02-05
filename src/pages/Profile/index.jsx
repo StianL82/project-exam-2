@@ -74,7 +74,7 @@ function Profile() {
   return (
     <div>
       <S.HeroSection bannerUrl={bannerUrl}>
-        <S.HeroText>My Profile</S.HeroText>
+        <S.HeroText>{profile.name}'s Profile</S.HeroText>
       </S.HeroSection>
 
       <div className="container">
@@ -87,7 +87,7 @@ function Profile() {
             <S.ProfileDetails>
               <p>
                 <strong>Account Type:</strong>{' '}
-                {venueManager ? 'Manager' : 'Private User'}
+                {venueManager ? 'Venue Manager' : 'Private User'}
               </p>
               <p>
                 <strong>Username:</strong> {name}
