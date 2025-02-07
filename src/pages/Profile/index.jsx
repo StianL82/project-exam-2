@@ -5,6 +5,8 @@ import '../../App.css';
 import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
 import UpdateProfile from '../../components/UpdateProfile';
+import CreateVenue from '../../components/CreateVenue'; // ✅ Importerer modalen
+import BookingCard from '../../components/BookingCard';
 
 function Profile() {
   const { username } = useParams(); // 🚨 Brukernavn fra URL
@@ -19,6 +21,7 @@ function Profile() {
   const [loading, setLoading] = useState(!storedProfile);
   const [error, setError] = useState('');
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showCreateVenueModal, setShowCreateVenueModal] = useState(false); // ✅ Ny state for Create Venue
 
   useEffect(() => {
     async function fetchProfile() {
@@ -61,7 +64,7 @@ function Profile() {
     if (!storedName || username.toLowerCase() !== storedName.toLowerCase()) {
       fetchProfile();
     }
-  }, [username, storedName, navigate]); // 🔥 Ikke lenger avhengig av profile?.name
+  }, [username, storedName, navigate]);
 
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p className="alert-danger">{error}</p>;
@@ -107,10 +110,48 @@ function Profile() {
 
         <S.ContactHeading>Do you want to create a new Venue?</S.ContactHeading>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <B.BlueButton>Create New Venue</B.BlueButton>
+          <B.BlueButton onClick={() => setShowCreateVenueModal(true)}>
+            Create New Venue
+          </B.BlueButton>
         </div>
       </div>
 
+      {/* My Bookings */}
+      <S.Container>
+        <S.SectionHeader>My Bookings</S.SectionHeader>
+        <S.ContentBox>
+          {profile.bookings && profile.bookings.length > 0 ? (
+            profile.bookings.map((booking) => (
+              <BookingCard key={booking.id} booking={booking} />
+            ))
+          ) : (
+            <h1>No bookings found.</h1>
+          )}
+        </S.ContentBox>
+      </S.Container>
+
+      {/* Bare vis disse hvis brukeren er Venue Manager */}
+      {profile.venueManager && (
+        <>
+          {/* My Venues */}
+          <S.Container>
+            <S.SectionHeader>My Venues</S.SectionHeader>
+            <S.ContentBox>
+              <h1>Her kommer det info</h1>
+            </S.ContentBox>
+          </S.Container>
+
+          {/* Bookings on my Venues */}
+          <S.Container>
+            <S.SectionHeader>Bookings on my Venues</S.SectionHeader>
+            <S.ContentBox>
+              <h1>Her kommer det info</h1>
+            </S.ContentBox>
+          </S.Container>
+        </>
+      )}
+
+      {/* Update Profile Modal */}
       {showUpdateModal && (
         <UpdateProfile
           showModal={showUpdateModal}
@@ -119,6 +160,14 @@ function Profile() {
             setProfile(updatedProfile);
             localStorage.setItem('profile', JSON.stringify(updatedProfile));
           }}
+        />
+      )}
+
+      {/* Create Venue Modal */}
+      {showCreateVenueModal && (
+        <CreateVenue
+          showModal={showCreateVenueModal}
+          closeModal={() => setShowCreateVenueModal(false)}
         />
       )}
     </div>

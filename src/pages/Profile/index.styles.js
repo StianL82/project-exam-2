@@ -85,7 +85,6 @@ export const ProfileImage = styled.img`
   }
 `;
 
-
 export const ProfileDetails = styled.div`
   text-align: left;
   font-size: 1.1rem;
@@ -137,4 +136,33 @@ export const DividerContainer = styled.div`
   @media (max-width: 768px) {
     width: 65%;
   }
+`;
+
+// Container for seksjonene
+export const Container = styled.div`
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1400px;
+`;
+
+// Blå seksjonsoverskrift
+export const SectionHeader = styled.h2`
+  background-color: #cfe2ff;
+  color: #5a5a5a;
+  padding: 10px 15px;
+  border-radius: 5px 5px 0 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 0; // ❌ Fjerner mellomrom under overskriften
+`;
+
+// Hvit boks med innhold
+export const ContentBox = styled.div`
+  background-color: white;
+  padding: 15px;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  border-top: none; // ❌ Hindrer dobbel kantlinje mellom SectionHeader og ContentBox
 `;
