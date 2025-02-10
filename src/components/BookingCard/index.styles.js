@@ -62,10 +62,5 @@ export const DeleteButton = styled.button`
   border: none;
   color: red;
   cursor: pointer;
-`;
-
-export const IconImage = styled.img`
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
+  font-size: 18px;
 `;

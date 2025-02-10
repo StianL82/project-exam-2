@@ -43,16 +43,5 @@ export async function authFetch(url, options = {}) {
     return { errors: [{ message: response.statusText }] };
   }
 
-  // Sjekk om statusen er 204 (No Content) og returner null hvis det er tilfellet
-  if (response.status === 204) {
-    console.log('✅ authFetch: No Content (204)');
-    return null;
-  }
-
-  try {
-    return await response.json();
-  } catch (error) {
-    console.error('❌ authFetch: Feil ved parsing av JSON:', error);
-    return { errors: [{ message: 'JSON parsing failed' }] };
-  }
+  return response.json();
 }
