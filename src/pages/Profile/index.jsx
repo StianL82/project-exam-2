@@ -1,83 +1,118 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { authFetch } from '../../auth/authFetch';
 import '../../App.css';
 import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
 import UpdateProfile from '../../components/UpdateProfile';
-import CreateVenue from '../../components/CreateVenue'; // ✅ Importerer modalen
+import CreateVenue from '../../components/CreateVenue';
 import BookingCard from '../../components/BookingCard';
+import { API_HOLIDAZE_URL } from '../../auth/constants';
 
 function Profile() {
-  const { username } = useParams(); // 🚨 Brukernavn fra URL
   const navigate = useNavigate();
-  const storedProfile = localStorage.getItem('profile');
-
-  // ✅ Sikrer at `parsedProfile` alltid er et objekt (ikke null)
-  const parsedProfile = storedProfile ? JSON.parse(storedProfile) : {};
-  const storedName = parsedProfile?.name || ''; // ✅ Sikrer at storedName aldri blir null
-
-  const [profile, setProfile] = useState(parsedProfile);
-  const [loading, setLoading] = useState(!storedProfile);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showCreateVenueModal, setShowCreateVenueModal] = useState(false); // ✅ Ny state for Create Venue
+  const [showCreateVenueModal, setShowCreateVenueModal] = useState(false);
 
   useEffect(() => {
     async function fetchProfile() {
-      if (!username) {
-        console.error('🚨 Feil: Ingen username i URL!');
-        setError('Missing username in URL.');
-        setLoading(false);
-        return;
-      }
+      const storedProfile = localStorage.getItem('profile');
+      const profileData = storedProfile ? JSON.parse(storedProfile) : null;
+      const profileName = profileData?.name;
 
-      if (!storedName) {
-        console.error('⚠️ Ingen profil funnet i localStorage.');
+      if (!profileName) {
         setError('No profile data found. Please log in again.');
         setLoading(false);
         return;
       }
 
-      const actualUsername = storedName || username;
-      const url = `https://api.noroff.dev/api/v1/holidaze/profiles/${encodeURIComponent(actualUsername)}`;
-
-      console.log('🔍 Fetching profile from API:', url);
+      const profileUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}?_bookings=true&_venues=true`;
+      console.log('🔍 Fetching profile from API:', profileUrl);
 
       try {
-        const data = await authFetch(url);
-        if (data.errors) {
-          throw new Error(data.errors[0]?.message || 'Profile not found.');
+        const response = await authFetch(profileUrl);
+        if (!response || response.errors) {
+          throw new Error(
+            response.errors?.[0]?.message || 'Profile not found.'
+          );
         }
 
-        console.log('✅ Profile data received:', data);
-        setProfile(data);
-        localStorage.setItem('profile', JSON.stringify(data));
+        console.log('✅ Profile data received:', response.data);
+        setProfile(response.data);
+        localStorage.setItem('profile', JSON.stringify(response.data));
       } catch (err) {
         console.error('❌ Error fetching profile:', err.message);
-        setError(err.message);
+        setError('Failed to load profile. Please try again.');
       } finally {
         setLoading(false);
       }
     }
 
-    if (!storedName || username.toLowerCase() !== storedName.toLowerCase()) {
-      fetchProfile();
+    fetchProfile();
+  }, []);
+
+  const handleProfileUpdate = async (updatedProfile) => {
+    console.log('🔄 Profile updated:', updatedProfile);
+    setProfile(updatedProfile);
+    localStorage.setItem('profile', JSON.stringify(updatedProfile));
+
+    // Hent oppdatert profil fra API for å sikre at bookings er oppdatert
+    const profileName = updatedProfile.name;
+    const profileUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}?_bookings=true&_venues=true`;
+
+    try {
+      const response = await authFetch(profileUrl);
+      if (!response || response.errors) {
+        console.error('❌ Error fetching updated profile:', response.errors);
+        return;
+      }
+      console.log('✅ Updated profile with bookings fetched:', response.data);
+      setProfile(response.data); // Oppdaterer profilen med de nyeste bookingene
+    } catch (err) {
+      console.error('❌ Error fetching updated profile:', err.message);
     }
-  }, [username, storedName, navigate]);
+  };
+
+  const handleBookingDeleted = async (deletedBookingId) => {
+    console.log(`🔄 Booking deleted with ID: ${deletedBookingId}`);
+
+    const storedProfile = localStorage.getItem('profile');
+    const profileData = storedProfile ? JSON.parse(storedProfile) : null;
+    const profileName = profileData?.name;
+    const profileUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}?_bookings=true&_venues=true`;
+
+    try {
+      const response = await authFetch(profileUrl);
+      if (!response || response.errors) {
+        console.error('❌ Error fetching updated profile:', response.errors);
+        return;
+      }
+
+      console.log(
+        '✅ Updated profile with new bookings fetched:',
+        response.data
+      );
+      setProfile(response.data); // Oppdaterer profilen med de nyeste bookingene
+    } catch (err) {
+      console.error('❌ Error fetching updated profile:', err.message);
+    }
+  };
 
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p className="alert-danger">{error}</p>;
-  if (!profile || !profile.name) return <p>No profile found.</p>;
+  if (!profile) return <p>No profile found.</p>;
 
-  const { name, email, avatar, banner, venueManager } = profile;
+  const { name, email, avatar, banner, venueManager, bookings } = profile;
   const bannerUrl = banner?.url || '/images/default-banner.png';
   const avatarUrl = avatar?.url || '/images/default-avatar.png';
 
   return (
     <div>
       <S.HeroSection bannerUrl={bannerUrl}>
-        <S.HeroText>{profile.name}'s Profile</S.HeroText>
+        <S.HeroText>{name}'s Profile</S.HeroText>
       </S.HeroSection>
 
       <div className="container">
@@ -108,27 +143,23 @@ function Profile() {
           </div>
         </S.PersonalContainer>
 
-        <S.ContactHeading>Do you want to create a new Venue?</S.ContactHeading>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <B.BlueButton onClick={() => setShowCreateVenueModal(true)}>
-            Create New Venue
-          </B.BlueButton>
-        </div>
-      </div>
-
-      {/* My Bookings */}
-      <S.Container>
-        <S.SectionHeader>My Bookings</S.SectionHeader>
+        <S.ContactHeading>My Bookings</S.ContactHeading>
         <S.ContentBox>
-          {profile.bookings && profile.bookings.length > 0 ? (
-            profile.bookings.map((booking) => (
-              <BookingCard key={booking.id} booking={booking} />
-            ))
+          {bookings && bookings.length > 0 ? (
+            [...bookings]
+              .sort((a, b) => new Date(b.created) - new Date(a.created)) // Sorter slik at nyeste kommer først
+              .map((booking) => (
+                <BookingCard
+                  key={booking.id}
+                  booking={booking}
+                  onBookingDeleted={handleBookingDeleted}
+                />
+              ))
           ) : (
-            <h1>No bookings found.</h1>
+            <p>No bookings found.</p>
           )}
         </S.ContentBox>
-      </S.Container>
+      </div>
 
       {/* Bare vis disse hvis brukeren er Venue Manager */}
       {profile.venueManager && (
@@ -156,10 +187,7 @@ function Profile() {
         <UpdateProfile
           showModal={showUpdateModal}
           closeModal={() => setShowUpdateModal(false)}
-          onProfileUpdate={(updatedProfile) => {
-            setProfile(updatedProfile);
-            localStorage.setItem('profile', JSON.stringify(updatedProfile));
-          }}
+          onProfileUpdate={handleProfileUpdate}
         />
       )}
 

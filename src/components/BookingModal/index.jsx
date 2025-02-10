@@ -118,7 +118,7 @@ const BookingModal = ({
       showAlert('Booking successful! Redirecting to your profile page.');
 
       setTimeout(() => {
-        navigate('/profile');
+        navigate('/profile/:username');
       }, 3000);
     } catch (error) {
       console.error('Error creating booking:', error);
