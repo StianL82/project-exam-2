@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { authFetch } from '../../auth/authFetch';
 import '../../App.css';
 import * as S from './index.styles';
@@ -10,7 +9,6 @@ import BookingCard from '../../components/BookingCard';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 
 function Profile() {
-  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
