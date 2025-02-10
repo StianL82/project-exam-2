@@ -104,3 +104,30 @@ export const Button = styled.button`
     background-color: ${(props) => props.theme.color.lightGray};
   }
 `;
+
+export const ViewButton = styled(Button)`
+  background-color: ${(props) => props.theme.color.beige};
+  color: ${(props) => props.theme.color.darkGray};
+
+  &:hover {
+    background-color: ${(props) => props.theme.color.lightGray};
+  }
+`;
+
+export const EditButton = styled(Button)`
+  background-color: ${(props) => props.theme.color.secondaryColor};
+  color: ${(props) => props.theme.color.black};
+
+  &:hover {
+    background-color: ${(props) => props.theme.color.buttonHoverOrange};
+  }
+`;
+
+export const DeleteButton = styled(Button)`
+  background-color: ${(props) => props.theme.color.dangerColor};
+  color: ${(props) => props.theme.color.white};
+
+  &:hover {
+    background-color: ${(props) => props.theme.color.buttonHoverRed};
+  }
+`;

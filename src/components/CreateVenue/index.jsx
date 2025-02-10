@@ -32,7 +32,7 @@ const schema = Yup.object().shape({
   ),
 });
 
-const CreateVenue = ({ showModal, closeModal }) => {
+const CreateVenue = ({ showModal, closeModal, onVenueCreated }) => {
   const [formData, setFormData] = useState({
     name: '',
     rating: 0,
@@ -134,6 +134,10 @@ const CreateVenue = ({ showModal, closeModal }) => {
         throw new Error(
           response.errors[0]?.message || 'Failed to create venue'
         );
+      }
+
+      if (onVenueCreated) {
+        onVenueCreated(response);
       }
 
       setMessage('✅ Venue created successfully!');

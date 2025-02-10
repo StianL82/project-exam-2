@@ -141,7 +141,6 @@ export const DividerContainer = styled.div`
 // Container for seksjonene
 export const Container = styled.div`
   margin: 20px auto;
-  width: 90%;
   max-width: 1400px;
 `;
 
@@ -165,4 +164,23 @@ export const ContentBox = styled.div`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
   border-top: none; // ❌ Hindrer dobbel kantlinje mellom SectionHeader og ContentBox
+`;
+
+export const VenueGridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 16px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+
+  @media (max-width: 360px) {
+    padding: 16px 0px;
+  }
 `;

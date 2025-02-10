@@ -23,7 +23,6 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
       });
 
       if (response === null) {
-        // Sjekk om responsen er null
         console.log('✅ Booking deleted successfully.');
         onBookingDeleted(id); // Oppdaterer bookings
         setShowDeleteModal(false);
@@ -65,11 +64,16 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
         </S.CardContent>
       </S.CardContainer>
 
-      <DeleteConfirmationModal
-        show={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleDelete}
-      />
+      {/* DELETE CONFIRMATION MODAL */}
+      {showDeleteModal && (
+        <DeleteConfirmationModal
+          show={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDelete}
+          title="Delete Booking"
+          message="Are you sure you want to delete this booking?"
+        />
+      )}
     </>
   );
 };

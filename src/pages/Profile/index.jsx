@@ -6,6 +6,7 @@ import * as B from '../../styles/GlobalStyle';
 import UpdateProfile from '../../components/UpdateProfile';
 import CreateVenue from '../../components/CreateVenue';
 import BookingCard from '../../components/BookingCard';
+import VenueCard from '../../components/VenueCard';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 
 function Profile() {
@@ -99,11 +100,72 @@ function Profile() {
     }
   };
 
+  const handleDeleteVenue = async (venueId) => {
+    console.log(`🗑 Attempting to delete venue with ID: ${venueId}`);
+
+    try {
+      const response = await authFetch(
+        `${API_HOLIDAZE_URL}/venues/${venueId}`,
+        {
+          method: 'DELETE',
+        }
+      );
+
+      if (response === null) {
+        console.log('✅ Venue deleted successfully.');
+
+        // Oppdater profilen for å fjerne slettet venue
+        const updatedProfile = {
+          ...profile,
+          venues: profile.venues.filter((venue) => venue.id !== venueId),
+        };
+
+        setProfile(updatedProfile);
+        localStorage.setItem('profile', JSON.stringify(updatedProfile));
+      } else {
+        console.error('❌ Failed to delete venue. Response:', response);
+      }
+    } catch (error) {
+      console.error('❌ Error deleting venue:', error);
+    }
+  };
+
+  const handleVenueCreated = async (newVenue) => {
+    console.log('🏨 New venue created:', newVenue);
+
+    // Oppdater profilen lokalt ved å legge til den nye venue
+    const updatedProfile = {
+      ...profile,
+      venues: [...profile.venues, newVenue], // Legger til den nye venue i listen
+    };
+
+    setProfile(updatedProfile);
+    localStorage.setItem('profile', JSON.stringify(updatedProfile));
+
+    // Hent den oppdaterte profilen fra API for å sikre at alt er riktig
+    const profileName = profile.name;
+    const profileUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}?_bookings=true&_venues=true`;
+
+    try {
+      const response = await authFetch(profileUrl);
+      if (!response || response.errors) {
+        console.error('❌ Error fetching updated profile:', response.errors);
+        return;
+      }
+
+      console.log('✅ Updated profile fetched:', response.data);
+      setProfile(response.data);
+    } catch (err) {
+      console.error('❌ Error fetching updated profile:', err.message);
+    }
+  };
+
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p className="alert-danger">{error}</p>;
   if (!profile) return <p>No profile found.</p>;
 
-  const { name, email, avatar, banner, venueManager, bookings } = profile;
+  const { name, email, avatar, banner, venueManager, bookings, venues } =
+    profile;
   const bannerUrl = banner?.url || '/images/default-banner.png';
   const avatarUrl = avatar?.url || '/images/default-avatar.png';
 
@@ -141,44 +203,67 @@ function Profile() {
           </div>
         </S.PersonalContainer>
 
-        <S.ContactHeading>My Bookings</S.ContactHeading>
-        <S.ContentBox>
-          {bookings && bookings.length > 0 ? (
-            [...bookings]
-              .sort((a, b) => new Date(b.created) - new Date(a.created)) // Sorter slik at nyeste kommer først
-              .map((booking) => (
-                <BookingCard
-                  key={booking.id}
-                  booking={booking}
-                  onBookingDeleted={handleBookingDeleted}
-                />
-              ))
-          ) : (
-            <p>No bookings found.</p>
-          )}
-        </S.ContentBox>
+        <S.DividerContainer />
+        <S.ContactHeading>Do you want to create a new Venue?</S.ContactHeading>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <B.BlueButton onClick={() => setShowCreateVenueModal(true)}>
+            Create New Venue
+          </B.BlueButton>
+        </div>
+
+        <S.Container>
+          <S.ContactHeading>My Bookings</S.ContactHeading>
+          <S.ContentBox>
+            {bookings && bookings.length > 0 ? (
+              [...bookings]
+                .sort((a, b) => new Date(b.created) - new Date(a.created)) // Sorter slik at nyeste kommer først
+                .map((booking) => (
+                  <BookingCard
+                    key={booking.id}
+                    booking={booking}
+                    onBookingDeleted={handleBookingDeleted}
+                  />
+                ))
+            ) : (
+              <p>No bookings found.</p>
+            )}
+          </S.ContentBox>
+        </S.Container>
+
+        {/* Bare vis disse hvis brukeren er Venue Manager */}
+        {profile.venueManager && (
+          <>
+            {/* My Venues */}
+            <S.Container>
+              <S.SectionHeader>My Venues</S.SectionHeader>
+              <S.ContentBox>
+                <S.VenueGridContainer>
+                  {venues.map((venue) => (
+                    <VenueCard
+                      key={venue.id}
+                      venue={venue}
+                      showEditDelete
+                      onEdit={(venue) => console.log('Edit Venue:', venue)}
+                      onDelete={(id) => {
+                        console.log('Delete Venue with ID:', id);
+                        handleDeleteVenue(id);
+                      }}
+                    />
+                  ))}
+                </S.VenueGridContainer>
+              </S.ContentBox>
+            </S.Container>
+
+            {/* Bookings on my Venues */}
+            <S.Container>
+              <S.SectionHeader>Bookings on my Venues</S.SectionHeader>
+              <S.ContentBox>
+                <h1>Her kommer det info</h1>
+              </S.ContentBox>
+            </S.Container>
+          </>
+        )}
       </div>
-
-      {/* Bare vis disse hvis brukeren er Venue Manager */}
-      {profile.venueManager && (
-        <>
-          {/* My Venues */}
-          <S.Container>
-            <S.SectionHeader>My Venues</S.SectionHeader>
-            <S.ContentBox>
-              <h1>Her kommer det info</h1>
-            </S.ContentBox>
-          </S.Container>
-
-          {/* Bookings on my Venues */}
-          <S.Container>
-            <S.SectionHeader>Bookings on my Venues</S.SectionHeader>
-            <S.ContentBox>
-              <h1>Her kommer det info</h1>
-            </S.ContentBox>
-          </S.Container>
-        </>
-      )}
 
       {/* Update Profile Modal */}
       {showUpdateModal && (
@@ -194,6 +279,7 @@ function Profile() {
         <CreateVenue
           showModal={showCreateVenueModal}
           closeModal={() => setShowCreateVenueModal(false)}
+          onVenueCreated={handleVenueCreated}
         />
       )}
     </div>
