@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 import { authFetch } from '../../auth/authFetch';
@@ -12,6 +12,7 @@ const schema = Yup.object().shape({
     .min(0, 'Rating must be at least 0')
     .max(5, 'Rating must be at most 5')
     .required('Rating is required'),
+
   description: Yup.string()
     .max(800, 'Max 800 characters')
     .required('Description is required'),
@@ -23,18 +24,15 @@ const schema = Yup.object().shape({
     .required('Max guests is required'),
   media: Yup.array().of(
     Yup.object().shape({
-      url: Yup.string().url('Must be a valid URL').notRequired().nullable(), // Tillater tomt felt
-      alt: Yup.string().notRequired().nullable(), // Tillater tomt felt
+      url: Yup.string()
+        .url('Must be a valid URL')
+        .required('Image URL is required'),
+      alt: Yup.string().required('Image description is required'),
     })
   ),
 });
 
-const CreateVenue = ({
-  showModal,
-  closeModal,
-  onVenueCreated,
-  initialData = null,
-}) => {
+const CreateVenue = ({ showModal, closeModal, onVenueCreated }) => {
   const [formData, setFormData] = useState({
     name: '',
     rating: 0,
@@ -49,17 +47,6 @@ const CreateVenue = ({
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (initialData) {
-      // Fyller ut skjema med eksisterende venue-data ved redigering
-      setFormData({
-        ...initialData,
-        price: String(initialData.price),
-        maxGuests: String(initialData.maxGuests),
-      });
-    }
-  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -118,31 +105,22 @@ const CreateVenue = ({
       await schema.validate(formData, { abortEarly: false });
       console.log('✅ Validering bestått!');
 
-      const cleanedMedia = formData.media.filter(
-        (item) => item.url.trim() !== ''
-      );
-
       const requestData = {
         ...formData,
-        media: cleanedMedia,
         price: Number(formData.price),
         maxGuests: Number(formData.maxGuests),
-        rating: Number(formData.rating),
+        rating: Number(formData.rating), // ✅ Rating konverteres til number
       };
 
       console.log(
         '📤 Sender følgende data til API:',
         JSON.stringify(requestData)
       );
+
       setLoading(true);
 
-      const method = initialData ? 'PUT' : 'POST';
-      const endpoint = initialData
-        ? `${API_HOLIDAZE_URL}/venues/${initialData.id}?_bookings=true&_owner=true`
-        : `${API_HOLIDAZE_URL}/venues`;
-
-      const response = await authFetch(endpoint, {
-        method: method,
+      const response = await authFetch(`${API_HOLIDAZE_URL}/venues`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -154,19 +132,15 @@ const CreateVenue = ({
 
       if (response.errors) {
         throw new Error(
-          response.errors[0]?.message || 'Failed to process venue'
+          response.errors[0]?.message || 'Failed to create venue'
         );
       }
 
-      setMessage(
-        initialData
-          ? '✅ Venue updated successfully!'
-          : '✅ Venue created successfully!'
-      );
       if (onVenueCreated) {
         onVenueCreated(response);
       }
 
+      setMessage('✅ Venue created successfully!');
       setTimeout(() => {
         closeModal();
       }, 2000);
@@ -180,7 +154,7 @@ const CreateVenue = ({
         setErrors(validationErrors);
       } else {
         console.error('❌ API Error:', err);
-        setMessage('❌ Something went wrong, please try again.');
+        setMessage('❌ Noe gikk galt, prøv igjen.');
       }
     } finally {
       setLoading(false);
@@ -193,7 +167,7 @@ const CreateVenue = ({
     <S.ModalBackdrop>
       <S.ModalContent>
         <S.ModalHeader>
-          <h2>{initialData ? 'Edit Venue' : 'Create New Venue'}</h2>
+          <h2>Create New Venue</h2>
           <button onClick={closeModal} className="close-button">
             ×
           </button>
@@ -205,11 +179,13 @@ const CreateVenue = ({
             <input name="name" value={formData.name} onChange={handleChange} />
             {errors.name && <p className="alert-danger">{errors.name}</p>}
 
-            <label>Rating:</label>
+            {/* Rating Input */}
+            <label htmlFor="rating">Rating:</label>
             <input
+              id="rating"
               name="rating"
               type="number"
-              value={formData.rating || 0}
+              value={formData.rating || 0} // ✅ Sikrer at rating aldri er tom
               onChange={handleChange}
               min="0"
               max="5"
@@ -277,7 +253,6 @@ const CreateVenue = ({
               <p className="alert-danger">{errors.location.country}</p>
             )}
 
-            {/* Media Fields */}
             <label>Media:</label>
             {formData.media.map((media, index) => (
               <div key={index}>
@@ -325,11 +300,7 @@ const CreateVenue = ({
 
             <S.ButtonContainer>
               <S.UpdateButton type="button" onClick={handleSubmit}>
-                {loading
-                  ? 'Processing...'
-                  : initialData
-                    ? 'Update Venue'
-                    : 'Create Venue'}
+                {loading ? 'Creating...' : 'Create Venue'}
               </S.UpdateButton>
             </S.ButtonContainer>
           </S.FormContainer>

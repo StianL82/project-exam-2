@@ -7,6 +7,7 @@ import UpdateProfile from '../../components/UpdateProfile';
 import CreateVenue from '../../components/CreateVenue';
 import BookingCard from '../../components/BookingCard';
 import VenueCard from '../../components/VenueCard';
+import MyVenueBookingCard from '../../components/MyVenueBookingCard';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 
 function Profile() {
@@ -15,6 +16,7 @@ function Profile() {
   const [error, setError] = useState('');
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showCreateVenueModal, setShowCreateVenueModal] = useState(false);
+  const [venuesWithBookings, setVenuesWithBookings] = useState([]);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -42,11 +44,37 @@ function Profile() {
         console.log('✅ Profile data received:', response.data);
         setProfile(response.data);
         localStorage.setItem('profile', JSON.stringify(response.data));
+
+        // 🔄 Fetch detailed venue data with bookings
+        fetchVenuesWithBookings(response.data.name);
       } catch (err) {
         console.error('❌ Error fetching profile:', err.message);
         setError('Failed to load profile. Please try again.');
       } finally {
         setLoading(false);
+      }
+    }
+
+    async function fetchVenuesWithBookings(profileName) {
+      const venuesUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}/venues?_bookings=true&_owner=true`;
+      console.log(
+        '🔍 Fetching venues created by the profile with bookings:',
+        venuesUrl
+      );
+
+      try {
+        const response = await authFetch(venuesUrl);
+        if (!response || response.errors) {
+          throw new Error(response.errors?.[0]?.message || 'No venues found.');
+        }
+
+        console.log(
+          '✅ Venues with bookings for this user received:',
+          response.data
+        );
+        setVenuesWithBookings(response.data);
+      } catch (err) {
+        console.error('❌ Error fetching venues with bookings:', err.message);
       }
     }
 
@@ -165,7 +193,8 @@ function Profile() {
   if (!profile) return <p>No profile found.</p>;
 
   const { name, email, avatar, banner, venueManager, bookings, venues } =
-    profile;
+    profile || {};
+
   const bannerUrl = banner?.url || '/images/default-banner.png';
   const avatarUrl = avatar?.url || '/images/default-avatar.png';
 
@@ -258,7 +287,13 @@ function Profile() {
             <S.Container>
               <S.SectionHeader>Bookings on my Venues</S.SectionHeader>
               <S.ContentBox>
-                <h1>Her kommer det info</h1>
+                {venuesWithBookings.length > 0 ? (
+                  venuesWithBookings.map((venue) => (
+                    <MyVenueBookingCard key={venue.id} venue={venue} />
+                  ))
+                ) : (
+                  <p>No bookings found on your venues.</p>
+                )}
               </S.ContentBox>
             </S.Container>
           </>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BookingCalendar from '../Calendar';
 import * as S from './index.styles';
@@ -17,39 +17,20 @@ import { authFetch } from '../../auth/authFetch';
  * @returns {JSX.Element|null} The rendered booking modal or null if not visible
  */
 const BookingModal = ({
-  unavailableDates = [],
+  unavailableDates,
   onClose,
   price,
   maxGuests,
   show,
   venueId,
-  initialData = null,
-  onBookingUpdated,
 }) => {
   const navigate = useNavigate();
   const [dateFrom, setDateFrom] = useState(null);
   const [dateTo, setDateTo] = useState(null);
   const [guests, setGuests] = useState(1);
   const [loading, setLoading] = useState(false);
+
   const [alertMessage, setAlertMessage] = useState('');
-
-  useEffect(() => {
-    if (initialData) {
-      const [fromYear, fromMonth, fromDay] = initialData.dateFrom
-        .split('T')[0]
-        .split('-');
-      const [toYear, toMonth, toDay] = initialData.dateTo
-        .split('T')[0]
-        .split('-');
-
-      const fromDate = new Date(fromYear, fromMonth - 1, fromDay);
-      const toDate = new Date(toYear, toMonth - 1, toDay);
-
-      setDateFrom(fromDate);
-      setDateTo(toDate);
-      setGuests(initialData.guests);
-    }
-  }, [initialData]);
 
   const showAlert = (message) => {
     setAlertMessage(message);
@@ -112,56 +93,33 @@ const BookingModal = ({
 
     setLoading(true);
 
-    const formatDateWithoutTimeZone = (date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}T00:00:00`;
-    };
+    const adjustedDateFrom = new Date(dateFrom);
+    adjustedDateFrom.setUTCHours(12, 0, 0, 0);
+
+    const adjustedDateTo = new Date(dateTo);
+    adjustedDateTo.setHours(12, 0, 0, 0);
 
     const bookingData = {
-      dateFrom: formatDateWithoutTimeZone(new Date(dateFrom)),
-      dateTo: formatDateWithoutTimeZone(new Date(dateTo)),
+      dateFrom: adjustedDateFrom.toISOString(),
+      dateTo: adjustedDateTo.toISOString(),
       guests: guests,
       venueId: venueId,
     };
 
     console.log('Sending bookingData:', bookingData);
 
-    const method = initialData ? 'PUT' : 'POST';
-    const endpoint = initialData
-      ? `${API_HOLIDAZE_URL}/bookings/${initialData.id}`
-      : `${API_HOLIDAZE_URL}/bookings`;
-
     try {
-      const data = await authFetch(endpoint, {
-        method: method,
+      const data = await authFetch(`${API_HOLIDAZE_URL}/bookings`, {
+        method: 'POST',
         body: JSON.stringify(bookingData),
       });
 
-      if (initialData) {
-        showAlert('Booking updated successfully!', data);
-        setTimeout(() => {
-          setAlertMessage('');
-          onClose(); // Lukk modalen
-        }, 2000);
+      console.log('Booking successful:', data);
+      showAlert('Booking successful! Redirecting to your profile page.');
 
-        if (onBookingUpdated) {
-          const updatedBooking = {
-            id: initialData.id,
-            dateFrom: bookingData.dateFrom,
-            dateTo: bookingData.dateTo,
-            guests: bookingData.guests,
-            venue: initialData.venue,
-          };
-          onBookingUpdated(updatedBooking);
-        }
-      } else {
-        showAlert('Booking successful! Redirecting to your profile page.');
-        setTimeout(() => {
-          navigate('/profile/:username');
-        }, 2000);
-      }
+      setTimeout(() => {
+        navigate('/profile/:username');
+      }, 3000);
     } catch (error) {
       console.error('Error creating booking:', error);
       alert('An error occurred while making the booking.');
@@ -199,8 +157,7 @@ const BookingModal = ({
     <S.ModalBackdrop>
       <S.ModalContainer>
         <S.ModalHeader>
-          <h2>{initialData ? 'Update Booking' : 'New Booking'}</h2>
-
+          <h2>New Booking</h2>
           <button
             onClick={() => {
               resetForm();
@@ -217,16 +174,10 @@ const BookingModal = ({
               <BookingCalendar
                 selectedDate={dateFrom}
                 onDateChange={handleDateFromChange}
-                disabledDates={unavailableDates
-                  .filter(
-                    (date) =>
-                      date !== initialData?.dateFrom &&
-                      date !== initialData?.dateTo
-                  )
-                  .map((date) => new Date(date).toISOString().split('T')[0])}
-                minDate={
-                  initialData ? new Date(initialData.dateFrom) : new Date()
-                }
+                disabledDates={unavailableDates.map(
+                  (date) => new Date(date).toISOString().split('T')[0]
+                )}
+                minDate={new Date()}
                 tileClassName={tileClassName}
               />
             </div>
@@ -235,19 +186,14 @@ const BookingModal = ({
               <BookingCalendar
                 selectedDate={dateTo}
                 onDateChange={handleDateToChange}
-                disabledDates={unavailableDates
-                  .filter(
-                    (date) =>
-                      date !== initialData?.dateFrom &&
-                      date !== initialData?.dateTo
-                  )
-                  .map((date) => new Date(date).toISOString().split('T')[0])}
+                disabledDates={unavailableDates.map(
+                  (date) => new Date(date).toISOString().split('T')[0]
+                )}
                 minDate={dateFrom || new Date()}
                 tileClassName={tileClassName}
               />
             </div>
           </div>
-
           <S.FormContainer>
             <label htmlFor="guests">Number of guests:</label>
             <div className="input-group">
@@ -285,11 +231,7 @@ const BookingModal = ({
           </S.SummaryContainer>
           <S.ButtonContainer>
             <S.ConfirmButton onClick={handleConfirmBooking} disabled={loading}>
-              {loading
-                ? 'Processing...'
-                : initialData
-                  ? 'Update Booking'
-                  : 'Confirm Booking'}
+              {loading ? 'Processing...' : 'Confirm Booking'}
             </S.ConfirmButton>
           </S.ButtonContainer>
           <S.CloseLink onClick={onClose}>Close</S.CloseLink>

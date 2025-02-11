@@ -1,34 +1,22 @@
 import React, { useState } from 'react';
 import * as S from './index.styles';
-import * as B from '../../styles/GlobalStyle';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 import { authFetch } from '../../auth/authFetch';
 import DeleteConfirmationModal from '../DeleteConfirmationModal';
-import BookingModal from '../BookingModal';
 
 const BookingCard = ({ booking, onBookingDeleted }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [bookingData, setBookingData] = useState(booking); // Oppdatert state for bookingdata
 
-  if (!bookingData || !bookingData.venue) {
-    console.log('❌ Booking or venue data is missing:', bookingData);
+  if (!booking || !booking.venue) {
+    console.log('❌ Booking or venue data is missing:', booking);
     return null;
   }
 
-  const { id, dateFrom, dateTo, guests, venue } = bookingData;
-
-  const handleBookingUpdated = (updatedBooking) => {
-    console.log('Updating booking data:', updatedBooking);
-    setBookingData((prev) => ({
-      ...prev,
-      ...updatedBooking,
-      venue: prev.venue, // Sørg for at venue-data beholdes
-    }));
-  };
+  const { id, dateFrom, dateTo, guests, venue } = booking;
 
   const handleDelete = async () => {
     console.log(`🗑 Attempting to delete booking with ID: ${id}`);
+
     try {
       const response = await authFetch(`${API_HOLIDAZE_URL}/bookings/${id}`, {
         method: 'DELETE',
@@ -36,7 +24,7 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
 
       if (response === null) {
         console.log('✅ Booking deleted successfully.');
-        onBookingDeleted(id); // Oppdater bookings
+        onBookingDeleted(id); // Oppdaterer bookings
         setShowDeleteModal(false);
       } else {
         console.error('❌ Failed to delete booking. Response:', response);
@@ -64,12 +52,8 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
             <strong>Number of guests:</strong> {guests}
           </S.Text>
           <S.ButtonContainer>
-            <B.OrangeButton as="a" href={`/venue/${venue.id}`}>
-              View Venue
-            </B.OrangeButton>
-            <B.BlueButton onClick={() => setShowUpdateModal(true)}>
-              Update Booking
-            </B.BlueButton>
+            <S.ViewButton>View Venue</S.ViewButton>
+            <S.UpdateButton>Update Booking</S.UpdateButton>
             <S.DeleteButton onClick={() => setShowDeleteModal(true)}>
               <S.IconImage
                 src={`${process.env.PUBLIC_URL}/images/icons/trash.svg`}
@@ -81,25 +65,15 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
       </S.CardContainer>
 
       {/* DELETE CONFIRMATION MODAL */}
-      <DeleteConfirmationModal
-        show={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleDelete}
-        title="Delete Booking"
-        message="Are you sure you want to delete this booking?"
-      />
-
-      {/* UPDATE BOOKING MODAL */}
-      <BookingModal
-        show={showUpdateModal}
-        onClose={() => setShowUpdateModal(false)}
-        price={venue.price}
-        maxGuests={venue.maxGuests}
-        venueId={venue.id}
-        initialData={{ id, dateFrom, dateTo, guests }} // Send eksisterende bookingdata til modalen
-        title="Update Booking"
-        onBookingUpdated={handleBookingUpdated} // Oppdater kortet når bookingdata endres
-      />
+      {showDeleteModal && (
+        <DeleteConfirmationModal
+          show={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDelete}
+          title="Delete Booking"
+          message="Are you sure you want to delete this booking?"
+        />
+      )}
     </>
   );
 };

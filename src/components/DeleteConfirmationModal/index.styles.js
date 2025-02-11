@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { ButtonBase } from '../../styles/GlobalStyle';
 
 export const ModalBackdrop = styled.div`
   position: fixed;
@@ -10,6 +11,7 @@ export const ModalBackdrop = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 `;
 
 export const ModalContent = styled.div`
@@ -26,7 +28,22 @@ export const ModalHeader = styled.div`
   align-items: center;
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
+  font-size: 1.3rem;
   margin-bottom: 20px;
+
+  h2 {
+    text-align: center;
+    font-size: 1.5rem;
+  }
+
+  .close-button {
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+  }
 `;
 
 export const ModalBody = styled.div`
@@ -39,20 +56,26 @@ export const ModalButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
-export const CancelButton = styled.button`
-  background: #d9d9d9;
-  color: #333;
+export const CancelButton = styled(ButtonBase)`
+  background: ${(props) => props.theme.color.lightGray};
+  color: ${(props) => props.theme.color.DarkGray};
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  &:hover {
+    background: ${(props) => props.theme.color.mediumGray};
+  }
 `;
 
-export const DeleteButton = styled.button`
-  background: #e74c3c;
-  color: white;
+export const DeleteButton = styled(ButtonBase)`
+  background: ${(props) => props.theme.color.dangerColor};
+  color: ${(props) => props.theme.color.white};
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  &:hover {
+    background: ${(props) => props.theme.color.buttonHoverRed};
+  }
 `;

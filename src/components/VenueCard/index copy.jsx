@@ -2,30 +2,17 @@ import React, { useState } from 'react';
 import * as S from './index.styles';
 import { Link } from 'react-router-dom';
 import DeleteConfirmationModal from '../DeleteConfirmationModal';
-import CreateVenue from '../CreateVenue';
 
-const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [venueData, setVenueData] = useState(venue); // Lokal state for oppdatert venue
-
-  const { id, name, media, price, rating, meta } = venueData;
+function VenueCard({ venue, showEditDelete, onEdit, onDelete }) {
+  const { id, name, media, price, rating, meta } = venue;
   const defaultImage = '/images/contact-section.png';
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const icons = {
     wifi: meta?.wifi ? '/images/icons/wifi.svg' : null,
     parking: meta?.parking ? '/images/icons/parking.svg' : null,
     breakfast: meta?.breakfast ? '/images/icons/breakfast.svg' : null,
     pets: meta?.pets ? '/images/icons/pets.svg' : null,
-  };
-
-  const handleVenueUpdated = (updatedVenue) => {
-    console.log('Venue updated:', updatedVenue);
-    setVenueData((prev) => ({ ...prev, ...updatedVenue.data })); // ✅ Bruk API-responsen
-    setShowEditModal(false);
-    if (onVenueUpdated) {
-      onVenueUpdated(updatedVenue); // Send tilbake til parent hvis nødvendig
-    }
   };
 
   return (
@@ -64,12 +51,21 @@ const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
 
         {showEditDelete && (
           <>
-            <S.EditButton as="button" onClick={() => setShowEditModal(true)}>
+            <S.EditButton
+              as="button"
+              onClick={(e) => {
+                e.preventDefault();
+                onEdit(venue);
+              }}
+            >
               Edit Venue
             </S.EditButton>
             <S.DeleteButton
               as="button"
-              onClick={() => setShowDeleteModal(true)}
+              onClick={(e) => {
+                e.preventDefault();
+                setShowDeleteModal(true);
+              }}
             >
               Delete Venue
             </S.DeleteButton>
@@ -77,27 +73,21 @@ const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
         )}
       </S.Card>
 
-      <DeleteConfirmationModal
-        show={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={() => {
-          onDelete(id);
-          setShowDeleteModal(false);
-        }}
-        title="Delete Venue"
-        message="Are you sure you want to delete this venue?"
-      />
-
-      {showEditModal && (
-        <CreateVenue
-          showModal={showEditModal}
-          closeModal={() => setShowEditModal(false)}
-          onVenueCreated={handleVenueUpdated}
-          initialData={venueData}
+      {/* DELETE MODAL: Må være utenfor <S.Card> for å fungere riktig */}
+      {showDeleteModal && (
+        <DeleteConfirmationModal
+          show={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={() => {
+            onDelete(id); // Kall slettefunksjonen
+            setShowDeleteModal(false); // Lukk modalen etter sletting
+          }}
+          title="Delete Venue"
+          message="Are you sure you want to delete this venue?"
         />
       )}
     </>
   );
-};
+}
 
 export default VenueCard;

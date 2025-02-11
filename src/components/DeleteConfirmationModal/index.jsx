@@ -24,7 +24,9 @@ const DeleteConfirmationModal = ({
       <S.ModalContent>
         <S.ModalHeader>
           <h2>{title}</h2>
-          <button onClick={onClose}>×</button>
+          <button onClick={onClose} className="close-button">
+          ×
+        </button>
         </S.ModalHeader>
         <S.ModalBody>
           <p>{message}</p>
