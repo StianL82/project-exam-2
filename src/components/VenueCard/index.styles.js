@@ -131,3 +131,9 @@ export const DeleteButton = styled(Button)`
     background-color: ${(props) => props.theme.color.buttonHoverRed};
   }
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: auto; // Skyver hele containeren ned
+`;

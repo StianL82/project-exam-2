@@ -159,7 +159,10 @@ const BookingModal = ({
       } else {
         showAlert('Booking successful! Redirecting to your profile page.');
         setTimeout(() => {
-          navigate('/profile/:username');
+          console.log('Navigating with state:', { scrollTo: 'my-bookings' });
+          navigate('/profile/:username', {
+            state: { scrollTo: 'my-bookings' },
+          });
         }, 2000);
       }
     } catch (error) {
@@ -169,22 +172,30 @@ const BookingModal = ({
       setLoading(false);
     }
   };
+
+  const normalizeDate = (date) => {
+    const newDate = new Date(date);
+    newDate.setHours(0, 0, 0, 0); // Fjern klokkeslett, sett til midnatt
+    return newDate;
+  };
+
   const tileClassName = ({ date }) => {
     if (!dateFrom || !dateTo) return '';
 
-    const formattedDate = date.toISOString().split('T')[0];
+    const formattedDate = normalizeDate(date).toISOString().split('T')[0];
+    const formattedDateFrom = normalizeDate(dateFrom)
+      .toISOString()
+      .split('T')[0];
+    const formattedDateTo = normalizeDate(dateTo).toISOString().split('T')[0];
 
     if (
-      formattedDate === dateFrom.toISOString().split('T')[0] ||
-      formattedDate === dateTo.toISOString().split('T')[0]
+      formattedDate === formattedDateFrom ||
+      formattedDate === formattedDateTo
     ) {
       return 'selected-range';
     }
 
-    if (
-      formattedDate > dateFrom.toISOString().split('T')[0] &&
-      formattedDate < dateTo.toISOString().split('T')[0]
-    ) {
+    if (formattedDate > formattedDateFrom && formattedDate < formattedDateTo) {
       return 'selected-in-between';
     }
 
@@ -224,9 +235,7 @@ const BookingModal = ({
                       date !== initialData?.dateTo
                   )
                   .map((date) => new Date(date).toISOString().split('T')[0])}
-                minDate={
-                  initialData ? new Date(initialData.dateFrom) : new Date()
-                }
+                minDate={new Date()} // Alltid sett minDate til dagens dato
                 tileClassName={tileClassName}
               />
             </div>
@@ -242,7 +251,7 @@ const BookingModal = ({
                       date !== initialData?.dateTo
                   )
                   .map((date) => new Date(date).toISOString().split('T')[0])}
-                minDate={dateFrom || new Date()}
+                minDate={dateFrom || new Date()} // Setter minDate til valgt Date From eller dagens dato
                 tileClassName={tileClassName}
               />
             </div>
@@ -298,7 +307,6 @@ const BookingModal = ({
       {alertMessage && (
         <div className="custom-alert">
           <p>{alertMessage}</p>
-          <button onClick={() => setAlertMessage('')}>OK</button>
         </div>
       )}
     </S.ModalBackdrop>

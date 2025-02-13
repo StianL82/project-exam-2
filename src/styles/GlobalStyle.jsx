@@ -77,6 +77,7 @@ const GlobalStyle = createGlobalStyle`
     --color-turquoise: #3CAAB4;
     --color-darkTurquoise: #29757A;
     --color-lightYellow: #FFFBD4;
+    --color-lightBlue: #cfe2ff;
     --color-primary: #397EE6;
     --color-secondary: #FF7F3F;
     --color-darkOrange: #BA470D;

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { authFetch } from '../../auth/authFetch';
 import '../../App.css';
 import * as S from './index.styles';
@@ -17,6 +18,22 @@ function Profile() {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showCreateVenueModal, setShowCreateVenueModal] = useState(false);
   const [venuesWithBookings, setVenuesWithBookings] = useState([]);
+
+  // Scroll til 'My Bookings' hvis state indikerer det
+  const location = useLocation();
+  const bookingsRef = useRef(null);
+
+  useEffect(() => {
+    if (location.state?.scrollTo === 'my-bookings') {
+      const timer = setTimeout(() => {
+        if (bookingsRef.current) {
+          bookingsRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500); // Vent 500 ms
+
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -128,6 +145,31 @@ function Profile() {
     }
   };
 
+  const fetchUpdatedVenuesWithBookings = async (profileName) => {
+    const venuesUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}/venues?_bookings=true&_owner=true`;
+
+    try {
+      const venuesResponse = await authFetch(venuesUrl);
+      if (venuesResponse && !venuesResponse.errors) {
+        console.log(
+          '✅ Updated venues with bookings fetched:',
+          venuesResponse.data
+        );
+        setVenuesWithBookings(venuesResponse.data);
+      } else {
+        console.error(
+          '❌ Error fetching updated venues with bookings:',
+          venuesResponse.errors
+        );
+      }
+    } catch (err) {
+      console.error(
+        '❌ Error fetching updated venues with bookings:',
+        err.message
+      );
+    }
+  };
+
   const handleDeleteVenue = async (venueId) => {
     console.log(`🗑 Attempting to delete venue with ID: ${venueId}`);
 
@@ -142,7 +184,6 @@ function Profile() {
       if (response === null) {
         console.log('✅ Venue deleted successfully.');
 
-        // Oppdater profilen for å fjerne slettet venue
         const updatedProfile = {
           ...profile,
           venues: profile.venues.filter((venue) => venue.id !== venueId),
@@ -150,6 +191,9 @@ function Profile() {
 
         setProfile(updatedProfile);
         localStorage.setItem('profile', JSON.stringify(updatedProfile));
+
+        // 🔄 Hent oppdatert data for "Bookings on My Venues"
+        await fetchUpdatedVenuesWithBookings(updatedProfile.name);
       } else {
         console.error('❌ Failed to delete venue. Response:', response);
       }
@@ -161,17 +205,15 @@ function Profile() {
   const handleVenueCreated = async (newVenue) => {
     console.log('🏨 New venue created:', newVenue);
 
-    // Oppdater profilen lokalt ved å legge til den nye venue
     const updatedProfile = {
       ...profile,
-      venues: [...profile.venues, newVenue], // Legger til den nye venue i listen
+      venues: [...profile.venues, newVenue],
     };
 
     setProfile(updatedProfile);
     localStorage.setItem('profile', JSON.stringify(updatedProfile));
 
-    // Hent den oppdaterte profilen fra API for å sikre at alt er riktig
-    const profileName = profile.name;
+    const profileName = updatedProfile.name;
     const profileUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}?_bookings=true&_venues=true`;
 
     try {
@@ -183,17 +225,43 @@ function Profile() {
 
       console.log('✅ Updated profile fetched:', response.data);
       setProfile(response.data);
+
+      // 🔄 Hent oppdatert data for "Bookings on My Venues"
+      await fetchUpdatedVenuesWithBookings(profileName);
     } catch (err) {
       console.error('❌ Error fetching updated profile:', err.message);
     }
   };
 
-  if (loading) return <p>Loading profile...</p>;
-  if (error) return <p className="alert-danger">{error}</p>;
-  if (!profile) return <p>No profile found.</p>;
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+        }}
+      >
+        <B.LoadingSpinner />
+        <p style={{ marginTop: '1rem', fontSize: '1.2rem' }}>
+          Loading profile...
+        </p>
+      </div>
+    );
+  }
 
-  const { name, email, avatar, banner, venueManager, bookings, venues } =
-    profile || {};
+  if (error || !profile) {
+    return (
+      <div className="error">
+        <p>{error ? error : 'No profile found. Please try again later.'}</p>
+      </div>
+    );
+  }
+
+  const { name, email, avatar, banner, venueManager, bookings } = profile || {};
+  const venues = profile?.venues || []; // Fallback til tom array hvis venues er undefined
 
   const bannerUrl = banner?.url || '/images/default-banner.png';
   const avatarUrl = avatar?.url || '/images/default-avatar.png';
@@ -233,15 +301,26 @@ function Profile() {
         </S.PersonalContainer>
 
         <S.DividerContainer />
-        <S.ContactHeading>Do you want to create a new Venue?</S.ContactHeading>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <B.BlueButton onClick={() => setShowCreateVenueModal(true)}>
-            Create New Venue
-          </B.BlueButton>
-        </div>
+        {profile.venueManager ? (
+          <>
+            <S.ContactHeading>
+              Do you want to create a new Venue?
+            </S.ContactHeading>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <B.BlueButton onClick={() => setShowCreateVenueModal(true)}>
+                Create New Venue
+              </B.BlueButton>
+            </div>
+          </>
+        ) : (
+          <S.ContactHeading>
+            Do you want to create your own venues? Update your profile to become
+            a Venue Manager and start creating your own venues today!
+          </S.ContactHeading>
+        )}
 
         <S.Container>
-          <S.ContactHeading>My Bookings</S.ContactHeading>
+          <S.SectionHeader ref={bookingsRef}>My Bookings</S.SectionHeader>
           <S.ContentBox>
             {bookings && bookings.length > 0 ? (
               [...bookings]
@@ -267,18 +346,19 @@ function Profile() {
               <S.SectionHeader>My Venues</S.SectionHeader>
               <S.ContentBox>
                 <S.VenueGridContainer>
-                  {venues.map((venue) => (
-                    <VenueCard
-                      key={venue.id}
-                      venue={venue}
-                      showEditDelete
-                      onEdit={(venue) => console.log('Edit Venue:', venue)}
-                      onDelete={(id) => {
-                        console.log('Delete Venue with ID:', id);
-                        handleDeleteVenue(id);
-                      }}
-                    />
-                  ))}
+                  {venues.length > 0 ? (
+                    venues.map((venue) => (
+                      <VenueCard
+                        key={venue.id}
+                        venue={venue}
+                        showEditDelete
+                        onEdit={(venue) => console.log('Edit Venue:', venue)}
+                        onDelete={(id) => handleDeleteVenue(id)}
+                      />
+                    ))
+                  ) : (
+                    <p>No venues available.</p>
+                  )}
                 </S.VenueGridContainer>
               </S.ContentBox>
             </S.Container>
@@ -287,7 +367,7 @@ function Profile() {
             <S.Container>
               <S.SectionHeader>Bookings on my Venues</S.SectionHeader>
               <S.ContentBox>
-                {venuesWithBookings.length > 0 ? (
+                {venuesWithBookings?.length > 0 ? (
                   venuesWithBookings.map((venue) => (
                     <MyVenueBookingCard key={venue.id} venue={venue} />
                   ))

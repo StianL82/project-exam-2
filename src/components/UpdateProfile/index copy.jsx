@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import * as Yup from 'yup';
 import { authFetch } from '../../auth/authFetch';
 import * as S from './index.styles';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
+
+const validationSchema = Yup.object().shape({
+  avatar: Yup.string().url('Avatar must be a valid URL').nullable(),
+  avatarAlt: Yup.string().max(100, 'Alt text cannot exceed 100 characters'),
+  banner: Yup.string().url('Banner must be a valid URL').nullable(),
+  bannerAlt: Yup.string().max(100, 'Alt text cannot exceed 100 characters'),
+  bio: Yup.string().max(800, 'Bio cannot exceed 800 characters'),
+});
 
 const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
   // ✅ Lagre profilnavnet i state for å unngå endeløs looping
@@ -20,6 +29,16 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const handleBlur = async (e) => {
+    const { name, value } = e.target;
+    try {
+      await validationSchema.validateAt(name, { [name]: value });
+      setError((prev) => ({ ...prev, [name]: '' }));
+    } catch (err) {
+      setError((prev) => ({ ...prev, [name]: err.message }));
+    }
+  };
 
   /** 🔍 Henter brukerprofil fra API */
   const fetchProfile = useCallback(async () => {
@@ -72,32 +91,25 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
   /** 🚀 Oppdaterer brukerprofil */
   const handleUpdate = async (event) => {
     event.preventDefault();
-
-    if (!profileName) {
-      setMessage('Profile update failed. Missing profile name.');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-
-    const encodedName = encodeURIComponent(profileName);
-    const updateUrl = `${API_HOLIDAZE_URL}/profiles/${encodedName}`;
-
-    const updatedProfile = {
-      bio: bio.trim() || 'No bio provided',
-      venueManager,
-      ...(avatar.trim() && {
-        avatar: { url: avatar.trim(), alt: avatarAlt || 'Default Avatar' },
-      }),
-      ...(banner.trim() && {
-        banner: { url: banner.trim(), alt: bannerAlt || 'Default Banner' },
-      }),
-    };
-
-    console.log('🚀 Oppdaterer profil:', updatedProfile);
-
     try {
+      await validationSchema.validate(
+        { avatar, avatarAlt, banner, bannerAlt, bio },
+        { abortEarly: false }
+      );
+
+      setLoading(true);
+      setError('');
+
+      const encodedName = encodeURIComponent(profileName);
+      const updateUrl = `${API_HOLIDAZE_URL}/profiles/${encodedName}`;
+
+      const updatedProfile = {
+        bio,
+        avatar: { url: avatar, alt: avatarAlt },
+        banner: { url: banner, alt: bannerAlt },
+        venueManager,
+      };
+
       const response = await authFetch(updateUrl, {
         method: 'PUT',
         headers: {
@@ -107,21 +119,24 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
         body: JSON.stringify(updatedProfile),
       });
 
-      console.log('✅ Respons fra API:', response);
-
       if (response.errors) {
-        setError('Profile update failed.');
-        console.error('❌ Feil ved oppdatering:', response.errors);
-        return;
+        throw new Error('Profile update failed.');
       }
 
       localStorage.setItem('profile', JSON.stringify(response.data));
       setMessage('Profile updated successfully!');
       onProfileUpdate(response.data);
       setTimeout(() => closeModal(), 2000);
-    } catch (error) {
-      console.error('❌ Feil ved oppdatering av profil:', error);
-      setError('Profile update failed. Please try again.');
+    } catch (err) {
+      if (err.inner) {
+        const validationErrors = {};
+        err.inner.forEach((error) => {
+          validationErrors[error.path] = error.message;
+        });
+        setError(validationErrors);
+      } else {
+        setError('Profile update failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -145,8 +160,9 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                 type="text"
                 value={avatar}
                 onChange={(e) => setAvatar(e.target.value)}
-                onFocus={(e) => e.target.select()}
+                onBlur={handleBlur}
               />
+              {error.avatar && <p className="alert-danger">{error.avatar}</p>}
 
               <label htmlFor="avatarAlt">Avatar Alt Text:</label>
               <input
@@ -154,7 +170,6 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                 type="text"
                 value={avatarAlt}
                 onChange={(e) => setAvatarAlt(e.target.value)}
-                onFocus={(e) => e.target.select()}
               />
 
               <label htmlFor="banner">Banner URL:</label>
@@ -163,7 +178,6 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                 type="text"
                 value={banner}
                 onChange={(e) => setBanner(e.target.value)}
-                onFocus={(e) => e.target.select()}
               />
 
               <label htmlFor="bannerAlt">Banner Alt Text:</label>
@@ -172,7 +186,6 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                 type="text"
                 value={bannerAlt}
                 onChange={(e) => setBannerAlt(e.target.value)}
-                onFocus={(e) => e.target.select()}
               />
 
               <label htmlFor="bio">Bio:</label>
@@ -180,25 +193,18 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                 id="bio"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                onFocus={(e) => e.target.select()}
               />
 
               {!profileData?.venueManager && (
-                <>
-                  <label htmlFor="venueManager">
-                    <input
-                      id="venueManager"
-                      type="checkbox"
-                      checked={venueManager}
-                      onChange={() => setVenueManager(!venueManager)}
-                    />
-                    Be a Venue Manager?
-                  </label>
-                  <p>
-                    (Becoming a Venue Manager is permanent and cannot be
-                    reversed.)
-                  </p>
-                </>
+                <label htmlFor="venueManager">
+                  <input
+                    id="venueManager"
+                    type="checkbox"
+                    checked={venueManager}
+                    onChange={() => setVenueManager(!venueManager)}
+                  />
+                  Are you a Venue Manager?
+                </label>
               )}
 
               <S.ButtonContainer>

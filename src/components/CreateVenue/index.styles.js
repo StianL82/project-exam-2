@@ -78,7 +78,6 @@ export const FormContainer = styled.form`
   label {
     font-family: 'Nunito', Arial, sans-serif;
     font-weight: bold;
-    margin-bottom: 4px;
   }
 
   input,
@@ -97,7 +96,9 @@ export const FormContainer = styled.form`
 
   .alert-danger {
     color: ${(props) => props.theme.color.buttonHoverRed};
-    font-size: 0.875rem;
+    font-size: 1rem;
+    margin-top: 0px;
+    font-weight: bold;
   }
 
   .success-message {
@@ -109,39 +110,54 @@ export const FormContainer = styled.form`
 `;
 
 /* Styling for Media Group */
-export const MediaGroup = styled.div`
+export const MediaWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-
-  input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid ${(props) => props.theme.color.mediumGray};
-    border-radius: 4px;
-    font-size: 1rem;
-  }
+  gap: 12px; /* Mellomrom mellom hver Media-gruppe */
+  margin-bottom: 8px;
 `;
 
-/* Styling for Slett-knappen ved siden av media-feltet */
+export const MediaField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Mellomrom mellom Image URL og Alt Text */
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 8px;
+  border: 1px solid ${(props) => props.theme.color.mediumGray};
+  border-radius: 4px;
+  font-size: 1rem;
+`;
+
 export const DeleteButton = styled.button`
   background: none;
   border: none;
   color: ${(props) => props.theme.color.buttonHoverRed};
   font-size: 1.2rem;
   cursor: pointer;
+  align-self: flex-start;
 
   &:hover {
     color: ${(props) => props.theme.color.errorRed};
   }
 `;
 
+export const IconImage = styled.img`
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+`;
+
 export const AmenitiesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(100px, auto)); /* To kolonner med fleksibel bredde */
-  gap: 4px; /* Mindre mellomrom */
+  gap: 4px;
+
+  @media (max-width: 260px) {
+    grid-template-columns: 1fr; /* Én kolonne ved skjermstørrelse 270px og mindre */
+  }
 
   label {
     display: flex;
@@ -154,10 +170,10 @@ export const AmenitiesGrid = styled.div`
   }
 `;
 
+
 export const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 16px;
 `;
 
 export const UpdateButton = styled.button`
@@ -181,7 +197,7 @@ export const UpdateButton = styled.button`
 export const CloseLink = styled.span`
   display: block;
   text-align: right;
-  margin-top: 5px;
+  margin-top: 10px;
   font-size: 1rem;
   color: ${(props) => props.theme.color.darkGray};
   cursor: pointer;

@@ -146,14 +146,14 @@ export const Container = styled.div`
 
 // Blå seksjonsoverskrift
 export const SectionHeader = styled.h2`
-  background-color: #cfe2ff;
+  background-color: ${(props) => props.theme.color.lightBlue};
   color: #5a5a5a;
   padding: 10px 15px;
   border-radius: 5px 5px 0 0;
   font-size: 1.4rem;
   font-weight: bold;
   text-align: left;
-  margin-bottom: 0; // ❌ Fjerner mellomrom under overskriften
+  margin-bottom: 0;
 `;
 
 // Hvit boks med innhold

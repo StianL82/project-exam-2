@@ -7,6 +7,7 @@ const theme = {
     turquoise: 'var(--color-turquoise)',
     darkTurquoise: 'var(--color-darkTurquoise)',
     lightYellow: 'var(--color-lightYellow)',
+    lightBlue: 'var(--color-lightBlue)',
     primaryColor: 'var(--color-primary)',
     secondaryColor: 'var(--color-secondary)',
     darkOrange: 'var(--color-darkOrange)',

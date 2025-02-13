@@ -58,23 +58,24 @@ const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
           </S.InfoContainer>
         </Link>
 
-        <S.ViewButton as={Link} to={`/venue/${id}`}>
-          View Venue
-        </S.ViewButton>
-
-        {showEditDelete && (
-          <>
-            <S.EditButton as="button" onClick={() => setShowEditModal(true)}>
-              Edit Venue
-            </S.EditButton>
-            <S.DeleteButton
-              as="button"
-              onClick={() => setShowDeleteModal(true)}
-            >
-              Delete Venue
-            </S.DeleteButton>
-          </>
-        )}
+        <S.ButtonContainer>
+          <S.ViewButton as={Link} to={`/venue/${id}`}>
+            View Venue
+          </S.ViewButton>
+          {showEditDelete && (
+            <>
+              <S.EditButton as="button" onClick={() => setShowEditModal(true)}>
+                Edit Venue
+              </S.EditButton>
+              <S.DeleteButton
+                as="button"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                Delete Venue
+              </S.DeleteButton>
+            </>
+          )}
+        </S.ButtonContainer>
       </S.Card>
 
       <DeleteConfirmationModal

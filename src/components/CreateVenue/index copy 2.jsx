@@ -16,15 +16,11 @@ const schema = Yup.object().shape({
     .max(800, 'Max 800 characters')
     .required('Description is required'),
   price: Yup.number()
-    .typeError('Price must be at least 1 per night')
-    .min(0, 'Price must be at least 1 per night')
+    .min(0, 'Price must be at least 0')
     .required('Price per night is required'),
-
   maxGuests: Yup.number()
-    .typeError('Must allow at least 1 guest')
     .min(1, 'Must allow at least 1 guest')
     .required('Max guests is required'),
-
   media: Yup.array().of(
     Yup.object().shape({
       url: Yup.string().url('Must be a valid URL').notRequired().nullable(), // Tillater tomt felt
@@ -53,7 +49,6 @@ const CreateVenue = ({
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
     if (initialData) {
@@ -66,26 +61,7 @@ const CreateVenue = ({
     }
   }, [initialData]);
 
-  const showAlert = (message) => {
-    setAlertMessage(message); // Sett meldingen
-  };
-
-  const validateField = async (name, value) => {
-    try {
-      await Yup.reach(schema, name).validate(value);
-      setErrors((prevErrors) => {
-        const { [name]: _, ...rest } = prevErrors; // Fjern feilmeldingen for dette feltet
-        return rest;
-      });
-    } catch (error) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: error.message, // Legg til feilmeldingen
-      }));
-    }
-  };
-
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
     if (type === 'checkbox') {
@@ -93,19 +69,22 @@ const CreateVenue = ({
         ...prev,
         meta: { ...prev.meta, [name]: checked },
       }));
+    } else if (name === 'rating') {
+      setFormData((prev) => ({
+        ...prev,
+        rating: Number(value),
+      }));
     } else if (name.includes('location.')) {
       const field = name.split('.')[1];
       setFormData((prev) => ({
         ...prev,
         location: { ...prev.location, [field]: value },
       }));
-      await validateField(`location.${field}`, value); // Valider lokasjonsfeltet
     } else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
-      await validateField(name, value); // Valider feltet
     }
   };
 
@@ -132,8 +111,12 @@ const CreateVenue = ({
   };
 
   const handleSubmit = async () => {
+    console.log('🚀 Knappen er trykket!');
+    console.log('🛠 Fullstendig skjema-data før validering:', formData);
+
     try {
       await schema.validate(formData, { abortEarly: false });
+      console.log('✅ Validering bestått!');
 
       const cleanedMedia = formData.media.filter(
         (item) => item.url.trim() !== ''
@@ -147,11 +130,15 @@ const CreateVenue = ({
         rating: Number(formData.rating),
       };
 
+      console.log(
+        '📤 Sender følgende data til API:',
+        JSON.stringify(requestData)
+      );
       setLoading(true);
 
       const method = initialData ? 'PUT' : 'POST';
       const endpoint = initialData
-        ? `${API_HOLIDAZE_URL}/venues/${initialData.id}`
+        ? `${API_HOLIDAZE_URL}/venues/${initialData.id}?_bookings=true&_owner=true`
         : `${API_HOLIDAZE_URL}/venues`;
 
       const response = await authFetch(endpoint, {
@@ -163,40 +150,36 @@ const CreateVenue = ({
         body: JSON.stringify(requestData),
       });
 
+      console.log('📥 API-respons:', response);
+
       if (response.errors) {
         throw new Error(
           response.errors[0]?.message || 'Failed to process venue'
         );
       }
 
-      if (initialData) {
-        showAlert('Venue updated successfully!');
-        setTimeout(() => {
-          setAlertMessage('');
-          closeModal(); // Modalen lukkes først etter alert
-          if (onVenueCreated) {
-            onVenueCreated(response);
-          }
-        }, 2000);
-      } else {
-        showAlert('Venue created successfully!');
-        setTimeout(() => {
-          setAlertMessage('');
-          closeModal();
-          if (onVenueCreated) {
-            onVenueCreated(response);
-          }
-        }, 2000);
+      setMessage(
+        initialData
+          ? '✅ Venue updated successfully!'
+          : '✅ Venue created successfully!'
+      );
+      if (onVenueCreated) {
+        onVenueCreated(response);
       }
+
+      setTimeout(() => {
+        closeModal();
+      }, 2000);
     } catch (err) {
       if (err.inner) {
+        console.log('❌ Valideringsfeil funnet:', err.inner);
         const validationErrors = {};
         err.inner.forEach((error) => {
           validationErrors[error.path] = error.message;
         });
         setErrors(validationErrors);
       } else {
-        console.error('API Error:', err);
+        console.error('❌ API Error:', err);
         setMessage('❌ Something went wrong, please try again.');
       }
     } finally {
@@ -219,12 +202,7 @@ const CreateVenue = ({
         <S.FormBackground>
           <S.FormContainer>
             <label>Venue Name:</label>
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              onBlur={(e) => validateField(e.target.name, e.target.value)}
-            />
+            <input name="name" value={formData.name} onChange={handleChange} />
             {errors.name && <p className="alert-danger">{errors.name}</p>}
 
             <label>Rating:</label>
@@ -244,7 +222,6 @@ const CreateVenue = ({
               name="description"
               value={formData.description}
               onChange={handleChange}
-              onBlur={(e) => validateField(e.target.name, e.target.value)}
             />
             {errors.description && (
               <p className="alert-danger">{errors.description}</p>
@@ -364,13 +341,7 @@ const CreateVenue = ({
             </S.ButtonContainer>
           </S.FormContainer>
         </S.FormBackground>
-        <S.CloseLink onClick={closeModal}>Close</S.CloseLink>
       </S.ModalContent>
-      {alertMessage && (
-        <div className="custom-alert">
-          <p>{alertMessage}</p>
-        </div>
-      )}
     </S.ModalBackdrop>
   );
 };

@@ -121,3 +121,17 @@ export const UpdateButton = styled.button`
     background-color: ${(props) => props.theme.color.buttonHoverOrange};
   }
 `;
+
+export const CloseLink = styled.span`
+  display: block;
+  text-align: right;
+  margin-top: 10px;
+  font-size: 1rem;
+  color: ${(props) => props.theme.color.darkGray};
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    font-weight: bold;
+  }
+`;

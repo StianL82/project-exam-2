@@ -128,6 +128,9 @@ const Register = ({ showModal, closeModal, openLogin }) => {
                 />
                 Are you a Venue Manager?
               </label>
+              <p>
+                (Becoming a Venue Manager is permanent and cannot be reversed.)
+              </p>
 
               <S.ButtonContainer>
                 <S.RegisterButton type="submit">Register</S.RegisterButton>
