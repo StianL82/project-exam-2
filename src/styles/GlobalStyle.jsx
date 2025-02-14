@@ -89,6 +89,8 @@ const GlobalStyle = createGlobalStyle`
     --color-buttonHoverBlue: #0355A3;
     --color-buttonHoverRed: #B12121;
     --color-success: #318136;
+    --color-lightGreen: #e6f4ea;
+    --color-darkGreen: #2b542c;
     --color-stroke: #A6A6A6;
 
     height: 100%;
@@ -168,6 +170,39 @@ const GlobalStyle = createGlobalStyle`
     border-radius: 8px;
     font-size: 1rem;
   }
+
+  .accordion .accordion-header {
+  padding-bottom: 0;
+}
+
+  .accordion .accordion-item {
+  border: none;
+  background-color: transparent;
+}
+
+.accordion .accordion-button {
+  background-color: ${(props) => props.theme.color.lightBlue};
+  color: ${(props) => props.theme.color.darkGray};
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 20px 15px;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+.accordion .accordion-button:not(.collapsed) {
+  background-color: ${(props) => props.theme.color.lightBlue};
+}
+
+.accordion .accordion-body {
+  background-color: ${(props) => props.theme.color.white};
+  margin-top: 0;
+  border: 1px solid ${(props) => props.theme.color.lightGray};
+  border-top: none;
+  padding: 15px;
+  border-radius: 0 0 5px 5px;
+}
+
 `;
 
 export default GlobalStyle;

@@ -19,6 +19,8 @@ const theme = {
     buttonHoverBlue: 'var(--color-buttonHoverBlue)',
     buttonHoverRed: 'var(--color-buttonHoverRed)',
     success: 'var(--color-success)',
+    lightGreen: 'var(--color-lightGreen)',
+    darkGreen: 'var(--color-darkGreen)',
     stroke: 'var(--color-stroke)',
   },
   spacing: {
