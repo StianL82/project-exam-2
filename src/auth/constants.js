@@ -5,4 +5,4 @@ export const API_AUTH_BASE = '/auth';
 export const API_AUTH_URL = `${API_BASE_URL}${API_AUTH_BASE}`;
 export const API_HOLIDAZE_URL = `${API_BASE_URL}${API_HOLIDAZE_BASE}`;
 
-export const API_KEY = '499331ba-2fa7-4908-bf07-4280374f9f87';
+export const API_KEY = process.env.REACT_APP_API_KEY;
