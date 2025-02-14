@@ -6,10 +6,12 @@ import useAPI from '../../hooks/useAPI';
 import SearchBar from '../../components/SearchBar';
 import VenueGrid from '../../components/VenueGrid';
 import NavigationButtons from '../../components/NavigationButtons';
+import useMediaQuery from '../../hooks/useMediaQuery';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 
 function Venues() {
-  const venuesPerPage = 20;
+  const isMobile = useMediaQuery('(max-width: 480px)');
+  const venuesPerPage = isMobile ? 10 : 20;
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredVenues, setFilteredVenues] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
