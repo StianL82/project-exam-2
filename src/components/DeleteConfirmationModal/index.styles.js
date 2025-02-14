@@ -48,7 +48,7 @@ export const ModalHeader = styled.div`
 
 export const ModalBody = styled.div`
   font-size: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 `;
 
 export const ModalButtonContainer = styled.div`

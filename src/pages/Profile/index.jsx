@@ -6,6 +6,7 @@ import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
 import UpdateProfile from '../../components/UpdateProfile';
 import CreateVenue from '../../components/CreateVenue';
+import Accordion from 'react-bootstrap/Accordion';
 import BookingCard from '../../components/BookingCard';
 import VenueCard from '../../components/VenueCard';
 import MyVenueBookingCard from '../../components/MyVenueBookingCard';
@@ -260,7 +261,8 @@ function Profile() {
     );
   }
 
-  const { name, email, avatar, banner, venueManager, bookings } = profile || {};
+  const { name, email, bio, avatar, banner, venueManager, bookings } =
+    profile || {};
   const venues = profile?.venues || []; // Fallback til tom array hvis venues er undefined
 
   const bannerUrl = banner?.url || '/images/default-banner.png';
@@ -290,6 +292,9 @@ function Profile() {
               <p>
                 <strong>Email:</strong> {email}
               </p>
+              <p>
+                <strong>Bio:</strong> {bio}
+              </p>
             </S.ProfileDetails>
           </S.ProfileGrid>
 
@@ -307,9 +312,11 @@ function Profile() {
               Do you want to create a new Venue?
             </S.ContactHeading>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <B.BlueButton onClick={() => setShowCreateVenueModal(true)}>
-                Create New Venue
-              </B.BlueButton>
+              <S.CenteredButtonContainer>
+                <B.BlueButton onClick={() => setShowCreateVenueModal(true)}>
+                  Create New Venue
+                </B.BlueButton>
+              </S.CenteredButtonContainer>
             </div>
           </>
         ) : (
@@ -320,61 +327,72 @@ function Profile() {
         )}
 
         <S.Container>
-          <S.SectionHeader ref={bookingsRef}>My Bookings</S.SectionHeader>
-          <S.ContentBox>
-            {bookings && bookings.length > 0 ? (
-              [...bookings]
-                .sort((a, b) => new Date(b.created) - new Date(a.created)) // Sorter slik at nyeste kommer først
-                .map((booking) => (
-                  <BookingCard
-                    key={booking.id}
-                    booking={booking}
-                    onBookingDeleted={handleBookingDeleted}
-                  />
-                ))
-            ) : (
-              <p>No bookings found.</p>
-            )}
-          </S.ContentBox>
-        </S.Container>
-
-        {/* Bare vis disse hvis brukeren er Venue Manager */}
-        {profile.venueManager && (
-          <>
-            {/* My Venues */}
-            <S.Container>
-              <S.SectionHeader>My Venues</S.SectionHeader>
-              <S.ContentBox>
-                <S.VenueGridContainer>
-                  {venues.length > 0 ? (
-                    venues.map((venue) => (
-                      <VenueCard
-                        key={venue.id}
-                        venue={venue}
-                        showEditDelete
-                        onEdit={(venue) => console.log('Edit Venue:', venue)}
-                        onDelete={(id) => handleDeleteVenue(id)}
+          <Accordion defaultActiveKey={['0']} alwaysOpen>
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>My Bookings</Accordion.Header>
+              <Accordion.Body>
+                {bookings && bookings.length > 0 ? (
+                  [...bookings]
+                    .sort((a, b) => new Date(b.created) - new Date(a.created))
+                    .map((booking) => (
+                      <BookingCard
+                        key={booking.id}
+                        booking={booking}
+                        onBookingDeleted={handleBookingDeleted}
                       />
                     ))
-                  ) : (
-                    <p>No venues available.</p>
-                  )}
-                </S.VenueGridContainer>
-              </S.ContentBox>
+                ) : (
+                  <p>No bookings found.</p>
+                )}
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        </S.Container>
+
+        {profile.venueManager && (
+          <>
+            <S.Container>
+              <Accordion defaultActiveKey={['0']} alwaysOpen>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>My Venues</Accordion.Header>
+                  <Accordion.Body>
+                    <S.VenueGridContainer>
+                      {venues.length > 0 ? (
+                        venues.map((venue) => (
+                          <VenueCard
+                            key={venue.id}
+                            venue={venue}
+                            showEditDelete
+                            onEdit={(venue) =>
+                              console.log('Edit Venue:', venue)
+                            }
+                            onDelete={(id) => handleDeleteVenue(id)}
+                          />
+                        ))
+                      ) : (
+                        <p>No venues available.</p>
+                      )}
+                    </S.VenueGridContainer>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
             </S.Container>
 
-            {/* Bookings on my Venues */}
             <S.Container>
-              <S.SectionHeader>Bookings on my Venues</S.SectionHeader>
-              <S.ContentBox>
-                {venuesWithBookings?.length > 0 ? (
-                  venuesWithBookings.map((venue) => (
-                    <MyVenueBookingCard key={venue.id} venue={venue} />
-                  ))
-                ) : (
-                  <p>No bookings found on your venues.</p>
-                )}
-              </S.ContentBox>
+              <Accordion defaultActiveKey={['0']} alwaysOpen>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Bookings on my Venues</Accordion.Header>
+                  <Accordion.Body>
+                    {venuesWithBookings?.length > 0 ? (
+                      venuesWithBookings.map((venue) => (
+                        <MyVenueBookingCard key={venue.id} venue={venue} />
+                      ))
+                    ) : (
+                      <p>No bookings found on your venues.</p>
+                    )}
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
             </S.Container>
           </>
         )}

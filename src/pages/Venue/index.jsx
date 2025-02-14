@@ -31,7 +31,11 @@ function Venue() {
   }, []);
 
   const openLogin = (prefillEmail = '') => {
-    setEmail(prefillEmail);
+    if (prefillEmail) {
+      setEmail(prefillEmail);
+    } else {
+      setEmail('');
+    }
     setShowLogin(true);
     setShowRegister(false);
   };
@@ -169,7 +173,7 @@ function Venue() {
                   Book your stay
                 </B.BlueButton>
               ) : (
-                <B.OrangeButton onClick={openLogin}>
+                <B.OrangeButton onClick={() => openLogin()}>
                   Log in to Book your stay
                 </B.OrangeButton>
               )}
@@ -281,7 +285,7 @@ function Venue() {
                 Book your stay
               </B.BlueButton>
             ) : (
-              <B.OrangeButton onClick={openLogin}>
+              <B.OrangeButton onClick={() => openLogin()}>
                 Log in to Book your stay
               </B.OrangeButton>
             )}

@@ -17,10 +17,11 @@ export const HeroSection = styled.div`
 export const HeroText = styled.h1`
   position: relative;
   z-index: 2;
-  font-size: clamp(2rem, 7vw, 3rem);
+  font-size: clamp(1.2rem, 6vw, 2rem);
+  font-family: 'Montserrat', cursive;
   color: ${(props) => props.theme.color.white};
   text-align: center;
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   background-color: ${(props) => props.theme.color.darkGray};
 `;
@@ -99,23 +100,14 @@ export const ProfileDetails = styled.div`
 export const ContactHeading = styled.h2`
   text-align: center;
   color: ${(props) => props.theme.color.darkTurquoise};
-  font-size: clamp(1.5rem, 7vw, 2rem);
+  font-size: clamp(1.2rem, 5vw, 2rem);
   margin: 20px 0;
 `;
 
-export const UpdateProfileButton = styled.button`
-  background-color: orange;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: darkorange;
-  }
+export const CenteredButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 `;
 
 export const DividerContainer = styled.div`
@@ -126,7 +118,7 @@ export const DividerContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   margin: 0 auto;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   margin-top: 30px;
 
   @media (max-width: 1158px) {
@@ -163,14 +155,13 @@ export const ContentBox = styled.div`
   border-radius: 0 0 5px 5px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
-  border-top: none; // ❌ Hindrer dobbel kantlinje mellom SectionHeader og ContentBox
+  border-top: none;
 `;
 
 export const VenueGridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
-  padding: 16px;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);

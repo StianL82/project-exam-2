@@ -17,6 +17,7 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
   }
 
   const { id, dateFrom, dateTo, guests, venue } = bookingData;
+  const defaultImage = '/images/contact-section.png';
 
   const handleBookingUpdated = (updatedBooking) => {
     console.log('Updating booking data:', updatedBooking);
@@ -50,7 +51,7 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
     <>
       <S.CardContainer>
         <S.Image
-          src={venue.media?.[0]?.url || '/images/default-image.jpg'}
+          src={venue.media?.[0]?.url || defaultImage}
           alt={venue.media?.[0]?.alt || 'Venue image'}
         />
         <S.CardContent>

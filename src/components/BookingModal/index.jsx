@@ -51,8 +51,8 @@ const BookingModal = ({
     }
   }, [initialData]);
 
-  const showAlert = (message) => {
-    setAlertMessage(message);
+  const showAlert = (message, withOkButton = false) => {
+    setAlertMessage({ message, withOkButton });
   };
 
   const resetForm = () => {
@@ -106,7 +106,7 @@ const BookingModal = ({
     console.log('venueId:', venueId);
 
     if (!dateFrom || !dateTo || !guests || !venueId) {
-      showAlert('Please select valid check-in and check-out dates.');
+      showAlert('Please select valid check-in and check-out dates.', true);
       return;
     }
 
@@ -306,7 +306,10 @@ const BookingModal = ({
       </S.ModalContainer>
       {alertMessage && (
         <div className="custom-alert">
-          <p>{alertMessage}</p>
+          <p>{alertMessage.message}</p>
+          {alertMessage.withOkButton ? (
+            <button onClick={() => setAlertMessage('')}>OK</button>
+          ) : null}
         </div>
       )}
     </S.ModalBackdrop>

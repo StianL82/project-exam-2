@@ -68,6 +68,8 @@ export const FormBackground = styled.div`
   background: ${(props) => props.theme.color.lightYellow};
   padding: 20px;
   border-radius: 8px;
+  border: 1px solid ${(props) => props.theme.color.stroke};
+  border-radius: 5px;
 `;
 
 export const FormContainer = styled.form`
@@ -152,7 +154,10 @@ export const IconImage = styled.img`
 
 export const AmenitiesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(100px, auto)); /* To kolonner med fleksibel bredde */
+  grid-template-columns: repeat(
+    2,
+    minmax(100px, auto)
+  ); /* To kolonner med fleksibel bredde */
   gap: 4px;
 
   @media (max-width: 260px) {
@@ -169,7 +174,6 @@ export const AmenitiesGrid = styled.div`
     width: auto;
   }
 `;
-
 
 export const ButtonContainer = styled.div`
   display: flex;

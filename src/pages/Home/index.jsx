@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../../App.css';
 import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
@@ -11,6 +11,8 @@ function Home() {
   const { data, isLoading, isError } = useAPI(`${API_HOLIDAZE_URL}/venues`);
 
   const [filteredVenues, setFilteredVenues] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (data.length > 0) {
@@ -32,7 +34,7 @@ function Home() {
         <S.HeroText>Welcome to Holidaze</S.HeroText>
       </S.HeroSection>
       <div className="container">
-        <S.TopDestinations>Some of our Top Destinations</S.TopDestinations>
+        <S.TopDestinations>Our Newest Top-Rated Venues</S.TopDestinations>
         {isLoading ? (
           <B.LoadingSpinner />
         ) : isError ? (
@@ -55,7 +57,12 @@ function Home() {
             <h2>Find your next dream vacation</h2>
             <p>Book a trip to one of our most beautiful destinations</p>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <B.OrangeButton as={Link} to="/venues">
+              <B.OrangeButton
+                onClick={() => {
+                  navigate('/venues');
+                  setTimeout(() => window.scrollTo(0, 0), 100);
+                }}
+              >
                 Discover more venues
               </B.OrangeButton>
             </div>
@@ -75,7 +82,12 @@ function Home() {
                 Have any questions? Feel free to reach out to us for more
                 information about your dream vacation.
               </p>
-              <B.OrangeButton as={Link} to="/contact">
+              <B.OrangeButton
+                onClick={() => {
+                  navigate('/contact');
+                  setTimeout(() => window.scrollTo(0, 0), 100);
+                }}
+              >
                 Contact
               </B.OrangeButton>
             </S.TextContainer>

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Card = styled.div`
   display: flex;
-  background: #f8f9fa;
+  background: ${(props) => props.theme.color.bodyBg};
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
@@ -14,16 +14,15 @@ export const ImageContainer = styled.div`
   max-width: 200px;
   max-height: 100%;
   display: flex;
-  justify-content: center; /* Horisontal sentrering */
-  align-items: center; /* Vertikal sentrering */
+  justify-content: center;
+  align-items: start;
   overflow: hidden;
-  background: #f1f1f1; /* Legger til en bakgrunnsfarge for å indikere bildet */
+  background: ${(props) => props.theme.color.lightGray};
 `;
 
 export const Image = styled.img`
-  height: 100%;
+  height: 276px;
   max-width: 200px;
-  max-height: 480px;
   object-fit: cover;
 `;
 
@@ -40,28 +39,27 @@ export const Title = styled.h3`
 export const BookingInfo = styled.div`
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid ${(props) => props.theme.color.mediumGray};
 `;
 
 export const Row = styled.div`
   display: flex;
-  align-items: center; /* Justerer label og value vertikalt */
-  gap: 10px; /* Mellomrom mellom label og value */
+  align-items: center;
+  gap: 10px;
   margin-bottom: 5px;
 `;
 
 export const Label = styled.span`
   font-weight: bold;
-  color: #555;
-  min-width: 100px; /* Gir fast bredde til label for konsekvent avstand */
+  min-width: 100px;
 `;
 
 export const Value = styled.span`
-  color: #333;
-  word-wrap: break-word; /* Bryter lange verdier */
+  color: ${(props) => props.theme.color.darkGray};
+  word-wrap: break-word;
 `;
 
 export const NoBookings = styled.p`
   font-style: italic;
-  color: #999;
+  color: ${(props) => props.theme.color.darkGray};
 `;

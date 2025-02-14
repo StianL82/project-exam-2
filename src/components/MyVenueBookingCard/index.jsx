@@ -3,7 +3,7 @@ import * as S from './index.styles';
 
 const MyVenueBookingCard = ({ venue }) => {
   const { name, media, bookings } = venue;
-  const defaultImage = '/images/default-image.jpg';
+  const defaultImage = '/images/contact-section.png';
 
   return (
     <S.Card>

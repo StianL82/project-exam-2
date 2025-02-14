@@ -14,12 +14,24 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
   const [banner, setBanner] = useState(profileData?.banner?.url || '');
   const [bannerAlt, setBannerAlt] = useState(profileData?.banner?.alt || '');
   const [bio, setBio] = useState(profileData?.bio || '');
+  const [bioError, setBioError] = useState('');
   const [venueManager, setVenueManager] = useState(
     profileData?.venueManager || false
   );
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const handleBioChange = (e) => {
+    const value = e.target.value;
+    setBio(value);
+
+    if (value.length > 160) {
+      setBioError('Bio cannot exceed 160 characters.');
+    } else {
+      setBioError('');
+    }
+  };
 
   /** 🔍 Henter brukerprofil fra API */
   const fetchProfile = useCallback(async () => {
@@ -132,10 +144,12 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
   return (
     <S.ModalBackdrop>
       <S.ModalContent>
-        <button onClick={closeModal} className="close-button">
-          ×
-        </button>
-        <h2>Update Profile</h2>
+        <S.ModalHeader>
+          <h2>Update Profile</h2>
+          <button onClick={closeModal} className="close-button">
+            ×
+          </button>
+        </S.ModalHeader>
         <S.FormBackground>
           <S.FormContainer>
             <form onSubmit={handleUpdate}>
@@ -179,9 +193,10 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
               <textarea
                 id="bio"
                 value={bio}
-                onChange={(e) => setBio(e.target.value)}
+                onChange={handleBioChange}
                 onFocus={(e) => e.target.select()}
               />
+              {bioError && <p className="alert-danger">{bioError}</p>}
 
               {!profileData?.venueManager && (
                 <>
@@ -207,7 +222,8 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                 </S.UpdateButton>
               </S.ButtonContainer>
 
-              {message && <p className="alert-success">{message}</p>}
+              {message && <S.AlertSuccess>{message}</S.AlertSuccess>}
+
               {error && <p className="alert-danger">{error}</p>}
             </form>
           </S.FormContainer>

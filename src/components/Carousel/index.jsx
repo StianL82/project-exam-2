@@ -41,33 +41,43 @@ const VenueCarousel = ({ media }) => {
     setSelectedImageIndex(0);
   };
 
-  const handlePrev = () => {
+  const handlePrev = () =>
     setSelectedImageIndex((prevIndex) =>
       prevIndex === 0 ? media.length - 1 : prevIndex - 1
     );
-  };
 
-  const handleNext = () => {
+  const handleNext = () =>
     setSelectedImageIndex((prevIndex) =>
       prevIndex === media.length - 1 ? 0 : prevIndex + 1
     );
-  };
+
+  const defaultImage = '/images/contact-section.png';
 
   return (
     <>
       <S.StyledCarousel>
         <Carousel>
-          {media.map((item, index) => (
-            <Carousel.Item key={index}>
+          {media.length > 0 ? (
+            media.map((item, index) => (
+              <Carousel.Item key={index}>
+                <img
+                  className="d-block w-100"
+                  src={item.url?.trim().length > 0 ? item.url : defaultImage}
+                  alt={item.alt || `Image ${index + 1}`}
+                  onClick={() => handleImageClick(index)}
+                  style={{ cursor: 'pointer' }}
+                />
+              </Carousel.Item>
+            ))
+          ) : (
+            <Carousel.Item>
               <img
                 className="d-block w-100"
-                src={item.url}
-                alt={item.alt || `Image ${index + 1}`}
-                onClick={() => handleImageClick(index)}
-                style={{ cursor: 'pointer' }}
+                src={defaultImage}
+                alt="Default venue media"
               />
             </Carousel.Item>
-          ))}
+          )}
         </Carousel>
       </S.StyledCarousel>
 
@@ -87,7 +97,11 @@ const VenueCarousel = ({ media }) => {
           <div className="image-container">
             {media[selectedImageIndex] && (
               <img
-                src={media[selectedImageIndex].url}
+                src={
+                  media[selectedImageIndex]?.url?.trim().length > 0
+                    ? media[selectedImageIndex].url
+                    : defaultImage
+                }
                 alt={media[selectedImageIndex].alt || 'Full-size preview'}
               />
             )}
