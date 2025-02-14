@@ -6,10 +6,12 @@ import Venues from './pages/Venues';
 import Venue from './pages/Venue';
 import Profile from './pages/Profile';
 import Layout from './components/Layout';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <Layout>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
