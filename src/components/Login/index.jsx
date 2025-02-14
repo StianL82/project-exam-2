@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -21,15 +21,22 @@ const schema = yup.object({
     .required('Password is required.'),
 });
 
-const Login = ({ showModal, closeModal, openRegister }) => {
+const Login = ({ showModal, closeModal, openRegister, prefillEmail = '' }) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
   const { updateLoggedInStatus } = useAuth();
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (prefillEmail) {
+      setValue('email', prefillEmail);
+    }
+  }, [prefillEmail, setValue]);
 
   const onSubmit = async (data) => {
     try {
@@ -70,17 +77,12 @@ const Login = ({ showModal, closeModal, openRegister }) => {
   return (
     <S.ModalBackdrop>
       <S.ModalContent>
-        <button
-          onClick={() => {
-            reset();
-            setMessage('');
-            closeModal();
-          }}
-          className="close-button"
-        >
-          ×
-        </button>
-        <h2>Login</h2>
+        <S.ModalHeader>
+          <h2>Log in</h2>
+          <button onClick={closeModal} className="close-button">
+            ×
+          </button>
+        </S.ModalHeader>
         <S.FormBackground>
           <S.FormContainer>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -97,7 +99,7 @@ const Login = ({ showModal, closeModal, openRegister }) => {
               )}
 
               <S.ButtonContainer>
-                <S.LoginButton type="submit">Login</S.LoginButton>
+                <S.LoginButton type="submit">Log in</S.LoginButton>
               </S.ButtonContainer>
             </form>
             {message && <div className="alert alert-success">{message}</div>}
@@ -114,6 +116,7 @@ const Login = ({ showModal, closeModal, openRegister }) => {
             if you don't have an account
           </p>
         </S.ModalLink>
+        <S.CloseLink onClick={closeModal}>Close</S.CloseLink>
       </S.ModalContent>
     </S.ModalBackdrop>
   );

@@ -76,17 +76,12 @@ const Register = ({ showModal, closeModal, openLogin }) => {
   return (
     <S.ModalBackdrop>
       <S.ModalContent>
-        <button
-          onClick={() => {
-            reset();
-            setMessage('');
-            closeModal();
-          }}
-          className="close-button"
-        >
-          ×
-        </button>
-        <h2>Register a new account</h2>
+        <S.ModalHeader>
+          <h2>Register a new account</h2>
+          <button onClick={closeModal} className="close-button">
+            ×
+          </button>
+        </S.ModalHeader>
         <S.FormBackground>
           <S.FormContainer>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -162,6 +157,7 @@ const Register = ({ showModal, closeModal, openLogin }) => {
             if you already have an account
           </p>
         </S.ModalLink>
+        <S.CloseLink onClick={closeModal}>Close</S.CloseLink>
       </S.ModalContent>
     </S.ModalBackdrop>
   );

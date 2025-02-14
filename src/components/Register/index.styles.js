@@ -11,37 +11,63 @@ export const ModalBackdrop = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow-y: auto;
+`;
+
+export const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 5px;
+  background: ${(props) => props.theme.color.white};
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  h2 {
+    font-size: 1.5rem;
+    margin: 0 auto;
+  }
+
+  button {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+  }
 `;
 
 export const ModalContent = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
   background: ${(props) => props.theme.color.white};
-  padding: 24px;
-  margin: 10px;
+  border: 1px solid ${(props) => props.theme.color.stroke};
   border-radius: 10px;
+  padding: 0px 20px 20px 20px;
   max-width: 500px;
-  width: 100%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  position: relative;
-
-  h2 {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
   .link {
     color: ${(props) => props.theme.color.primaryColor};
     cursor: pointer;
     text-decoration: underline;
+  }
+
+  @media (max-width: 480px) {
+    width: 95%;
+    padding: 0px 10px 10px 10px;
+  }
+
+  @media (max-width: 360px) {
+    padding: 0px 5px 5px 5px;
   }
 `;
 
@@ -119,5 +145,19 @@ export const RegisterButton = styled.button`
 
   &:hover {
     background-color: ${(props) => props.theme.color.buttonHoverOrange};
+  }
+`;
+
+export const CloseLink = styled.span`
+  display: block;
+  text-align: right;
+  margin-top: 10px;
+  font-size: 1rem;
+  color: ${(props) => props.theme.color.darkGray};
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    font-weight: bold;
   }
 `;
