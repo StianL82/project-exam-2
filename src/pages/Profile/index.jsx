@@ -348,7 +348,7 @@ function Profile() {
                     .sort((a, b) => new Date(b.created) - new Date(a.created))
                     .map((booking) => (
                       <BookingCard
-                        key={booking.id}
+                        key={booking.id || `booking-${Math.random()}`}
                         booking={booking}
                         onBookingDeleted={handleBookingDeleted}
                       />
@@ -372,7 +372,7 @@ function Profile() {
                       {venues.length > 0 ? (
                         venues.map((venue) => (
                           <VenueCard
-                            key={venue.id}
+                            key={venue.id || `venue-${Math.random()}`}
                             venue={venue}
                             showEditDelete
                             onEdit={(venue) =>

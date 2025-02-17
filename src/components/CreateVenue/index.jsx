@@ -218,8 +218,9 @@ const CreateVenue = ({
 
         <S.FormBackground>
           <S.FormContainer>
-            <label>Venue Name:</label>
+            <label htmlFor="name">Venue Name:</label>
             <input
+              id="name"
               name="name"
               value={formData.name}
               onChange={handleChange}
@@ -227,8 +228,9 @@ const CreateVenue = ({
             />
             {errors.name && <p className="alert-danger">{errors.name}</p>}
 
-            <label>Rating:</label>
+            <label htmlFor="rating">Rating:</label>
             <input
+              id="rating"
               name="rating"
               type="number"
               value={formData.rating || 0}
@@ -239,8 +241,9 @@ const CreateVenue = ({
             />
             {errors.rating && <p className="alert-danger">{errors.rating}</p>}
 
-            <label>Description:</label>
+            <label htmlFor="description">Description:</label>
             <textarea
+              id="description"
               name="description"
               value={formData.description}
               onChange={handleChange}
@@ -250,8 +253,9 @@ const CreateVenue = ({
               <p className="alert-danger">{errors.description}</p>
             )}
 
-            <label>Price per night:</label>
+            <label htmlFor="price">Price per night:</label>
             <input
+              id="price"
               name="price"
               type="number"
               value={formData.price}
@@ -259,8 +263,9 @@ const CreateVenue = ({
             />
             {errors.price && <p className="alert-danger">{errors.price}</p>}
 
-            <label>Max Guests:</label>
+            <label htmlFor="maxGuests">Max Guests:</label>
             <input
+              id="maxGuests"
               name="maxGuests"
               type="number"
               value={formData.maxGuests}
@@ -270,8 +275,9 @@ const CreateVenue = ({
               <p className="alert-danger">{errors.maxGuests}</p>
             )}
 
-            <label>Address:</label>
+            <label htmlFor="address">Address:</label>
             <input
+              id="address"
               name="location.address"
               value={formData.location.address}
               onChange={handleChange}
@@ -280,8 +286,9 @@ const CreateVenue = ({
               <p className="alert-danger">{errors.location.address}</p>
             )}
 
-            <label>City:</label>
+            <label htmlFor="city">City:</label>
             <input
+              id="city"
               name="location.city"
               value={formData.location.city}
               onChange={handleChange}
@@ -290,8 +297,9 @@ const CreateVenue = ({
               <p className="alert-danger">{errors.location.city}</p>
             )}
 
-            <label>Country:</label>
+            <label htmlFor="country">Country:</label>
             <input
+              id="country"
               name="location.country"
               value={formData.location.country}
               onChange={handleChange}
@@ -301,18 +309,25 @@ const CreateVenue = ({
             )}
 
             {/* Media Fields */}
-            <label>Media:</label>
+            <label htmlFor="media-0">Media:</label>
             {formData.media.map((media, index) => (
               <S.MediaWrapper key={index}>
                 <S.MediaField>
-                  <S.Input
+                  <label htmlFor={`media-url-${index}`}>Image URL:</label>
+                  <input
+                    id={`media-url-${index}`}
+                    name={`media-url-${index}`}
                     placeholder="Image URL"
                     value={media.url}
                     onChange={(e) =>
                       handleMediaChange(index, 'url', e.target.value)
                     }
                   />
-                  <S.Input
+
+                  <label htmlFor={`media-alt-${index}`}>Alt text:</label>
+                  <input
+                    id={`media-alt-${index}`}
+                    name={`media-alt-${index}`}
                     placeholder="Alt text"
                     value={media.alt}
                     onChange={(e) =>
@@ -320,6 +335,7 @@ const CreateVenue = ({
                     }
                   />
                 </S.MediaField>
+
                 {formData.media.length > 1 && (
                   <S.DeleteButton onClick={() => removeMediaField(index)}>
                     <S.IconImage
@@ -330,17 +346,19 @@ const CreateVenue = ({
                 )}
               </S.MediaWrapper>
             ))}
+
             <S.ButtonContainer>
               <B.BlueButton type="button" onClick={addMediaField}>
                 Add More Images
               </B.BlueButton>
             </S.ButtonContainer>
 
-            <label>Amenities:</label>
+            <label htmlFor="amenities">Amenities:</label>
             <S.AmenitiesGrid>
               {['wifi', 'parking', 'breakfast', 'pets'].map((amenity) => (
-                <label key={amenity}>
+                <label key={amenity} htmlFor={amenity}>
                   <input
+                    id={amenity}
                     type="checkbox"
                     name={amenity}
                     checked={formData.meta[amenity]}
