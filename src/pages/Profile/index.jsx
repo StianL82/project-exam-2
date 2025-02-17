@@ -338,7 +338,7 @@ function Profile() {
           </S.ContactHeading>
         )}
 
-        <S.Container>
+        <S.Container ref={bookingsRef}>
           <Accordion defaultActiveKey={['0']} alwaysOpen>
             <Accordion.Item eventKey="0">
               <Accordion.Header>My Bookings</Accordion.Header>

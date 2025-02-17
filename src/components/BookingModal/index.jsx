@@ -4,6 +4,7 @@ import BookingCalendar from '../Calendar';
 import * as S from './index.styles';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 import { authFetch } from '../../auth/authFetch';
+import { useAuth } from '../../auth/AuthContext';
 
 /**
  * Booking Modal Component
@@ -32,6 +33,7 @@ const BookingModal = ({
   const [guests, setGuests] = useState(1);
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const { username } = useAuth();
 
   useEffect(() => {
     if (initialData) {
@@ -158,11 +160,18 @@ const BookingModal = ({
         }
       } else {
         showAlert('Booking successful! Redirecting to your profile page.');
+
         setTimeout(() => {
-          console.log('Navigating with state:', { scrollTo: 'my-bookings' });
-          navigate('/profile/:username', {
-            state: { scrollTo: 'my-bookings' },
-          });
+          if (username) {
+            console.log('Navigating with state:', { scrollTo: 'my-bookings' });
+            navigate(`/profile/${encodeURIComponent(username)}`, {
+              state: { scrollTo: 'my-bookings' },
+            });
+          } else {
+            console.error(
+              '❌ No username found in auth context. Cannot navigate to profile.'
+            );
+          }
         }, 2000);
       }
     } catch (error) {

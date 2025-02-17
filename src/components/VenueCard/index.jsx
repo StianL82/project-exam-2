@@ -12,6 +12,18 @@ const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
   const { id, name, media, price, rating, meta } = venueData;
   const defaultImage = '/images/contact-section.png';
 
+  // Funksjon for å sjekke om et domene er blokkert
+  const isBlockedDomain = (url) => {
+    const blockedDomains = ['theaureview.com', 'example.com']; // 🔥 Legg til flere hvis nødvendig
+    return blockedDomains.some((domain) => url?.includes(domain));
+  };
+
+  // Finn første gyldige bilde som ikke er fra et blokkert domene
+  const validImage = media?.find((img) => img.url && !isBlockedDomain(img.url));
+
+  // Bestem riktig bilde-URL
+  const imageUrl = validImage ? validImage.url : defaultImage;
+
   const icons = {
     wifi: meta?.wifi ? '/images/icons/wifi.svg' : null,
     parking: meta?.parking ? '/images/icons/parking.svg' : null,
@@ -37,9 +49,14 @@ const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
         >
           <S.ImageContainer>
             <S.Image
-              src={media?.[0]?.url || defaultImage}
-              alt={media?.[0]?.alt || `This is the venue image for ${name}`}
-              onError={(e) => (e.target.src = defaultImage)}
+              src={imageUrl}
+              alt={validImage?.alt || `Default image for ${name}`}
+              onError={(e) => {
+                console.warn(
+                  `⚠️ Image failed to load, switching to default: ${imageUrl}`
+                );
+                e.target.src = defaultImage;
+              }}
             />
             <S.Rating>
               {[...Array(Math.round(rating || 0))].map((_, i) => (

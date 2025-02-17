@@ -119,6 +119,22 @@ function Venue() {
   }
 
   if (venueData) {
+    const defaultImage = '/images/contact-section.png';
+
+    // Funksjon for å sjekke om et domene er blokkert
+    const isBlockedDomain = (url) => {
+      const blockedDomains = ['theaureview.com', 'example.com']; // 🔥 Legg til flere hvis nødvendig
+      return blockedDomains.some((domain) => url?.includes(domain));
+    };
+
+    // Finn første gyldige bilde som ikke er fra et blokkert domene
+    const validImage = venueData?.media?.find(
+      (img) => img.url && !isBlockedDomain(img.url)
+    );
+
+    // Bestem riktig bilde-URL
+    const imageUrl = validImage ? validImage.url : defaultImage;
+
     const {
       name,
       location,
@@ -146,7 +162,7 @@ function Venue() {
     return (
       <div>
         <S.HeroSection
-          style={{ backgroundImage: `url(${venueData.media[0]?.url || ''})` }}
+          style={{ backgroundImage: `url(${imageUrl})` }}
         ></S.HeroSection>
 
         <S.OverlayContainer>
@@ -269,7 +285,13 @@ function Venue() {
               </div>
             </div>
             <div className="carousel">
-              <VenueCarousel media={media} />
+              <VenueCarousel
+                media={
+                  media?.filter(
+                    (img) => img.url && !isBlockedDomain(img.url)
+                  ) || []
+                }
+              />
             </div>
           </div>
           <h3>View the calendar for information about available dates</h3>
