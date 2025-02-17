@@ -190,8 +190,20 @@ function Profile() {
           venues: profile.venues.filter((venue) => venue.id !== venueId),
         };
 
-        setProfile(updatedProfile);
-        localStorage.setItem('profile', JSON.stringify(updatedProfile));
+        // ❌ Fjern bookinger knyttet til det slettede stedet
+        const updatedBookings = profile.bookings.filter(
+          (booking) => booking.venue.id !== venueId
+        );
+
+        setProfile({
+          ...updatedProfile,
+          bookings: updatedBookings, // Oppdaterer også bookingene
+        });
+
+        localStorage.setItem(
+          'profile',
+          JSON.stringify({ ...updatedProfile, bookings: updatedBookings })
+        );
 
         // 🔄 Hent oppdatert data for "Bookings on My Venues"
         await fetchUpdatedVenuesWithBookings(updatedProfile.name);
