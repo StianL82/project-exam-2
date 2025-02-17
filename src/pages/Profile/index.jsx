@@ -239,7 +239,6 @@ function Profile() {
       console.log('✅ Updated profile fetched:', response.data);
       setProfile(response.data);
 
-      // 🔄 Hent oppdatert data for "Bookings on My Venues"
       await fetchUpdatedVenuesWithBookings(profileName);
     } catch (err) {
       console.error('❌ Error fetching updated profile:', err.message);
@@ -275,7 +274,7 @@ function Profile() {
 
   const { name, email, bio, avatar, banner, venueManager, bookings } =
     profile || {};
-  const venues = profile?.venues || []; // Fallback til tom array hvis venues er undefined
+  const venues = profile?.venues || [];
 
   const bannerUrl = banner?.url || '/images/default-banner.png';
   const avatarUrl = avatar?.url || '/images/default-avatar.png';
