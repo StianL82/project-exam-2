@@ -10,7 +10,7 @@ import useMediaQuery from '../../hooks/useMediaQuery';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 
 function Venues() {
-  const isMobile = useMediaQuery('(max-width: 480px)');
+  const isMobile = useMediaQuery('(max-width: 600px)');
   const venuesPerPage = isMobile ? 10 : 20;
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredVenues, setFilteredVenues] = useState([]);
