@@ -1,32 +1,28 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 /**
- * Context for managing user authentication state.
+ * Authentication context for managing user login state.
  */
 const AuthContext = createContext();
 
 /**
- * Custom hook to access the authentication context.
- *
- * @returns {Object} Authentication state and functions.
+ * Custom hook to access authentication state.
  */
 export const useAuth = () => useContext(AuthContext);
 
 /**
- * AuthProvider component to provide authentication state and functionality to its children.
+ * Provides authentication state and functions to child components.
  */
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState(null); // 👈 Lagrer brukernavnet globalt
+  const [username, setUsername] = useState(null);
 
-  /**
-   * Updates the login status and fetches the username.
-   */
+  /** Checks if the user is logged in and updates state accordingly. */
   const updateLoggedInStatus = () => {
     const token = localStorage.getItem('accessToken');
-    const profile = JSON.parse(localStorage.getItem('profile')) || {}; // Henter profilinfo
-    setIsLoggedIn(!!token);
-    setUsername(profile?.name || null); // Oppdaterer brukernavn
+    const profile = JSON.parse(localStorage.getItem('profile')) || {};
+    setIsLoggedIn(Boolean(token));
+    setUsername(profile?.name || null);
   };
 
   useEffect(() => {

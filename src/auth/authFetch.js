@@ -1,8 +1,8 @@
 import { API_KEY } from './constants';
 
 /**
- * Genererer headers for API-forespørsler.
- * @returns {Object} Headers inkludert auth-token og API-nøkkel.
+ * Provides headers for API requests, including authentication and API key.
+ * @returns {Object} Headers for API requests.
  */
 export function headers() {
   const token = localStorage.getItem('accessToken');
@@ -15,44 +15,26 @@ export function headers() {
 }
 
 /**
- * Utfører en fetch-forespørsel med autentiseringsheaders og feilbehandling.
- * @param {string} url - API-endepunktet.
- * @param {Object} [options={}] - Konfigurasjon for fetch.
- * @returns {Promise<Object>} JSON-respons fra API.
+ * Performs an authenticated fetch request with error handling.
+ * @param {string} url - The API endpoint.
+ * @param {Object} [options={}] - Fetch configuration.
+ * @returns {Promise<Object|null>} JSON response from the API or null if no content.
  */
 export async function authFetch(url, options = {}) {
   const token = localStorage.getItem('accessToken');
+  if (!token) return { errors: [{ message: 'Unauthorized' }] };
 
-  if (!token) {
-    console.error('❌ authFetch error: Ingen token funnet i LocalStorage.');
-    return { errors: [{ message: 'Unauthorized' }] };
-  }
-
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-    'X-Noroff-API-Key': '499331ba-2fa7-4908-bf07-4280374f9f87',
-  };
-
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, { ...options, headers: headers() });
 
   if (!response.ok) {
-    console.error(
-      `❌ authFetch error: ${response.status} - ${response.statusText}`
-    );
     return { errors: [{ message: response.statusText }] };
   }
 
-  // Sjekk om statusen er 204 (No Content) og returner null hvis det er tilfellet
-  if (response.status === 204) {
-    console.log('✅ authFetch: No Content (204)');
-    return null;
-  }
+  if (response.status === 204) return null;
 
   try {
     return await response.json();
-  } catch (error) {
-    console.error('❌ authFetch: Feil ved parsing av JSON:', error);
+  } catch {
     return { errors: [{ message: 'JSON parsing failed' }] };
   }
 }

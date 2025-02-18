@@ -1,7 +1,7 @@
 import { registerUser } from '../auth/register';
 
 /**
- * Setter event listener på registreringsskjemaet.
+ * Adds an event listener to the registration form and handles user registration.
  */
 export function setRegisterFormListener() {
   const form = document.querySelector('#registerForm');
@@ -13,17 +13,15 @@ export function setRegisterFormListener() {
       const formData = new FormData(form);
       const profile = Object.fromEntries(formData.entries());
 
-      // ✅ Sikrer at venueManager alltid er en boolean (true/false)
       profile.venueManager = profile.venueManager === 'on';
 
-      // ✅ Fjerner avatar hvis ingen URL er oppgitt
       if (profile.avatar_url?.trim()) {
         profile.avatar = {
           url: profile.avatar_url.trim(),
           alt: profile.avatar_alt?.trim() || '',
         };
       } else {
-        profile.avatar = null; // API-et godtar null for avatar
+        profile.avatar = null;
       }
 
       delete profile.avatar_url;
@@ -32,7 +30,7 @@ export function setRegisterFormListener() {
       try {
         await registerUser(profile);
       } catch (error) {
-        console.error('❌ Registrering feilet:', error);
+        console.error('Registration failed:', error);
       }
     });
   }

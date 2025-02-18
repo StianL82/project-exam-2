@@ -1,24 +1,20 @@
-import { API_AUTH_URL } from './constants';
+import { API_AUTH_URL, API_KEY } from './constants';
 
 /**
- * Registrerer en ny bruker i API-et.
- *
- * @param {Object} profile - Brukerdata for registrering.
- * @returns {Promise<Object>} API-respons med brukerdetaljer.
+ * Registers a new user via the API.
+ * @param {Object} profile - User registration data.
+ * @returns {Promise<Object>} API response with user details.
+ * @throws {Error} If registration fails.
  */
 export async function registerUser(profile) {
   try {
-    console.log('🚀 Registrerer bruker:', profile);
-
-    // Fjerner tomme verdier før vi sender til API-et
     const cleanProfile = {
       name: profile.name.trim(),
       email: profile.email.trim(),
-      password: profile.password, // ✅ Beholder passordet
-      venueManager: profile.venueManager ?? false, // ✅ Setter alltid en verdi (true/false)
+      password: profile.password,
+      venueManager: profile.venueManager ?? false,
     };
 
-    // ✅ Kun legg til avatar hvis URL finnes
     if (profile.avatar?.trim()) {
       cleanProfile.avatar = {
         url: profile.avatar.trim(),
@@ -26,29 +22,23 @@ export async function registerUser(profile) {
       };
     }
 
-    console.log('📤 Sender registreringsdata:', cleanProfile);
-
-    // 🔥 Bruk vanlig fetch, IKKE authFetch
     const response = await fetch(`${API_AUTH_URL}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Noroff-API-Key': '499331ba-2fa7-4908-bf07-4280374f9f87', // 🔑 API-nøkkel kreves for registrering
+        'X-Noroff-API-Key': API_KEY,
       },
       body: JSON.stringify(cleanProfile),
     });
 
     const data = await response.json();
 
-    console.log('✅ Registrering fullført:', data);
-
     if (!response.ok) {
-      throw new Error(data.errors?.[0]?.message || 'Registrering feilet');
+      throw new Error(data.errors?.[0]?.message || 'Registration failed');
     }
 
     return data;
   } catch (error) {
-    console.error('❌ Feil ved registrering:', error);
-    throw error;
+    throw new Error(`Registration failed: ${error.message}`);
   }
 }

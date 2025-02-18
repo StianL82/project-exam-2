@@ -1,48 +1,38 @@
-import { API_AUTH_URL } from './constants';
+import { API_AUTH_URL, API_KEY } from './constants';
 
 /**
- * Logger inn en bruker i API-et.
- * @param {Object} credentials - Brukerdata for innlogging (email, password).
- * @returns {Promise<Object>} API-respons med brukerdata og token.
+ * Logs in a user via the API.
+ * @param {Object} credentials - User credentials (email, password).
+ * @returns {Promise<Object>} API response containing user data and access token.
+ * @throws {Error} If login fails or response is invalid.
  */
 export async function loginUser(credentials) {
   try {
-    console.log('🔑 Prøver å logge inn med:', credentials);
-
     const response = await fetch(`${API_AUTH_URL}/login?_holidaze=true`, {
-      // 🔥 Bruker query param
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Noroff-API-Key': '499331ba-2fa7-4908-bf07-4280374f9f87',
+        'X-Noroff-API-Key': API_KEY,
       },
       body: JSON.stringify(credentials),
     });
 
     if (!response.ok) {
-      throw new Error(
-        `❌ Feil under innlogging: ${response.status} ${response.statusText}`
-      );
+      throw new Error(`${response.status} ${response.statusText}`);
     }
 
-    const responseData = await response.json();
-    console.log('✅ Innlogging vellykket:', responseData);
-
-    // 🔥 Hent riktig accessToken
-    const userData = responseData.data; // <--- Henter riktig data med _holidaze=true
-    if (!userData || !userData.accessToken) {
-      throw new Error('❌ Login response mangler `accessToken`.');
+    const { data } = await response.json();
+    if (!data?.accessToken) {
+      throw new Error('Login response missing accessToken.');
     }
 
-    const { accessToken, ...user } = userData;
+    const { accessToken, ...user } = data;
 
-    // 🔥 Lagre accessToken riktig
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('profile', JSON.stringify(user));
 
-    return userData;
+    return data;
   } catch (error) {
-    console.error('❌ Feil ved innlogging:', error);
-    throw error;
+    throw new Error(`Login failed: ${error.message}`);
   }
 }
