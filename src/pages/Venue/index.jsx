@@ -287,9 +287,11 @@ function Venue() {
             <div className="carousel">
               <VenueCarousel
                 media={
-                  media?.filter(
-                    (img) => img.url && !isBlockedDomain(img.url)
-                  ) || []
+                  media?.length > 0
+                    ? media.filter(
+                        (img) => img.url && !isBlockedDomain(img.url)
+                      )
+                    : [{ url: defaultImage, alt: 'Default venue image' }]
                 }
               />
             </div>

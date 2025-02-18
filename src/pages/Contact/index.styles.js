@@ -63,7 +63,7 @@ export const FormBackground = styled.div`
 `;
 
 export const FormContainer = styled.div`
-  background-color: #fffbd4;
+  background-color: ${(props) => props.theme.color.lightYellow};
   padding: 24px;
   border-radius: 8px;
   border: 1px solid ${(props) => props.theme.color.stroke};

@@ -150,7 +150,7 @@ export const SectionHeader = styled.h2`
 
 // Hvit boks med innhold
 export const ContentBox = styled.div`
-  background-color: white;
+  background-color: ${(props) => props.theme.color.white};
   padding: 15px;
   border-radius: 0 0 5px 5px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);

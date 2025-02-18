@@ -40,10 +40,10 @@ export const ScrollButton = styled.button`
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.75);
-    color: white;
-    padding: 5px;
+    color: ${(props) => props.theme.color.white};
+    padding: 6px;
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     white-space: nowrap;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -52,5 +52,17 @@ export const ScrollButton = styled.button`
 
   &:hover .tooltip {
     opacity: 1;
+  }
+
+  @media (min-width: 1200px) {
+    right: 50px;
+  }
+
+  @media (max-width: 768px) {
+    right: 15px;
+  }
+
+  @media (max-width: 480px) {
+    right: 10px;
   }
 `;

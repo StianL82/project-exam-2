@@ -276,12 +276,9 @@ function Profile() {
     profile || {};
   const venues = profile?.venues || [];
 
-  const bannerUrl = banner?.url || '/images/default-banner.png';
-  const avatarUrl = avatar?.url || '/images/default-avatar.png';
-
   return (
     <div>
-      <S.HeroSection bannerUrl={bannerUrl}>
+      <S.HeroSection bannerUrl={banner?.url}>
         <S.HeroText>{name}'s Profile</S.HeroText>
       </S.HeroSection>
 
@@ -290,7 +287,7 @@ function Profile() {
           <S.ProfileTitle>Profile Information</S.ProfileTitle>
           <S.ProfileGrid>
             <S.ProfileImageContainer>
-              <S.ProfileImage src={avatarUrl} alt="Profile Avatar" />
+              <S.ProfileImage src={avatar?.url} alt="Profile Avatar" />
             </S.ProfileImageContainer>
             <S.ProfileDetails>
               <p>

@@ -86,7 +86,6 @@ export const ModalContent = styled.div`
   .close-link {
     margin-top: 15px;
     font-size: 1rem;
-    color: black;
     text-decoration: none;
     align-self: flex-end;
 

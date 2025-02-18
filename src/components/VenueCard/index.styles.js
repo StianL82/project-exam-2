@@ -60,11 +60,16 @@ export const InfoContainer = styled.div`
   width: 100%;
   flex-grow: 1;
   box-sizing: border-box;
+  word-break: break-word;
+  overflow-wrap: break-word;
 `;
 
 export const Title = styled.h2`
   font-size: 1.2rem;
   margin-bottom: 8px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 `;
 
 export const Price = styled.p`

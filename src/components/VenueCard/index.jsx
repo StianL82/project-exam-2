@@ -58,11 +58,13 @@ const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
                 e.target.src = defaultImage;
               }}
             />
-            <S.Rating>
-              {[...Array(Math.round(rating || 0))].map((_, i) => (
-                <S.StarIcon key={i} src="/images/icons/star.svg" alt="" />
-              ))}
-            </S.Rating>
+            {rating > 0 && (
+              <S.Rating>
+                {[...Array(Math.round(rating || 0))].map((_, i) => (
+                  <S.StarIcon key={i} src="/images/icons/star.svg" alt="" />
+                ))}
+              </S.Rating>
+            )}
           </S.ImageContainer>
           <S.InfoContainer>
             <S.Title>{name}</S.Title>

@@ -56,44 +56,37 @@ const VenueCarousel = ({ media }) => {
   return (
     <>
       <S.StyledCarousel>
-        <Carousel>
-          {media.length > 0 ? (
-            media.map((item, index) => (
-              <Carousel.Item key={index}>
-                <img
-                  className="d-block w-100"
-                  src={item.url?.trim().length > 0 ? item.url : defaultImage}
-                  alt={item.alt || `Image ${index + 1}`}
-                  onClick={() => handleImageClick(index)}
-                  style={{ cursor: 'pointer' }}
-                />
-              </Carousel.Item>
-            ))
-          ) : (
-            <Carousel.Item>
+        <Carousel indicators={media.length > 1} controls={media.length > 1}>
+          {media.map((item, index) => (
+            <Carousel.Item key={index}>
               <img
                 className="d-block w-100"
-                src={defaultImage}
-                alt="Default venue media"
+                src={item.url?.trim().length > 0 ? item.url : defaultImage}
+                alt={item.alt || `Image ${index + 1}`}
+                onClick={() => handleImageClick(index)}
+                style={{ cursor: 'pointer' }}
               />
             </Carousel.Item>
-          )}
+          ))}
         </Carousel>
       </S.StyledCarousel>
 
       <Modal show={showModal} onHide={handleClose} centered size="lg">
         <S.ModalContent>
-          <button
-            className="modal-control prev"
-            onClick={handlePrev}
-            aria-label="Previous image"
-          >
-            <span
-              className="carousel-control-prev-icon"
-              aria-hidden="true"
-            ></span>
-            <span className="sr-only">Previous</span>
-          </button>
+          {media.length > 1 && (
+            <button
+              className="modal-control prev"
+              onClick={handlePrev}
+              aria-label="Previous image"
+            >
+              <span
+                className="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span className="sr-only">Previous</span>
+            </button>
+          )}
+
           <div className="image-container">
             {media[selectedImageIndex] && (
               <img
@@ -106,17 +99,21 @@ const VenueCarousel = ({ media }) => {
               />
             )}
           </div>
-          <button
-            className="modal-control next"
-            onClick={handleNext}
-            aria-label="Next image"
-          >
-            <span
-              className="carousel-control-next-icon"
-              aria-hidden="true"
-            ></span>
-            <span className="sr-only">Next</span>
-          </button>
+
+          {media.length > 1 && (
+            <button
+              className="modal-control next"
+              onClick={handleNext}
+              aria-label="Next image"
+            >
+              <span
+                className="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span className="sr-only">Next</span>
+            </button>
+          )}
+
           <span className="close-link" onClick={handleClose}>
             Close
           </span>

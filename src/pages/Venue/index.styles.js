@@ -34,15 +34,22 @@ export const InfoSection = styled.div`
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
 
       h1 {
         margin: 0;
         font-size: 2rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
       }
 
-      .stars {
-        display: flex;
-        gap: 5px;
+  .stars {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    max-width: 100%;
+  }
 
         .star-icon {
           width: 20px;
@@ -98,6 +105,9 @@ export const AmenitiesSection = styled.div`
   h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .amenities-grid {
@@ -161,6 +171,9 @@ export const DetailsSection = styled.div`
     display: flex;
     flex-direction: column;
     gap: 20px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 
     .description {
       text-align: left;
@@ -216,6 +229,9 @@ export const DetailsSection = styled.div`
     text-align: center;
     margin-top: 20px;
     color: ${(props) => props.theme.color.darkTurquoise};
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .calendar {

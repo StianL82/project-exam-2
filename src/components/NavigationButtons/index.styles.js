@@ -26,7 +26,7 @@ export const NavigationButton = styled.button`
   cursor: pointer;
 
   &:disabled {
-    background-color: #cccccc;
+    background-color: ${(props) => props.theme.color.mediumGray};
     color: ${(props) => props.theme.color.white};
     cursor: not-allowed;
   }

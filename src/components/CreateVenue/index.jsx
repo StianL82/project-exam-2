@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 import { authFetch } from '../../auth/authFetch';
@@ -53,6 +54,7 @@ const CreateVenue = ({
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
@@ -173,7 +175,7 @@ const CreateVenue = ({
         showAlert('Venue updated successfully!');
         setTimeout(() => {
           setAlertMessage('');
-          closeModal(); // Modalen lukkes først etter alert
+          closeModal();
           if (onVenueCreated) {
             onVenueCreated(response);
           }
@@ -185,6 +187,20 @@ const CreateVenue = ({
           closeModal();
           if (onVenueCreated) {
             onVenueCreated(response);
+          }
+
+          // 🔹 Hent ID-en til den nye venuen fra API-responsen
+          const newVenueId = response.data?.id;
+          console.log('✅ New venue ID:', newVenueId);
+
+          // 🔹 Naviger til den nye venue-siden hvis ID-en finnes
+          if (newVenueId) {
+            navigate(`/venue/${response.data.id}`);
+            setTimeout(() => {
+              window.scrollTo(0, 0);
+            }, 100);
+          } else {
+            console.error('❌ Venue ID is missing from API response.');
           }
         }, 2000);
       }
@@ -228,7 +244,9 @@ const CreateVenue = ({
             />
             {errors.name && <p className="alert-danger">{errors.name}</p>}
 
-            <label htmlFor="rating">Rating:</label>
+            <label htmlFor="rating" id="rating-label">
+              Rating:
+            </label>
             <input
               id="rating"
               name="rating"
@@ -238,6 +256,7 @@ const CreateVenue = ({
               min="0"
               max="5"
               step="1"
+              aria-labelledby="rating-label"
             />
             {errors.rating && <p className="alert-danger">{errors.rating}</p>}
 
@@ -258,6 +277,7 @@ const CreateVenue = ({
               id="price"
               name="price"
               type="number"
+              min="0"
               value={formData.price}
               onChange={handleChange}
             />
@@ -268,6 +288,7 @@ const CreateVenue = ({
               id="maxGuests"
               name="maxGuests"
               type="number"
+              min="0"
               value={formData.maxGuests}
               onChange={handleChange}
             />
@@ -363,6 +384,7 @@ const CreateVenue = ({
                     name={amenity}
                     checked={formData.meta[amenity]}
                     onChange={handleChange}
+                    aria-label={`Enable ${amenity} amenity`}
                   />
                   {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
                 </label>
