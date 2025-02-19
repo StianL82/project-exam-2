@@ -5,11 +5,11 @@ import { loginUser } from '../auth/login';
  * This function prevents the default form submission behavior,
  * extracts user credentials, and attempts to log in.
  */
-export function setLoginFormListener() {
+export function setLoginFormListener(setError) {
   const form = document.querySelector('#loginForm');
 
   if (!form) {
-    console.error('Login form not found.');
+    setError('Login form not found.');
     return;
   }
 
@@ -22,7 +22,7 @@ export function setLoginFormListener() {
     try {
       await loginUser(profile);
     } catch (error) {
-      console.error('Login error:', error);
+      setError('Login failed due to a server error. Please try again later.');
     }
   });
 }

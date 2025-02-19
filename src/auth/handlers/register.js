@@ -3,7 +3,7 @@ import { registerUser } from '../auth/register';
 /**
  * Adds an event listener to the registration form and handles user registration.
  */
-export function setRegisterFormListener() {
+export function setRegisterFormListener(setError) {
   const form = document.querySelector('#registerForm');
 
   if (form) {
@@ -30,7 +30,9 @@ export function setRegisterFormListener() {
       try {
         await registerUser(profile);
       } catch (error) {
-        console.error('Registration failed:', error);
+        setError(
+          'Registration failed due to a server error. Please try again later.'
+        );
       }
     });
   }

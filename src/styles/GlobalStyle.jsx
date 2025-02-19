@@ -58,8 +58,8 @@ const spin = keyframes`
 `;
 
 export const LoadingSpinner = styled.div`
-  border: 4px solid var(--color-lightGray);
-  border-top: 4px solid var(--color-turquoise);
+  border: 4px solid ${(props) => props.theme.color.lightGray};
+  border-top: 4px solid ${(props) => props.theme.color.turquoise};
   border-radius: 50%;
   width: 80px;
   height: 80px;
@@ -160,8 +160,8 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .error {
-    border: 1px solid var(--color-danger);
-    color: var(--color-danger);
+    border: 1px solid ${(props) => props.theme.color.dangerColor};
+    color: ${(props) => props.theme.color.dangerColor};
     background: rgba(220, 53, 69, 0.1);
     max-width: 500px;
     margin: 20px auto;
@@ -202,7 +202,6 @@ const GlobalStyle = createGlobalStyle`
   padding: 15px;
   border-radius: 0 0 5px 5px;
 }
-
 `;
 
 export default GlobalStyle;

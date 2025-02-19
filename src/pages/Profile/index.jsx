@@ -96,7 +96,9 @@ function Profile() {
 
         fetchVenuesWithBookings(response.data.name);
       } catch (err) {
-        setError('Failed to load profile. Please try again.');
+        setError(
+          'Failed to retrieve profile data from the server. This may be due to a temporary issue with the API. Please check your internet connection or try again later.'
+        );
       } finally {
         setLoading(false);
       }

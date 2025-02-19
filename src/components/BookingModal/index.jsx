@@ -138,13 +138,18 @@ const BookingModal = ({
       : `${API_HOLIDAZE_URL}/bookings`;
 
     try {
-      const data = await authFetch(endpoint, {
+      const response = await authFetch(endpoint, {
         method: method,
         body: JSON.stringify(bookingData),
       });
 
+      if (!response || response.errors) {
+        showAlert('An error occurred while making the booking.', true);
+        return;
+      }
+
       if (initialData) {
-        showAlert('Booking updated successfully!', data);
+        showAlert('Booking updated successfully!', false);
         setTimeout(() => {
           setAlertMessage('');
           onClose();

@@ -74,9 +74,8 @@ export default function useAPI(url, sort = null) {
         if (isMounted) {
           setData(allData);
         }
-      } catch (error) {
+      } catch {
         if (isMounted) {
-          console.error('Error fetching data:', error);
           setIsError(true);
         }
       } finally {
