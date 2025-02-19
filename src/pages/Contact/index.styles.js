@@ -21,7 +21,6 @@ export const HeroText = styled.h1`
   color: ${(props) => props.theme.color.white};
   text-align: center;
   padding: 20px;
-  border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.01);
 `;
 
@@ -39,9 +38,7 @@ export const DividerContainer = styled.div`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  margin: 0 auto;
-  margin-bottom: 50px;
-  margin-top: 30px;
+  margin: 30px auto 50px;
 
   @media (max-width: 1158px) {
     width: 50%;
@@ -144,5 +141,4 @@ export const ContactEnding = styled.h3`
   color: ${(props) => props.theme.color.darkGray};
   font-size: clamp(1rem, 7vw, 1.5rem);
   margin: 20px 0;
-  padding: 0px;
 `;

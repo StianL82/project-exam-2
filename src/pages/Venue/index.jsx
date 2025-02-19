@@ -11,6 +11,41 @@ import VenueCarousel from '../../components/Carousel';
 import BookingModal from '../../components/BookingModal';
 import BookingCalendar from '../../components/Calendar';
 
+/**
+ * Venue Page Component
+ *
+ * Displays detailed information about a venue, including its amenities, location, price,
+ * maximum guests, and availability. Users can log in to book a stay.
+ *
+ * @component
+ * @returns {JSX.Element|null} The venue details page or `null` if the venue is not found.
+ *
+ * @dependencies
+ * - React useState, useEffect
+ * - useParams from react-router-dom for dynamic URL handling
+ * - useAuth for authentication status
+ * - Components: Login, Register, VenueCarousel, BookingModal, BookingCalendar
+ * - API_HOLIDAZE_URL constant for fetching venue data
+ *
+ * @state {Object|null} venueData - Stores the venue details.
+ * @state {boolean} isLoading - Tracks if data is being fetched.
+ * @state {string|null} error - Stores error messages if fetching fails.
+ * @state {boolean} showLogin - Controls login modal visibility.
+ * @state {boolean} showRegister - Controls register modal visibility.
+ * @state {boolean} showBookingModal - Controls booking modal visibility.
+ * @state {string} email - Stores prefilled email when opening login.
+ * @state {Array} bookedDates - Stores unavailable dates for the venue.
+ *
+ * @effect Fetches venue details from the API on component mount.
+ * @effect Scrolls to the top when the page is loaded.
+ *
+ * @function openLogin - Opens the login modal.
+ * @function openRegister - Opens the register modal.
+ * @function closeModal - Closes login/register modals and resets email state.
+ * @function openBookingModal - Opens the booking modal.
+ * @function closeBookingModal - Closes the booking modal.
+ */
+
 function Venue() {
   const { id } = useParams();
   const { isLoggedIn } = useAuth();
@@ -71,7 +106,6 @@ function Venue() {
         const data = await response.json();
         setVenueData(data.data);
 
-        // Hent opptatte datoer fra bookings
         if (data.data.bookings) {
           const unavailableDates = [];
           data.data.bookings.forEach((booking) => {
@@ -121,18 +155,15 @@ function Venue() {
   if (venueData) {
     const defaultImage = '/images/contact-section.png';
 
-    // Funksjon for å sjekke om et domene er blokkert
     const isBlockedDomain = (url) => {
-      const blockedDomains = ['theaureview.com', 'example.com']; // 🔥 Legg til flere hvis nødvendig
+      const blockedDomains = ['theaureview.com', 'example.com'];
       return blockedDomains.some((domain) => url?.includes(domain));
     };
 
-    // Finn første gyldige bilde som ikke er fra et blokkert domene
     const validImage = venueData?.media?.find(
       (img) => img.url && !isBlockedDomain(img.url)
     );
 
-    // Bestem riktig bilde-URL
     const imageUrl = validImage ? validImage.url : defaultImage;
 
     const {

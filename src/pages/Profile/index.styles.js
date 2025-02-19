@@ -36,7 +36,7 @@ export const PersonalContainer = styled.div`
   margin: auto;
   margin-top: 40px;
   text-align: center;
-  overflow: hidden; /* Sørger for at ingenting går ut av containeren */
+  overflow: hidden;
 `;
 
 export const ProfileTitle = styled.h2`
@@ -44,8 +44,8 @@ export const ProfileTitle = styled.h2`
   font-size: clamp(1.2rem, 5vw, 2rem);
   width: 100%;
   margin-bottom: 15px;
-  word-break: break-word; /* Sikrer at lange ord brytes */
-  overflow-wrap: break-word; /* Hindrer at tekst går utenfor container */
+  word-break: break-word;
+  overflow-wrap: break-word;
 `;
 
 export const ProfileGrid = styled.div`
@@ -53,7 +53,7 @@ export const ProfileGrid = styled.div`
   grid-template-columns: 1fr 2fr;
   gap: 20px;
   align-items: center;
-  width: 100%; /* Hindrer grid fra å gå ut av container */
+  width: 100%;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -72,25 +72,25 @@ export const ProfileImageContainer = styled.div`
 
 export const ProfileImage = styled.img`
   width: 150px;
-  height: 150px; /* 🔥 Sørger for at høyden alltid matcher bredden */
+  height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  max-width: 100%; /* Hindrer at bildet blir for stort */
-  display: block; /* Hindrer ekstra mellomrom under bildet */
+  max-width: 100%;
+  display: block;
 
   @media (max-width: 768px) {
     width: 90%;
-    height: auto; /* Dette er ok siden max-width sikrer at bildet ikke strekkes */
+    height: auto;
     max-width: 150px;
-    aspect-ratio: 1 / 1; /* 🔥 Bevarer kvadratisk form på små skjermer */
+    aspect-ratio: 1 / 1;
   }
 `;
 
 export const ProfileDetails = styled.div`
   text-align: left;
   font-size: 1.1rem;
-  word-break: break-word; /* Sikrer at lange ord brytes */
-  overflow-wrap: break-word; /* Forhindrer at lange e-poster kuttes */
+  word-break: break-word;
+  overflow-wrap: break-word;
 
   @media (max-width: 768px) {
     text-align: center;
@@ -130,32 +130,9 @@ export const DividerContainer = styled.div`
   }
 `;
 
-// Container for seksjonene
 export const Container = styled.div`
   margin: 20px auto;
   max-width: 1400px;
-`;
-
-// Blå seksjonsoverskrift
-export const SectionHeader = styled.h2`
-  background-color: ${(props) => props.theme.color.lightBlue};
-  color: #5a5a5a;
-  padding: 10px 15px;
-  border-radius: 5px 5px 0 0;
-  font-size: 1.4rem;
-  font-weight: bold;
-  text-align: left;
-  margin-bottom: 0;
-`;
-
-// Hvit boks med innhold
-export const ContentBox = styled.div`
-  background-color: ${(props) => props.theme.color.white};
-  padding: 15px;
-  border-radius: 0 0 5px 5px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ddd;
-  border-top: none;
 `;
 
 export const VenueGridContainer = styled.div`

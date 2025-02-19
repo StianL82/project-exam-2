@@ -29,6 +29,17 @@ const schema = yup
   })
   .required();
 
+/**
+ * Contact Page
+ *
+ * A contact form for users to submit inquiries or feedback.
+ * The form includes validation for name, email, subject, and message fields.
+ * Upon successful submission, a success message is displayed for a few seconds.
+ *
+ * @component
+ * @returns {JSX.Element} The Contact page with a form and submission handling.
+ */
+
 function Contact() {
   const {
     register,
@@ -41,8 +52,7 @@ function Contact() {
 
   const [showAlert, setShowAlert] = useState(false);
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = () => {
     setShowAlert(true);
     reset();
     setTimeout(() => setShowAlert(false), 3000);
@@ -50,11 +60,9 @@ function Contact() {
 
   return (
     <div>
-      <div>
-        <S.HeroSection>
-          <S.HeroText>Contact Us</S.HeroText>
-        </S.HeroSection>
-      </div>
+      <S.HeroSection>
+        <S.HeroText>Contact Us</S.HeroText>
+      </S.HeroSection>
       <div className="container">
         <S.ContactHeading>
           Please contact us if you have any questions or feedback
@@ -75,13 +83,11 @@ function Contact() {
             <label htmlFor="subject">Subject:</label>
             <input id="subject" {...register('subject')} />
             <p className="alert-danger">{errors.subject?.message}</p>
-            <label htmlFor="message">Messange:</label>
+            <label htmlFor="message">Message:</label>
             <textarea id="message" {...register('message')} />
             <p className="alert-danger">{errors.message?.message}</p>
             <S.ButtonContainer>
-              <B.OrangeButton type="submit" className="btn btn-success">
-                Send In
-              </B.OrangeButton>
+              <B.OrangeButton type="submit">Send</B.OrangeButton>
             </S.ButtonContainer>
           </form>
           {showAlert && (

@@ -12,6 +12,40 @@ import VenueCard from '../../components/VenueCard';
 import MyVenueBookingCard from '../../components/MyVenueBookingCard';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 
+/**
+ * Profile Page Component
+ *
+ * Displays the user's profile information, including their avatar, email, bio, and account type.
+ * If the user is a Venue Manager, they can create venues, view their own venues, and see bookings on their venues.
+ * Users can also view their personal bookings and update their profile details.
+ *
+ * @component
+ * @returns {JSX.Element} The profile page with user details, bookings, venues, and profile update functionality.
+ *
+ * @dependencies
+ * - React useState, useEffect, useRef, useLocation
+ * - authFetch for API requests
+ * - UpdateProfile, CreateVenue, BookingCard, VenueCard, MyVenueBookingCard components
+ * - react-bootstrap Accordion
+ * - API_HOLIDAZE_URL constant
+ *
+ * @state {Object} profile - Stores the user's profile information.
+ * @state {boolean} loading - Indicates if the profile is still being fetched.
+ * @state {string} error - Stores any error messages encountered during data fetching.
+ * @state {boolean} showUpdateModal - Controls the visibility of the update profile modal.
+ * @state {boolean} showCreateVenueModal - Controls the visibility of the create venue modal.
+ * @state {Array} venuesWithBookings - Stores the venues owned by the user that have bookings.
+ *
+ * @effect Fetches user profile details on mount and updates localStorage.
+ * @effect Scrolls to "My Bookings" section if the user was redirected from another page.
+ *
+ * @function handleProfileUpdate - Updates the profile state and re-fetches data after an update.
+ * @function handleBookingDeleted - Removes a deleted booking from the profile.
+ * @function fetchUpdatedVenuesWithBookings - Fetches updated venue data after a booking/venue change.
+ * @function handleDeleteVenue - Deletes a venue and updates the profile state.
+ * @function handleVenueCreated - Adds a newly created venue to the profile.
+ */
+
 function Profile() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +54,6 @@ function Profile() {
   const [showCreateVenueModal, setShowCreateVenueModal] = useState(false);
   const [venuesWithBookings, setVenuesWithBookings] = useState([]);
 
-  // Scroll til 'My Bookings' hvis state indikerer det
   const location = useLocation();
   const bookingsRef = useRef(null);
 
@@ -30,7 +63,7 @@ function Profile() {
         if (bookingsRef.current) {
           bookingsRef.current.scrollIntoView({ behavior: 'smooth' });
         }
-      }, 500); // Vent 500 ms
+      }, 500);
 
       return () => clearTimeout(timer);
     }
@@ -49,7 +82,6 @@ function Profile() {
       }
 
       const profileUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}?_bookings=true&_venues=true`;
-      console.log('🔍 Fetching profile from API:', profileUrl);
 
       try {
         const response = await authFetch(profileUrl);
@@ -59,14 +91,11 @@ function Profile() {
           );
         }
 
-        console.log('✅ Profile data received:', response.data);
         setProfile(response.data);
         localStorage.setItem('profile', JSON.stringify(response.data));
 
-        // 🔄 Fetch detailed venue data with bookings
         fetchVenuesWithBookings(response.data.name);
       } catch (err) {
-        console.error('❌ Error fetching profile:', err.message);
         setError('Failed to load profile. Please try again.');
       } finally {
         setLoading(false);
@@ -75,24 +104,17 @@ function Profile() {
 
     async function fetchVenuesWithBookings(profileName) {
       const venuesUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}/venues?_bookings=true&_owner=true`;
-      console.log(
-        '🔍 Fetching venues created by the profile with bookings:',
-        venuesUrl
-      );
 
       try {
         const response = await authFetch(venuesUrl);
         if (!response || response.errors) {
-          throw new Error(response.errors?.[0]?.message || 'No venues found.');
+          setError('No venues found.');
+          return;
         }
 
-        console.log(
-          '✅ Venues with bookings for this user received:',
-          response.data
-        );
         setVenuesWithBookings(response.data);
       } catch (err) {
-        console.error('❌ Error fetching venues with bookings:', err.message);
+        setError('Failed to fetch venues with bookings.');
       }
     }
 
@@ -100,30 +122,25 @@ function Profile() {
   }, []);
 
   const handleProfileUpdate = async (updatedProfile) => {
-    console.log('🔄 Profile updated:', updatedProfile);
     setProfile(updatedProfile);
     localStorage.setItem('profile', JSON.stringify(updatedProfile));
 
-    // Hent oppdatert profil fra API for å sikre at bookings er oppdatert
     const profileName = updatedProfile.name;
     const profileUrl = `${API_HOLIDAZE_URL}/profiles/${encodeURIComponent(profileName)}?_bookings=true&_venues=true`;
 
     try {
       const response = await authFetch(profileUrl);
       if (!response || response.errors) {
-        console.error('❌ Error fetching updated profile:', response.errors);
+        setError('Error fetching updated profile.');
         return;
       }
-      console.log('✅ Updated profile with bookings fetched:', response.data);
-      setProfile(response.data); // Oppdaterer profilen med de nyeste bookingene
-    } catch (err) {
-      console.error('❌ Error fetching updated profile:', err.message);
+      setProfile(response.data);
+    } catch {
+      setError('Failed to fetch updated profile.');
     }
   };
 
   const handleBookingDeleted = async (deletedBookingId) => {
-    console.log(`🔄 Booking deleted with ID: ${deletedBookingId}`);
-
     const storedProfile = localStorage.getItem('profile');
     const profileData = storedProfile ? JSON.parse(storedProfile) : null;
     const profileName = profileData?.name;
@@ -132,17 +149,13 @@ function Profile() {
     try {
       const response = await authFetch(profileUrl);
       if (!response || response.errors) {
-        console.error('❌ Error fetching updated profile:', response.errors);
+        setError('Error fetching updated profile.');
         return;
       }
 
-      console.log(
-        '✅ Updated profile with new bookings fetched:',
-        response.data
-      );
-      setProfile(response.data); // Oppdaterer profilen med de nyeste bookingene
-    } catch (err) {
-      console.error('❌ Error fetching updated profile:', err.message);
+      setProfile(response.data);
+    } catch {
+      setError('Failed to fetch updated profile.');
     }
   };
 
@@ -151,73 +164,55 @@ function Profile() {
 
     try {
       const venuesResponse = await authFetch(venuesUrl);
-      if (venuesResponse && !venuesResponse.errors) {
-        console.log(
-          '✅ Updated venues with bookings fetched:',
-          venuesResponse.data
-        );
-        setVenuesWithBookings(venuesResponse.data);
-      } else {
-        console.error(
-          '❌ Error fetching updated venues with bookings:',
-          venuesResponse.errors
-        );
+      if (!venuesResponse || venuesResponse.errors) {
+        setError('Error fetching updated venues with bookings.');
+        return;
       }
-    } catch (err) {
-      console.error(
-        '❌ Error fetching updated venues with bookings:',
-        err.message
-      );
+
+      setVenuesWithBookings(venuesResponse.data);
+    } catch {
+      setError('Failed to fetch updated venues with bookings.');
     }
   };
 
   const handleDeleteVenue = async (venueId) => {
-    console.log(`🗑 Attempting to delete venue with ID: ${venueId}`);
-
     try {
       const response = await authFetch(
         `${API_HOLIDAZE_URL}/venues/${venueId}`,
-        {
-          method: 'DELETE',
-        }
+        { method: 'DELETE' }
       );
 
-      if (response === null) {
-        console.log('✅ Venue deleted successfully.');
-
-        const updatedProfile = {
-          ...profile,
-          venues: profile.venues.filter((venue) => venue.id !== venueId),
-        };
-
-        // ❌ Fjern bookinger knyttet til det slettede stedet
-        const updatedBookings = profile.bookings.filter(
-          (booking) => booking.venue.id !== venueId
-        );
-
-        setProfile({
-          ...updatedProfile,
-          bookings: updatedBookings, // Oppdaterer også bookingene
-        });
-
-        localStorage.setItem(
-          'profile',
-          JSON.stringify({ ...updatedProfile, bookings: updatedBookings })
-        );
-
-        // 🔄 Hent oppdatert data for "Bookings on My Venues"
-        await fetchUpdatedVenuesWithBookings(updatedProfile.name);
-      } else {
-        console.error('❌ Failed to delete venue. Response:', response);
+      if (!response) {
+        setError('Failed to delete venue.');
+        return;
       }
-    } catch (error) {
-      console.error('❌ Error deleting venue:', error);
+
+      const updatedProfile = {
+        ...profile,
+        venues: profile.venues.filter((venue) => venue.id !== venueId),
+      };
+
+      const updatedBookings = profile.bookings.filter(
+        (booking) => booking.venue.id !== venueId
+      );
+
+      setProfile({
+        ...updatedProfile,
+        bookings: updatedBookings,
+      });
+
+      localStorage.setItem(
+        'profile',
+        JSON.stringify({ ...updatedProfile, bookings: updatedBookings })
+      );
+
+      await fetchUpdatedVenuesWithBookings(updatedProfile.name);
+    } catch {
+      setError('Error deleting venue. Please try again.');
     }
   };
 
   const handleVenueCreated = async (newVenue) => {
-    console.log('🏨 New venue created:', newVenue);
-
     const updatedProfile = {
       ...profile,
       venues: [...profile.venues, newVenue],
@@ -232,16 +227,14 @@ function Profile() {
     try {
       const response = await authFetch(profileUrl);
       if (!response || response.errors) {
-        console.error('❌ Error fetching updated profile:', response.errors);
+        setError('Error fetching updated profile.');
         return;
       }
 
-      console.log('✅ Updated profile fetched:', response.data);
       setProfile(response.data);
-
       await fetchUpdatedVenuesWithBookings(profileName);
-    } catch (err) {
-      console.error('❌ Error fetching updated profile:', err.message);
+    } catch {
+      setError('Error fetching updated profile. Please try again.');
     }
   };
 
@@ -371,9 +364,7 @@ function Profile() {
                             key={venue.id || `venue-${Math.random()}`}
                             venue={venue}
                             showEditDelete
-                            onEdit={(venue) =>
-                              console.log('Edit Venue:', venue)
-                            }
+                            onEdit={() => {}}
                             onDelete={(id) => handleDeleteVenue(id)}
                           />
                         ))

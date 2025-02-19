@@ -7,6 +7,16 @@ import useAPI from '../../hooks/useAPI';
 import VenueGrid from '../../components/VenueGrid';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 
+/**
+ * Home Component
+ *
+ * The homepage of Holidaze, displaying top-rated venues, a call-to-action for venue exploration,
+ * and a contact section. It fetches venue data, filters for the highest-rated ones, and presents them.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Home page.
+ */
+
 function Home() {
   const { data, isLoading, isError } = useAPI(`${API_HOLIDAZE_URL}/venues`);
 
@@ -16,8 +26,6 @@ function Home() {
 
   useEffect(() => {
     if (data.length > 0) {
-      console.log('Fetched data:', data);
-
       const ratedFive = data.filter((venue) => venue.rating === 5);
 
       const sortedByDate = ratedFive.sort(

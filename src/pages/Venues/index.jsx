@@ -9,6 +9,16 @@ import NavigationButtons from '../../components/NavigationButtons';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 
+/**
+ * Venues Page Component
+ *
+ * Displays a list of available venues with search and pagination functionality.
+ * Users can search for specific venues and navigate between pages.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Venues page.
+ */
+
 function Venues() {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const venuesPerPage = isMobile ? 10 : 20;
@@ -65,7 +75,7 @@ function Venues() {
         </S.HeroSection>
       </div>
       <div className="container">
-        <S.SearchHeading>Some of our Top Destinations</S.SearchHeading>
+        <S.SearchHeading>Search for a specific venue</S.SearchHeading>
         <S.SearchBarContainer>
           <SearchBar onSearch={handleSearch} />
         </S.SearchBarContainer>

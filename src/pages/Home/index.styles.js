@@ -21,7 +21,6 @@ export const HeroText = styled.h1`
   color: ${(props) => props.theme.color.black};
   text-align: center;
   padding: 20px;
-  border-radius: 8px;
 `;
 
 export const TopDestinations = styled.h2`
@@ -29,12 +28,6 @@ export const TopDestinations = styled.h2`
   color: ${(props) => props.theme.color.darkTurquoise};
   font-size: clamp(1.5rem, 7vw, 2rem);
   margin: 20px 0;
-`;
-
-export const Paragraph = styled.p`
-  font-size: ${(props) => props.theme.fontSizes.medium};
-  margin-bottom: ${(props) => props.theme.spacing.medium};
-  text-align: center;
 `;
 
 export const DividerContainer = styled.div`
