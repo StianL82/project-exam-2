@@ -120,7 +120,10 @@ const Register = ({ showModal, closeModal, openLogin }) => {
                 <p className="alert-danger">{errors.avatar.message}</p>
               )}
 
-              <label htmlFor="avatarAlt">Avatar Alt Text (optional):</label>
+              <label htmlFor="avatarAlt">
+                {' '}
+                Avatar Image description (optional):
+              </label>
               <input id="avatarAlt" type="text" {...register('avatarAlt')} />
               {errors.avatarAlt && (
                 <p className="alert-danger">{errors.avatarAlt.message}</p>

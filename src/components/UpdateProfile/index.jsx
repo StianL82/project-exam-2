@@ -159,7 +159,7 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                 onFocus={(e) => e.target.select()}
               />
 
-              <label htmlFor="avatarAlt">Avatar Alt Text:</label>
+              <label htmlFor="avatarAlt">Avatar image description:</label>
               <input
                 id="avatarAlt"
                 type="text"
@@ -177,7 +177,7 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                 onFocus={(e) => e.target.select()}
               />
 
-              <label htmlFor="bannerAlt">Banner Alt Text:</label>
+              <label htmlFor="bannerAlt">Banner image description:</label>
               <input
                 id="bannerAlt"
                 type="text"

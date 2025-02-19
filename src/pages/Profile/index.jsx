@@ -142,7 +142,7 @@ function Profile() {
     }
   };
 
-  const handleBookingDeleted = async (deletedBookingId) => {
+  const handleBookingDeleted = async () => {
     const storedProfile = localStorage.getItem('profile');
     const profileData = storedProfile ? JSON.parse(storedProfile) : null;
     const profileName = profileData?.name;
@@ -151,13 +151,12 @@ function Profile() {
     try {
       const response = await authFetch(profileUrl);
       if (!response || response.errors) {
-        setError('Error fetching updated profile.');
+        setError('Failed to fetch updated profile. Please try again.');
         return;
       }
-
       setProfile(response.data);
-    } catch {
-      setError('Failed to fetch updated profile.');
+    } catch (err) {
+      setError('Failed to fetch updated profile. Please try again.');
     }
   };
 
@@ -167,13 +166,16 @@ function Profile() {
     try {
       const venuesResponse = await authFetch(venuesUrl);
       if (!venuesResponse || venuesResponse.errors) {
-        setError('Error fetching updated venues with bookings.');
+        setError(
+          'Error fetching updated venues with bookings. Please try again.'
+        );
         return;
       }
-
       setVenuesWithBookings(venuesResponse.data);
-    } catch {
-      setError('Failed to fetch updated venues with bookings.');
+    } catch (err) {
+      setError(
+        'Failed to fetch updated venues with bookings. Please try again.'
+      );
     }
   };
 
@@ -184,8 +186,8 @@ function Profile() {
         { method: 'DELETE' }
       );
 
-      if (!response) {
-        setError('Failed to delete venue.');
+      if (response && response.errors) {
+        setError('Failed to delete venue. Please try again.');
         return;
       }
 
@@ -209,8 +211,8 @@ function Profile() {
       );
 
       await fetchUpdatedVenuesWithBookings(updatedProfile.name);
-    } catch {
-      setError('Error deleting venue. Please try again.');
+    } catch (error) {
+      setError(`Error deleting venue: ${error.message}`);
     }
   };
 
@@ -235,7 +237,7 @@ function Profile() {
 
       setProfile(response.data);
       await fetchUpdatedVenuesWithBookings(profileName);
-    } catch {
+    } catch (err) {
       setError('Error fetching updated profile. Please try again.');
     }
   };

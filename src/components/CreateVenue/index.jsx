@@ -373,11 +373,13 @@ const CreateVenue = ({
                     }
                   />
 
-                  <label htmlFor={`media-alt-${index}`}>Alt text:</label>
+                  <label htmlFor={`media-alt-${index}`}>
+                    Image description:
+                  </label>
                   <input
                     id={`media-alt-${index}`}
                     name={`media-alt-${index}`}
-                    placeholder="Alt text"
+                    placeholder="Image description"
                     value={media.alt}
                     onChange={(e) =>
                       handleMediaChange(index, 'alt', e.target.value)
@@ -435,7 +437,6 @@ const CreateVenue = ({
           </S.FormContainer>
         </S.FormBackground>
         <S.CloseButton onClick={closeModal}>Close</S.CloseButton>
-
       </S.ModalContent>
       {alertMessage && (
         <div className="custom-alert">
