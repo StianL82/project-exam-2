@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 export const Logo = styled.img`
   height: auto;
   width: 100px;
-  max-width: 100%;
+
   object-fit: contain;
 `;
 
@@ -51,20 +51,27 @@ export const StyledNavbar = styled(Navbar)`
     align-items: center;
   }
 
+  @media (max-width: 576px) {
+    .navbar-nav {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+
   @media (max-width: 179px) {
     .navbar-toggler {
-      order: 1 !important;
+      order: 1;
     }
 
     .navbar-brand {
-      order: 2 !important;
+      order: 2;
       margin: 0 auto;
       display: flex;
       justify-content: center;
     }
 
     .navbar-collapse {
-      order: 3 !important;
+      order: 3;
     }
   }
 `;

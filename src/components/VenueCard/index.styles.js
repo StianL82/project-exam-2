@@ -140,5 +140,5 @@ export const DeleteButton = styled(Button)`
 export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: auto; // Skyver hele containeren ned
+  margin-top: auto;
 `;

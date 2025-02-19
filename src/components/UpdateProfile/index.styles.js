@@ -158,14 +158,13 @@ export const CloseButton = styled.button`
 `;
 
 export const AlertSuccess = styled.div`
-  background-color: ${(props) => props.theme.color.lightGreen};
-  border: 1px solid ${(props) => props.theme.color.darkGreen};
-  color: ${(props) => props.theme.color.darkGreen};
-  border-radius: 4px;
-  padding: 10px 15px;
-  margin: 20px 0;
-  font-size: 1rem;
+  border: 1px solid ${(props) => props.theme.color.success};
+  color: ${(props) => props.theme.color.success};
+  background: rgba(40, 167, 69, 0.1);
+  max-width: 500px;
+  margin: 20px auto;
   text-align: center;
-  font-family: 'Nunito', Arial, sans-serif;
-  font-weight: bold;
+  padding: 20px;
+  border-radius: 8px;
+  font-size: 1rem;
 `;

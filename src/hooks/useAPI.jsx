@@ -1,5 +1,21 @@
 import { useEffect, useState } from 'react';
 
+/**
+ * useAPI Hook
+ *
+ * Fetches paginated data from an API, validates media URLs, and optionally sorts results.
+ *
+ * @param {string} url - The API endpoint to fetch data from.
+ * @param {string|null} [sort=null] - Optional sorting parameter. Supports:
+ *  - `"created:desc"` (Newest first)
+ *  - `"created:asc"` (Oldest first)
+ *
+ * @returns {Object} API response state.
+ * @returns {Array<Object>} return.data - The fetched data.
+ * @returns {boolean} return.isLoading - Indicates if the data is currently being fetched.
+ * @returns {boolean} return.isError - Indicates if an error occurred during the fetch.
+ */
+
 export default function useAPI(url, sort = null) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +45,10 @@ export default function useAPI(url, sort = null) {
 
           const validatedData = json.data.map((venue) => ({
             ...venue,
-            media: venue.media?.filter((media) => media.url && media.url.startsWith('http')) || [],
+            media:
+              venue.media?.filter(
+                (media) => media.url && media.url.startsWith('http')
+              ) || [],
           }));
 
           allData = [...allData, ...validatedData];
@@ -76,9 +95,3 @@ export default function useAPI(url, sort = null) {
 
   return { data, isLoading, isError };
 }
-
-
-
-
-
-

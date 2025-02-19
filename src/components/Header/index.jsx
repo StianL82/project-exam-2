@@ -12,8 +12,32 @@ import * as B from '../../styles/GlobalStyle';
 import { useAuth } from '../../auth/AuthContext';
 
 /**
- * HeaderNav - A navigation component for the Holidaze application.
+ * HeaderNav Component
+ *
+ * The main navigation bar for the Holidaze application.
+ * Includes navigation links, authentication controls, and login/register modals.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered header navigation.
+ *
+ * @example
+ * <HeaderNav />
+ *
+ * @state {boolean} isExpanded - Controls whether the mobile menu is expanded.
+ * @state {boolean} showLogin - Determines if the login modal is visible.
+ * @state {boolean} showRegister - Determines if the register modal is visible.
+ * @state {string} email - Stores a prefilled email for the login modal.
+ *
+ * @context {boolean} isLoggedIn - Indicates whether a user is logged in.
+ * @context {string} username - The logged-in user's username.
+ * @context {Function} updateLoggedInStatus - Updates authentication state.
+ *
+ * @function openLogin - Opens the login modal with an optional prefilled email.
+ * @function openRegister - Opens the register modal.
+ * @function closeModal - Closes both login and register modals.
+ * @function handleLogout - Logs out the user and redirects to the homepage.
  */
+
 function HeaderNav() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -24,35 +48,23 @@ function HeaderNav() {
   const navRef = useRef(null);
   const navigate = useNavigate();
 
-  /**
-   * Opens the Login modal with an optional pre-filled email.
-   */
   const openLogin = (prefillEmail = '') => {
     setEmail(prefillEmail);
     setShowLogin(true);
     setShowRegister(false);
   };
 
-  /**
-   * Opens the Register modal.
-   */
   const openRegister = () => {
     setShowRegister(true);
     setShowLogin(false);
   };
 
-  /**
-   * Closes both Login and Register modals and clears the pre-filled email.
-   */
   const closeModal = () => {
     setShowLogin(false);
     setShowRegister(false);
     setEmail('');
   };
 
-  /**
-   * Logs out the user by removing tokens and navigating to the homepage.
-   */
   const handleLogout = () => {
     logOutUser(updateLoggedInStatus, navigate);
   };
@@ -96,7 +108,7 @@ function HeaderNav() {
             {isLoggedIn && username && (
               <Nav.Link
                 as={NavLink}
-                to={`/profile/${encodeURIComponent(username)}`} // 🔥 Riktig URL for profil
+                to={`/profile/${encodeURIComponent(username)}`}
                 className="nav-link me-0 me-sm-5"
                 onClick={() => setIsExpanded(false)}
               >

@@ -2,6 +2,16 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as S from './index.styles';
 
+/**
+ * Footer Component
+ *
+ * Displays the site footer with a logo and copyright text.
+ * Clicking the logo navigates to the homepage and scrolls to the top.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered footer component.
+ */
+
 function Footer() {
   const navigate = useNavigate();
 

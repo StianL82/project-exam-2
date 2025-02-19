@@ -26,13 +26,12 @@ export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid ${(props) => props.theme.color.mediumGray};
   padding-bottom: 10px;
   font-size: 1.3rem;
   margin-bottom: 20px;
 
   h2 {
-    text-align: center;
     font-size: 1.5rem;
   }
 
@@ -58,7 +57,7 @@ export const ModalButtonContainer = styled.div`
 
 export const CancelButton = styled(ButtonBase)`
   background: ${(props) => props.theme.color.lightGray};
-  color: ${(props) => props.theme.color.DarkGray};
+  color: ${(props) => props.theme.color.darkGray};
   padding: 10px 20px;
   border: none;
   border-radius: 4px;

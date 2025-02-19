@@ -3,8 +3,22 @@ import { authFetch } from '../../auth/authFetch';
 import * as S from './index.styles';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
 
+/**
+ * UpdateProfile Component
+ *
+ * A modal for updating user profile details, including avatar, banner, bio,
+ * and venue manager status. Fetches the latest profile data and allows users
+ * to update their information.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.showModal - Determines if the modal is visible.
+ * @param {Function} props.closeModal - Function to close the modal.
+ * @param {Function} props.onProfileUpdate - Callback function to handle profile updates.
+ * @returns {JSX.Element|null} The rendered modal or `null` if `showModal` is `false`.
+ */
+
 const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
-  // ✅ Lagre profilnavnet i state for å unngå endeløs looping
   const storedProfile = localStorage.getItem('profile');
   const profileData = storedProfile ? JSON.parse(storedProfile) : null;
   const profileName = profileData?.name || '';
@@ -33,29 +47,22 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
     }
   };
 
-  /** 🔍 Henter brukerprofil fra API */
   const fetchProfile = useCallback(async () => {
     if (!profileName) {
-      setError('❌ Profile name is missing.');
-      console.error('⚠️ Profile name is missing:', profileName);
+      setError('Profile name is missing.');
       return;
     }
 
     const encodedName = encodeURIComponent(profileName);
     const profileUrl = `${API_HOLIDAZE_URL}/profiles/${encodedName}?_bookings=true&_venues=true`;
 
-    console.log('🔍 Henter profil fra API:', profileUrl);
-
     try {
       const response = await authFetch(profileUrl);
 
       if (response.errors) {
-        console.error('❌ API Feil:', response.errors);
         setError('Profile not found in API.');
         return;
       }
-
-      console.log('✅ Profil hentet fra API:', response);
 
       setAvatar(response.data.avatar?.url || '');
       setAvatarAlt(response.data.avatar?.alt || '');
@@ -66,22 +73,18 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
 
       localStorage.setItem('profile', JSON.stringify(response.data));
     } catch (error) {
-      console.error('❌ Feil ved henting av profil:', error);
       setError('Failed to load profile.');
     }
-  }, [profileName]); // ❗ Bruker profileName, ikke profileData, for å unngå loop
+  }, [profileName]);
 
-  /** 🚀 Kjører kun hvis `profileName` endres */
   useEffect(() => {
     if (!profileName) {
-      console.error('⚠️ Ingen profil funnet i localStorage!');
       setError('No profile data found. Please log in again.');
       return;
     }
     fetchProfile();
-  }, [profileName, fetchProfile]); // ✅ Bruker profileName som dependency, ikke hele profileData
+  }, [profileName, fetchProfile]);
 
-  /** 🚀 Oppdaterer brukerprofil */
   const handleUpdate = async (event) => {
     event.preventDefault();
 
@@ -107,8 +110,6 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
       }),
     };
 
-    console.log('🚀 Oppdaterer profil:', updatedProfile);
-
     try {
       const response = await authFetch(updateUrl, {
         method: 'PUT',
@@ -119,11 +120,8 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
         body: JSON.stringify(updatedProfile),
       });
 
-      console.log('✅ Respons fra API:', response);
-
       if (response.errors) {
         setError('Profile update failed.');
-        console.error('❌ Feil ved oppdatering:', response.errors);
         return;
       }
 
@@ -132,7 +130,6 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
       onProfileUpdate(response.data);
       setTimeout(() => closeModal(), 2000);
     } catch (error) {
-      console.error('❌ Feil ved oppdatering av profil:', error);
       setError('Profile update failed. Please try again.');
     } finally {
       setLoading(false);
@@ -215,6 +212,7 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                   </p>
                 </>
               )}
+              {error && <p className="error">{error}</p>}
 
               <S.ButtonContainer>
                 <S.UpdateButton type="submit" disabled={loading}>
@@ -223,8 +221,6 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
               </S.ButtonContainer>
 
               {message && <S.AlertSuccess>{message}</S.AlertSuccess>}
-
-              {error && <p className="alert-danger">{error}</p>}
             </form>
           </S.FormContainer>
         </S.FormBackground>

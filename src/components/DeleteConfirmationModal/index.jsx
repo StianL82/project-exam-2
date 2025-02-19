@@ -2,14 +2,17 @@ import React from 'react';
 import * as S from './index.styles';
 
 /**
- * DeleteConfirmationModal Component
+ * DeleteConfirmationModal
+ * A simple confirmation modal for deletions.
+ *
  * @param {Object} props
- * @param {boolean} show - Whether the modal is visible
- * @param {Function} onClose - Function to close the modal
- * @param {Function} onConfirm - Function to confirm deletion
- * @param {string} title - Title for the modal
- * @param {string} message - Message for the modal
+ * @param {boolean} props.show - Controls modal visibility.
+ * @param {Function} props.onClose - Handles modal close.
+ * @param {Function} props.onConfirm - Handles delete confirmation.
+ * @param {string} props.title - Modal title.
+ * @param {string} props.message - Modal message.
  */
+
 const DeleteConfirmationModal = ({
   show,
   onClose,
@@ -25,8 +28,8 @@ const DeleteConfirmationModal = ({
         <S.ModalHeader>
           <h2>{title}</h2>
           <button onClick={onClose} className="close-button">
-          ×
-        </button>
+            ×
+          </button>
         </S.ModalHeader>
         <S.ModalBody>
           <p>{message}</p>

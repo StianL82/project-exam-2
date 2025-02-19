@@ -5,23 +5,34 @@ import * as yup from 'yup';
 import { registerUser } from '../../auth/register';
 import * as S from './index.styles';
 
-const schema = yup.object({
-  name: yup.string().min(3, 'At least 3 characters.').required(),
-  email: yup
-    .string()
-    .email()
-    .matches(/@stud\.noroff\.no$/, 'Must be @stud.noroff.no')
-    .required(),
-  password: yup.string().min(8, 'At least 8 characters.').required(),
-  avatar: yup.string().url().nullable(),
-  avatarAlt: yup.string().max(120).nullable(),
-  venueManager: yup.boolean(),
-});
-
 /**
- * Registreringskomponent for Holidaze.
+ * Register Component
+ *
+ * A modal for user registration. This component provides form fields for
+ * name, email, password, optional avatar, and the ability to register as a Venue Manager.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.showModal - Determines if the modal is visible.
+ * @param {Function} props.closeModal - Function to close the modal.
+ * @param {Function} props.openLogin - Function to open the login modal after successful registration.
+ * @returns {JSX.Element|null} The rendered Register modal or `null` if `showModal` is `false`.
  */
+
 const Register = ({ showModal, closeModal, openLogin }) => {
+  const schema = yup.object({
+    name: yup.string().min(3, 'At least 3 characters.').required(),
+    email: yup
+      .string()
+      .email('Invalid email address.')
+      .matches(/@stud\.noroff\.no$/, 'Must be @stud.noroff.no')
+      .required(),
+    password: yup.string().min(8, 'At least 8 characters.').required(),
+    avatar: yup.string().url('Must be a valid URL.').nullable(),
+    avatarAlt: yup.string().max(120, 'Maximum 120 characters.').nullable(),
+    venueManager: yup.boolean(),
+  });
+
   const {
     register,
     handleSubmit,
@@ -32,41 +43,34 @@ const Register = ({ showModal, closeModal, openLogin }) => {
   });
 
   const [message, setMessage] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const onSubmit = async (data) => {
     try {
-      console.log('🚀 Registrerer bruker (før transformasjon):', data);
-
-      // Sørger for riktig formatering av registreringsdata
       const formattedData = {
-        name: data.name.trim().toLowerCase(), // Sikrer små bokstaver
+        name: data.name.trim().toLowerCase(),
         email: data.email.trim(),
         password: data.password,
-        venueManager: data.venueManager || false, // Setter false som standard
+        venueManager: data.venueManager || false,
         avatar: data.avatar
           ? { url: data.avatar, alt: data.avatarAlt || '' }
           : null,
-        banner: null, // Placeholder for fremtidig banner-støtte
+        banner: null,
       };
 
-      console.log('📤 Sender registreringsdata til API:', formattedData);
+      await registerUser(formattedData);
 
-      const response = await registerUser(formattedData);
-      console.log('✅ Registrering fullført:', response);
-
+      setIsError(false);
       setMessage('Registration successful! You can now log in.');
-      setShowAlert(true);
 
       setTimeout(() => {
-        setShowAlert(false);
+        reset();
+        setMessage('');
         closeModal();
         openLogin(data.email);
       }, 2000);
-
-      reset();
     } catch (error) {
-      console.error('❌ Feil under registrering:', error);
+      setIsError(true);
       setMessage('Registration failed. Please try again.');
     }
   };
@@ -78,7 +82,14 @@ const Register = ({ showModal, closeModal, openLogin }) => {
       <S.ModalContent>
         <S.ModalHeader>
           <h2>Register a new account</h2>
-          <button onClick={closeModal} className="close-button">
+          <button
+            onClick={() => {
+              reset();
+              setMessage('');
+              closeModal();
+            }}
+            className="close-button"
+          >
             ×
           </button>
         </S.ModalHeader>
@@ -127,17 +138,18 @@ const Register = ({ showModal, closeModal, openLogin }) => {
                 (Becoming a Venue Manager is permanent and cannot be reversed.)
               </p>
 
+              {message && (
+                <p className={isError ? 'error' : 'success-message'}>
+                  {message}
+                </p>
+              )}
               <S.ButtonContainer>
                 <S.RegisterButton type="submit">Register</S.RegisterButton>
               </S.ButtonContainer>
             </form>
           </S.FormContainer>
         </S.FormBackground>
-        {showAlert && (
-          <div className="alert alert-success mt-3" role="alert">
-            {message}
-          </div>
-        )}
+
         <S.ModalLink>
           <p>
             or{' '}
@@ -157,7 +169,16 @@ const Register = ({ showModal, closeModal, openLogin }) => {
             if you already have an account
           </p>
         </S.ModalLink>
-        <S.CloseButton onClick={closeModal}>Close</S.CloseButton>
+
+        <S.CloseButton
+          onClick={() => {
+            reset();
+            setMessage('');
+            closeModal();
+          }}
+        >
+          Close
+        </S.CloseButton>
       </S.ModalContent>
     </S.ModalBackdrop>
   );

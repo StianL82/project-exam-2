@@ -4,24 +4,47 @@ import { Link } from 'react-router-dom';
 import DeleteConfirmationModal from '../DeleteConfirmationModal';
 import CreateVenue from '../CreateVenue';
 
+/**
+ * VenueCard Component
+ *
+ * Displays a venue card with an image, title, price, rating, and available amenities.
+ * Users can view venue details, and if `showEditDelete` is true, they can edit or delete the venue.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {Object} props.venue - Venue data object.
+ * @param {string} props.venue.id - Unique identifier for the venue.
+ * @param {string} props.venue.name - Name of the venue.
+ * @param {Array<Object>} props.venue.media - Media array containing venue images.
+ * @param {number} props.venue.price - Price per night in NOK.
+ * @param {number} props.venue.rating - Venue rating (0-5).
+ * @param {Object} props.venue.meta - Venue amenities.
+ * @param {boolean} props.venue.meta.wifi - Whether the venue has WiFi.
+ * @param {boolean} props.venue.meta.parking - Whether the venue has parking.
+ * @param {boolean} props.venue.meta.breakfast - Whether breakfast is included.
+ * @param {boolean} props.venue.meta.pets - Whether pets are allowed.
+ * @param {boolean} props.showEditDelete - Determines if edit/delete buttons are shown.
+ * @param {Function} props.onVenueUpdated - Callback function when a venue is updated.
+ * @param {Function} props.onDelete - Callback function when a venue is deleted.
+ *
+ * @returns {JSX.Element} A styled card displaying venue details, with optional edit and delete functionality.
+ */
+
 const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [venueData, setVenueData] = useState(venue); // Lokal state for oppdatert venue
+  const [venueData, setVenueData] = useState(venue);
 
   const { id, name, media, price, rating, meta } = venueData;
   const defaultImage = '/images/contact-section.png';
 
-  // Funksjon for å sjekke om et domene er blokkert
   const isBlockedDomain = (url) => {
-    const blockedDomains = ['theaureview.com', 'example.com']; // 🔥 Legg til flere hvis nødvendig
+    const blockedDomains = ['theaureview.com', 'example.com'];
     return blockedDomains.some((domain) => url?.includes(domain));
   };
 
-  // Finn første gyldige bilde som ikke er fra et blokkert domene
   const validImage = media?.find((img) => img.url && !isBlockedDomain(img.url));
 
-  // Bestem riktig bilde-URL
   const imageUrl = validImage ? validImage.url : defaultImage;
 
   const icons = {
@@ -32,11 +55,10 @@ const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
   };
 
   const handleVenueUpdated = (updatedVenue) => {
-    console.log('Venue updated:', updatedVenue);
-    setVenueData((prev) => ({ ...prev, ...updatedVenue.data })); // ✅ Bruk API-responsen
+    setVenueData((prev) => ({ ...prev, ...updatedVenue.data }));
     setShowEditModal(false);
     if (onVenueUpdated) {
-      onVenueUpdated(updatedVenue); // Send tilbake til parent hvis nødvendig
+      onVenueUpdated(updatedVenue);
     }
   };
 
@@ -52,9 +74,6 @@ const VenueCard = ({ venue, showEditDelete, onVenueUpdated, onDelete }) => {
               src={imageUrl}
               alt={validImage?.alt || `Default image for ${name}`}
               onError={(e) => {
-                console.warn(
-                  `⚠️ Image failed to load, switching to default: ${imageUrl}`
-                );
                 e.target.src = defaultImage;
               }}
             />

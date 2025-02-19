@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import * as S from './index.styles';
 
+/**
+ * ScrollToTop Component
+ *
+ * A button that appears when the user scrolls down a certain distance
+ * and allows them to smoothly scroll back to the top of the page.
+ *
+ * @component
+ * @returns {JSX.Element} A scroll-to-top button that becomes visible on scroll.
+ */
+
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
 

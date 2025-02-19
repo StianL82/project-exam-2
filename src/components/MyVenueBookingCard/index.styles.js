@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Card = styled.div`
   display: flex;
   background: ${(props) => props.theme.color.bodyBg};
-  border: 1px solid #ddd;
+  border: 1px solid ${(props) => props.theme.color.stroke};
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 20px;

@@ -6,9 +6,6 @@ import { loginUser } from '../../auth/login';
 import * as S from './index.styles';
 import { useAuth } from '../../auth/AuthContext';
 
-/**
- * Skjema for innlogging.
- */
 const schema = yup.object({
   email: yup
     .string()
@@ -21,6 +18,20 @@ const schema = yup.object({
     .required('Password is required.'),
 });
 
+/**
+ * Login Component
+ *
+ * A modal for user authentication in the Holidaze application.
+ * Handles form validation, API requests, and session storage.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.showModal - Controls the visibility of the login modal.
+ * @param {Function} props.closeModal - Function to close the modal.
+ * @param {Function} props.openRegister - Function to switch to the register modal.
+ * @param {string} [props.prefillEmail=''] - Optional prefilled email for the login form.
+ * @returns {JSX.Element|null} The rendered login modal, or `null` if `showModal` is `false`.
+ */
 const Login = ({ showModal, closeModal, openRegister, prefillEmail = '' }) => {
   const {
     register,
@@ -29,8 +40,10 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail = '' }) => {
     setValue,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
+
   const { updateLoggedInStatus } = useAuth();
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (prefillEmail) {
@@ -40,25 +53,17 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail = '' }) => {
 
   const onSubmit = async (data) => {
     try {
-      console.log('🔑 Prøver å logge inn:', data);
-
-      // 🔥 Logg inn brukeren
       const result = await loginUser(data);
 
-      console.log('✅ Innlogging vellykket:', result);
-
       if (!result || !result.accessToken) {
-        throw new Error('❌ Mangler accessToken i API-respons.');
+        throw new Error('Missing access token in API response.');
       }
 
-      // 🔥 Oppdater localStorage
       localStorage.setItem('accessToken', result.accessToken);
       localStorage.setItem('profile', JSON.stringify(result));
 
-      // 🔥 Sjekk om token er lagret riktig
-      console.log('🔍 Lagret token:', localStorage.getItem('accessToken'));
-
       updateLoggedInStatus();
+      setIsError(false);
       setMessage('Login successful!');
 
       setTimeout(() => {
@@ -67,7 +72,7 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail = '' }) => {
         closeModal();
       }, 1000);
     } catch (error) {
-      console.error('❌ Feil under innlogging:', error.message);
+      setIsError(true);
       setMessage('Login failed. Please try again.');
     }
   };
@@ -79,7 +84,14 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail = '' }) => {
       <S.ModalContent>
         <S.ModalHeader>
           <h2>Log in</h2>
-          <button onClick={closeModal} className="close-button">
+          <button
+            onClick={() => {
+              reset();
+              setMessage('');
+              closeModal();
+            }}
+            className="close-button"
+          >
             ×
           </button>
         </S.ModalHeader>
@@ -102,7 +114,9 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail = '' }) => {
                 <S.LoginButton type="submit">Log in</S.LoginButton>
               </S.ButtonContainer>
             </form>
-            {message && <div className="alert alert-success">{message}</div>}
+            {message && (
+              <p className={isError ? 'error' : 'success-message'}>{message}</p>
+            )}
           </S.FormContainer>
         </S.FormBackground>
         <S.ModalLink>
@@ -116,7 +130,15 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail = '' }) => {
             if you don't have an account
           </p>
         </S.ModalLink>
-        <S.CloseButton onClick={closeModal}>Close</S.CloseButton>
+        <S.CloseButton
+          onClick={() => {
+            reset();
+            setMessage('');
+            closeModal();
+          }}
+        >
+          Close
+        </S.CloseButton>
       </S.ModalContent>
     </S.ModalBackdrop>
   );

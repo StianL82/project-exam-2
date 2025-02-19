@@ -111,13 +111,18 @@ export const FormContainer = styled.div`
       font-size: 0.875rem;
       margin-top: 4px;
     }
+  }
 
-    .success-message {
-      color: ${(props) => props.theme.color.success};
-      font-size: 1rem;
-      margin-top: 12px;
-      text-align: center;
-    }
+  .success-message {
+    border: 1px solid ${(props) => props.theme.color.success};
+    color: ${(props) => props.theme.color.success};
+    background: rgba(40, 167, 69, 0.1);
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 1rem;
   }
 `;
 
