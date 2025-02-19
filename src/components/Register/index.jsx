@@ -157,7 +157,7 @@ const Register = ({ showModal, closeModal, openLogin }) => {
             if you already have an account
           </p>
         </S.ModalLink>
-        <S.CloseLink onClick={closeModal}>Close</S.CloseLink>
+        <S.CloseButton onClick={closeModal}>Close</S.CloseButton>
       </S.ModalContent>
     </S.ModalBackdrop>
   );

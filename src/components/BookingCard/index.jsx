@@ -6,44 +6,52 @@ import { authFetch } from '../../auth/authFetch';
 import DeleteConfirmationModal from '../DeleteConfirmationModal';
 import BookingModal from '../BookingModal';
 
+/**
+ * Component displaying a booking card with details, update, and delete options.
+ * @param {Object} props - Component properties.
+ * @param {Object} props.booking - The booking data.
+ * @param {Function} props.onBookingDeleted - Callback triggered when a booking is deleted.
+ * @returns {JSX.Element|null} The rendered booking card or null if data is missing.
+ */
 const BookingCard = ({ booking, onBookingDeleted }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [bookingData, setBookingData] = useState(booking); // Oppdatert state for bookingdata
+  const [bookingData, setBookingData] = useState(booking);
 
   if (!bookingData || !bookingData.venue) {
-    console.log('❌ Booking or venue data is missing:', bookingData);
     return null;
   }
 
   const { id, dateFrom, dateTo, guests, venue } = bookingData;
   const defaultImage = '/images/contact-section.png';
 
+  /**
+   * Updates the booking data after a successful update.
+   * @param {Object} updatedBooking - The updated booking details.
+   */
   const handleBookingUpdated = (updatedBooking) => {
-    console.log('Updating booking data:', updatedBooking);
     setBookingData((prev) => ({
       ...prev,
       ...updatedBooking,
-      venue: prev.venue, // Sørg for at venue-data beholdes
+      venue: prev.venue,
     }));
   };
 
+  /**
+   * Deletes the booking from the API and triggers the callback.
+   */
   const handleDelete = async () => {
-    console.log(`🗑 Attempting to delete booking with ID: ${id}`);
     try {
       const response = await authFetch(`${API_HOLIDAZE_URL}/bookings/${id}`, {
         method: 'DELETE',
       });
 
       if (response === null) {
-        console.log('✅ Booking deleted successfully.');
-        onBookingDeleted(id); // Oppdater bookings
+        onBookingDeleted(id);
         setShowDeleteModal(false);
-      } else {
-        console.error('❌ Failed to delete booking. Response:', response);
       }
     } catch (error) {
-      console.error('❌ Error deleting booking:', error);
+      throw new Error(`Error deleting booking: ${error.message}`);
     }
   };
 
@@ -97,9 +105,9 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
         price={venue.price}
         maxGuests={venue.maxGuests}
         venueId={venue.id}
-        initialData={{ id, dateFrom, dateTo, guests }} // Send eksisterende bookingdata til modalen
+        initialData={{ id, dateFrom, dateTo, guests }}
         title="Update Booking"
-        onBookingUpdated={handleBookingUpdated} // Oppdater kortet når bookingdata endres
+        onBookingUpdated={handleBookingUpdated}
       />
     </>
   );

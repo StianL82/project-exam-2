@@ -7,16 +7,26 @@ import { authFetch } from '../../auth/authFetch';
 import { useAuth } from '../../auth/AuthContext';
 
 /**
- * Booking Modal Component
- * @param {Object} props - Component props
- * @param {Array} unavailableDates - Dates that are unavailable
- * @param {Function} onClose - Function to close the modal
- * @param {number} price - Price per night for the venue
- * @param {number} maxGuests - Maximum number of guests allowed
- * @param {boolean} show - Controls whether the modal is visible
- * @param {string} venueId - The ID of the venue being booked
- * @returns {JSX.Element|null} The rendered booking modal or null if not visible
+ * Booking Modal Component for creating or updating bookings.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {Array<string>} [props.unavailableDates=[]] - Dates that are unavailable for booking.
+ * @param {Function} props.onClose - Function to close the modal.
+ * @param {number} props.price - Price per night for the venue.
+ * @param {number} props.maxGuests - Maximum number of guests allowed.
+ * @param {boolean} props.show - Determines whether the modal is visible.
+ * @param {string} props.venueId - The ID of the venue being booked.
+ * @param {Object|null} [props.initialData=null] - Existing booking data if updating.
+ * @param {string} props.initialData.id - ID of the existing booking (if updating).
+ * @param {string} props.initialData.dateFrom - Start date of the existing booking.
+ * @param {string} props.initialData.dateTo - End date of the existing booking.
+ * @param {number} props.initialData.guests - Number of guests in the existing booking.
+ * @param {Object} props.initialData.venue - Venue details of the existing booking.
+ * @param {Function} [props.onBookingUpdated] - Callback triggered after a booking update.
+ * @returns {JSX.Element|null} The rendered booking modal or `null` if not visible.
  */
+
 const BookingModal = ({
   unavailableDates = [],
   onClose,
@@ -101,12 +111,6 @@ const BookingModal = ({
   };
 
   const handleConfirmBooking = async () => {
-    console.log('Confirm button clicked');
-    console.log('dateFrom:', dateFrom);
-    console.log('dateTo:', dateTo);
-    console.log('guests:', guests);
-    console.log('venueId:', venueId);
-
     if (!dateFrom || !dateTo || !guests || !venueId) {
       showAlert('Please select valid check-in and check-out dates.', true);
       return;
@@ -128,8 +132,6 @@ const BookingModal = ({
       venueId: venueId,
     };
 
-    console.log('Sending bookingData:', bookingData);
-
     const method = initialData ? 'PUT' : 'POST';
     const endpoint = initialData
       ? `${API_HOLIDAZE_URL}/bookings/${initialData.id}`
@@ -145,7 +147,7 @@ const BookingModal = ({
         showAlert('Booking updated successfully!', data);
         setTimeout(() => {
           setAlertMessage('');
-          onClose(); // Lukk modalen
+          onClose();
         }, 2000);
 
         if (onBookingUpdated) {
@@ -163,20 +165,16 @@ const BookingModal = ({
 
         setTimeout(() => {
           if (username) {
-            console.log('Navigating with state:', { scrollTo: 'my-bookings' });
             navigate(`/profile/${encodeURIComponent(username)}`, {
               state: { scrollTo: 'my-bookings' },
             });
           } else {
-            console.error(
-              '❌ No username found in auth context. Cannot navigate to profile.'
-            );
+            showAlert('Navigation failed: No username found.', true);
           }
         }, 2000);
       }
     } catch (error) {
-      console.error('Error creating booking:', error);
-      alert('An error occurred while making the booking.');
+      showAlert('An error occurred while making the booking.', true);
     } finally {
       setLoading(false);
     }
@@ -184,7 +182,7 @@ const BookingModal = ({
 
   const normalizeDate = (date) => {
     const newDate = new Date(date);
-    newDate.setHours(0, 0, 0, 0); // Fjern klokkeslett, sett til midnatt
+    newDate.setHours(0, 0, 0, 0);
     return newDate;
   };
 
@@ -244,7 +242,7 @@ const BookingModal = ({
                       date !== initialData?.dateTo
                   )
                   .map((date) => new Date(date).toISOString().split('T')[0])}
-                minDate={new Date()} // Alltid sett minDate til dagens dato
+                minDate={new Date()}
                 tileClassName={tileClassName}
               />
             </div>
@@ -260,7 +258,7 @@ const BookingModal = ({
                       date !== initialData?.dateTo
                   )
                   .map((date) => new Date(date).toISOString().split('T')[0])}
-                minDate={dateFrom || new Date()} // Setter minDate til valgt Date From eller dagens dato
+                minDate={dateFrom || new Date()}
                 tileClassName={tileClassName}
               />
             </div>
@@ -310,7 +308,7 @@ const BookingModal = ({
                   : 'Confirm Booking'}
             </S.ConfirmButton>
           </S.ButtonContainer>
-          <S.CloseLink onClick={onClose}>Close</S.CloseLink>
+          <S.CloseButton onClick={onClose}>Close</S.CloseButton>
         </S.ModalBody>
       </S.ModalContainer>
       {alertMessage && (

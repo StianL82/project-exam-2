@@ -6,7 +6,6 @@ import { authFetch } from '../../auth/authFetch';
 import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
 
-// ✅ Yup skjema for validering
 const schema = Yup.object().shape({
   name: Yup.string().required('Venue name is required'),
   rating: Yup.number()
@@ -17,22 +16,57 @@ const schema = Yup.object().shape({
     .max(800, 'Max 800 characters')
     .required('Description is required'),
   price: Yup.number()
-    .typeError('Price must be at least 1 per night')
-    .min(0, 'Price must be at least 1 per night')
+    .typeError('Price must a number. Minimum 1 per night.')
+    .min(1, 'Must be a number and at least 1 per night')
     .required('Price per night is required'),
 
   maxGuests: Yup.number()
-    .typeError('Must allow at least 1 guest')
-    .min(1, 'Must allow at least 1 guest')
+    .typeError('Must be a number and allow at least 1 guest')
+    .min(1, 'Must be a number and allow at least 1 guest')
     .required('Max guests is required'),
 
   media: Yup.array().of(
     Yup.object().shape({
-      url: Yup.string().url('Must be a valid URL').notRequired().nullable(), // Tillater tomt felt
-      alt: Yup.string().notRequired().nullable(), // Tillater tomt felt
+      url: Yup.string().url('Must be a valid URL').notRequired().nullable(),
+      alt: Yup.string().notRequired().nullable(),
     })
   ),
 });
+
+/**
+ * CreateVenue Component
+ *
+ * A modal form for creating or updating a venue. This component includes form fields for
+ * venue details, amenities, location, and media, with validation using Yup.
+ * The component also handles API requests to create or update a venue.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.showModal - Determines whether the modal is visible.
+ * @param {Function} props.closeModal - Function to close the modal.
+ * @param {Function} [props.onVenueCreated] - Callback triggered after a venue is created or updated.
+ * @param {Object|null} [props.initialData=null] - Existing venue data if updating.
+ * @param {string} props.initialData.id - Venue ID (only for updates).
+ * @param {string} props.initialData.name - Venue name.
+ * @param {number} props.initialData.rating - Venue rating (0-5).
+ * @param {string} props.initialData.description - Venue description (max 800 characters).
+ * @param {number} props.initialData.price - Price per night.
+ * @param {number} props.initialData.maxGuests - Maximum number of guests allowed.
+ * @param {Object} props.initialData.location - Venue location details.
+ * @param {string} props.initialData.location.address - Address of the venue.
+ * @param {string} props.initialData.location.city - City where the venue is located.
+ * @param {string} props.initialData.location.country - Country of the venue.
+ * @param {Array<Object>} props.initialData.media - List of media objects.
+ * @param {string} props.initialData.media[].url - Image URL.
+ * @param {string} [props.initialData.media[].alt] - Alternative text for the image.
+ * @param {Object} props.initialData.meta - Venue amenities.
+ * @param {boolean} props.initialData.meta.wifi - Whether the venue has WiFi.
+ * @param {boolean} props.initialData.meta.parking - Whether parking is available.
+ * @param {boolean} props.initialData.meta.breakfast - Whether breakfast is offered.
+ * @param {boolean} props.initialData.meta.pets - Whether pets are allowed.
+ *
+ * @returns {JSX.Element|null} The rendered `CreateVenue` modal, or `null` if `showModal` is `false`.
+ */
 
 const CreateVenue = ({
   showModal,
@@ -44,14 +78,15 @@ const CreateVenue = ({
     name: '',
     rating: 0,
     description: '',
-    price: '',
-    maxGuests: '',
+    price: 0,
+    maxGuests: 0,
     location: { address: '', city: '', country: '' },
     media: [{ url: '', alt: '' }],
     meta: { wifi: false, parking: false, breakfast: false, pets: false },
   });
 
   const [errors, setErrors] = useState({});
+  const [isError, setIsError] = useState(false);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -59,30 +94,25 @@ const CreateVenue = ({
 
   useEffect(() => {
     if (initialData) {
-      // Fyller ut skjema med eksisterende venue-data ved redigering
-      setFormData({
-        ...initialData,
-        price: String(initialData.price),
-        maxGuests: String(initialData.maxGuests),
-      });
+      setFormData(initialData);
     }
   }, [initialData]);
 
   const showAlert = (message) => {
-    setAlertMessage(message); // Sett meldingen
+    setAlertMessage(message);
   };
 
   const validateField = async (name, value) => {
     try {
       await Yup.reach(schema, name).validate(value);
       setErrors((prevErrors) => {
-        const { [name]: _, ...rest } = prevErrors; // Fjern feilmeldingen for dette feltet
+        const { [name]: _, ...rest } = prevErrors;
         return rest;
       });
     } catch (error) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: error.message, // Legg til feilmeldingen
+        [name]: error.message,
       }));
     }
   };
@@ -101,13 +131,13 @@ const CreateVenue = ({
         ...prev,
         location: { ...prev.location, [field]: value },
       }));
-      await validateField(`location.${field}`, value); // Valider lokasjonsfeltet
+      await validateField(`location.${field}`, value);
     } else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
-      await validateField(name, value); // Valider feltet
+      await validateField(name, value);
     }
   };
 
@@ -189,18 +219,16 @@ const CreateVenue = ({
             onVenueCreated(response);
           }
 
-          // 🔹 Hent ID-en til den nye venuen fra API-responsen
           const newVenueId = response.data?.id;
-          console.log('✅ New venue ID:', newVenueId);
 
-          // 🔹 Naviger til den nye venue-siden hvis ID-en finnes
           if (newVenueId) {
             navigate(`/venue/${response.data.id}`);
             setTimeout(() => {
               window.scrollTo(0, 0);
             }, 100);
           } else {
-            console.error('❌ Venue ID is missing from API response.');
+            setIsError(true);
+            setMessage('Venue ID is missing from API response.');
           }
         }, 2000);
       }
@@ -212,8 +240,8 @@ const CreateVenue = ({
         });
         setErrors(validationErrors);
       } else {
-        console.error('API Error:', err);
-        setMessage('❌ Something went wrong, please try again.');
+        setIsError(true);
+        setMessage('Something went wrong, please try again.');
       }
     } finally {
       setLoading(false);
@@ -272,7 +300,7 @@ const CreateVenue = ({
               <p className="alert-danger">{errors.description}</p>
             )}
 
-            <label htmlFor="price">Price per night:</label>
+            <label htmlFor="price">Price per night (NOK):</label>
             <input
               id="price"
               name="price"
@@ -391,7 +419,9 @@ const CreateVenue = ({
               ))}
             </S.AmenitiesGrid>
 
-            {message && <p className="alert-success">{message}</p>}
+            {message && (
+              <p className={isError ? 'error' : 'alert-success'}>{message}</p>
+            )}
 
             <S.ButtonContainer>
               <S.UpdateButton type="button" onClick={handleSubmit}>
@@ -404,7 +434,8 @@ const CreateVenue = ({
             </S.ButtonContainer>
           </S.FormContainer>
         </S.FormBackground>
-        <S.CloseLink onClick={closeModal}>Close</S.CloseLink>
+        <S.CloseButton onClick={closeModal}>Close</S.CloseButton>
+
       </S.ModalContent>
       {alertMessage && (
         <div className="custom-alert">

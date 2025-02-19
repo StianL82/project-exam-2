@@ -13,7 +13,7 @@ import * as S from './index.styles';
  * @param {Object} props - The component props.
  * @param {Date|null} props.selectedDate - The currently selected date.
  * @param {Function} props.onDateChange - Callback function triggered when the user selects a date.
- * @param {string[]} [props.disabledDates=[]] - An array of unavailable dates in ISO format (YYYY-MM-DD).
+ * @param {string[]} [props.disabledDates=[]] - An array of dates in `YYYY-MM-DD` format (ISO 8601) that are disabled for selection.
  * @param {Date} [props.minDate] - The earliest selectable date.
  * @param {Function} [props.tileClassName] - Function to apply custom CSS class names to specific dates.
  * @returns {JSX.Element} The rendered calendar component.

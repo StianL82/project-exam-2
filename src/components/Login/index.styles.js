@@ -144,14 +144,15 @@ export const LoginButton = styled.button`
   }
 `;
 
-export const CloseLink = styled.span`
+export const CloseButton = styled.button`
   display: block;
   text-align: right;
   margin-top: 10px;
   font-size: 1rem;
   color: ${(props) => props.theme.color.darkGray};
   cursor: pointer;
-  text-decoration: none;
+  background: none;
+  border: none;
 
   &:hover {
     font-weight: bold;

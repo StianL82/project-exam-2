@@ -30,9 +30,9 @@ export const CalendarContainer = styled.div`
   }
 
   .react-calendar__tile.booked-date {
-    background-color: #dc3545 !important;
-    color: white !important;
-    opacity: 1 !important;
+    background-color: ${(props) => props.theme.color.dangerColor};
+    color: white;
+    opacity: 1;
     pointer-events: none;
   }
 

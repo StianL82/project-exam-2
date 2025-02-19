@@ -7,26 +7,25 @@ import * as S from './index.styles';
 /**
  * VenueCarousel Component
  *
- * This component renders a responsive carousel for displaying a collection of venue media items.
- * It includes a modal for viewing images in full size, with navigation controls for cycling
- * through the images within the modal.
+ * A responsive carousel for displaying venue media. Includes a modal for viewing
+ * images in full size, with navigation controls.
  *
  * Features:
  * - Displays images from the `media` array in a carousel.
- * - Opens a modal to show a full-size preview of the clicked image.
- * - Provides "Next" and "Previous" buttons in the modal for navigation.
- * - Includes a "Close" link to close the modal.
+ * - Opens a modal to show a full-size preview when an image is clicked.
+ * - Provides "Next" and "Previous" buttons for navigation.
+ * - Includes a "Close" link to exit the modal.
+ * - Uses a default image if `media.url` is missing or empty.
  *
- * Props:
- * @param {Array} media - Array of media objects. Each object contains:
- *   - `url` (string): The URL of the image (required).
- *   - `alt` (string): Alternative text for the image (optional).
- *
- * Usage:
- * <VenueCarousel media={mediaArray} />
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {Array<Object>} props.media - Array of media objects.
+ * @param {string} props.media[].url - The URL of the image (required).
+ * @param {string} [props.media[].alt] - Alternative text for the image (optional).
  *
  * @returns {JSX.Element} The rendered VenueCarousel component.
  */
+
 const VenueCarousel = ({ media }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);

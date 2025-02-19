@@ -116,7 +116,7 @@ const Login = ({ showModal, closeModal, openRegister, prefillEmail = '' }) => {
             if you don't have an account
           </p>
         </S.ModalLink>
-        <S.CloseLink onClick={closeModal}>Close</S.CloseLink>
+        <S.CloseButton onClick={closeModal}>Close</S.CloseButton>
       </S.ModalContent>
     </S.ModalBackdrop>
   );

@@ -144,7 +144,6 @@ export const SummaryContainer = styled.div`
   }
 `;
 
-
 export const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -167,14 +166,15 @@ export const ConfirmButton = styled.button`
   }
 `;
 
-export const CloseLink = styled.span`
+export const CloseButton = styled.button`
   display: block;
   text-align: right;
-  margin-top: 5px;
+  margin-top: 10px;
   font-size: 1rem;
   color: ${(props) => props.theme.color.darkGray};
   cursor: pointer;
-  text-decoration: none;
+  background: none;
+  border: none;
 
   &:hover {
     font-weight: bold;

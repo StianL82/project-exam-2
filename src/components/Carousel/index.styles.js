@@ -31,7 +31,7 @@ export const ModalContent = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: white;
+  background: ${(props) => props.theme.color.white};
   border-radius: 10px;
   padding: 20px;
   position: relative;

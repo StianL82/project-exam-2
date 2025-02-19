@@ -228,7 +228,7 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
             </form>
           </S.FormContainer>
         </S.FormBackground>
-        <S.CloseLink onClick={closeModal}>Close</S.CloseLink>
+        <S.CloseButton onClick={closeModal}>Close</S.CloseButton>
       </S.ModalContent>
     </S.ModalBackdrop>
   );

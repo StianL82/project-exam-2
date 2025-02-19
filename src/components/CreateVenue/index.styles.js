@@ -67,7 +67,6 @@ export const ModalContent = styled.div`
 export const FormBackground = styled.div`
   background: ${(props) => props.theme.color.lightYellow};
   padding: 20px;
-  border-radius: 8px;
   border: 1px solid ${(props) => props.theme.color.stroke};
   border-radius: 5px;
 `;
@@ -111,26 +110,17 @@ export const FormContainer = styled.form`
   }
 `;
 
-/* Styling for Media Group */
 export const MediaWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Mellomrom mellom hver Media-gruppe */
+  gap: 12px;
   margin-bottom: 8px;
 `;
 
 export const MediaField = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Mellomrom mellom Image URL og Alt Text */
-`;
-
-export const Input = styled.input`
-  width: 100%;
-  padding: 8px;
-  border: 1px solid ${(props) => props.theme.color.mediumGray};
-  border-radius: 4px;
-  font-size: 1rem;
+  gap: 4px;
 `;
 
 export const DeleteButton = styled.button`
@@ -154,14 +144,11 @@ export const IconImage = styled.img`
 
 export const AmenitiesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(
-    2,
-    minmax(100px, auto)
-  ); /* To kolonner med fleksibel bredde */
+  grid-template-columns: repeat(2, minmax(100px, auto));
   gap: 4px;
 
   @media (max-width: 260px) {
-    grid-template-columns: 1fr; /* Én kolonne ved skjermstørrelse 270px og mindre */
+    grid-template-columns: 1fr;
   }
 
   label {
@@ -198,14 +185,15 @@ export const UpdateButton = styled.button`
   }
 `;
 
-export const CloseLink = styled.span`
+export const CloseButton = styled.button`
   display: block;
   text-align: right;
   margin-top: 10px;
   font-size: 1rem;
   color: ${(props) => props.theme.color.darkGray};
   cursor: pointer;
-  text-decoration: none;
+  background: none;
+  border: none;
 
   &:hover {
     font-weight: bold;
