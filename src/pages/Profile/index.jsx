@@ -155,6 +155,7 @@ function Profile() {
         return;
       }
       setProfile(response.data);
+      await fetchUpdatedVenuesWithBookings(response.data.name);
     } catch (err) {
       setError('Failed to fetch updated profile. Please try again.');
     }
