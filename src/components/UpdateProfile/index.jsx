@@ -85,6 +85,18 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
     fetchProfile();
   }, [profileName, fetchProfile]);
 
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showModal]);
+
   const handleUpdate = async (event) => {
     event.preventDefault();
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -44,6 +44,18 @@ const Register = ({ showModal, closeModal, openLogin }) => {
 
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showModal]);
 
   const onSubmit = async (data) => {
     try {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as S from './index.styles';
 
 /**
@@ -20,6 +20,18 @@ const DeleteConfirmationModal = ({
   title,
   message,
 }) => {
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [show]);
+
   if (!show) return null;
 
   return (

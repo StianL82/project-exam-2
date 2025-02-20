@@ -93,10 +93,16 @@ const CreateVenue = ({
   const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
     }
-  }, [initialData]);
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showModal]);
 
   const showAlert = (message) => {
     setAlertMessage(message);

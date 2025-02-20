@@ -63,6 +63,18 @@ const BookingModal = ({
     }
   }, [initialData]);
 
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [show]);
+
   const showAlert = (message, withOkButton = false) => {
     setAlertMessage({ message, withOkButton });
   };
