@@ -6,6 +6,7 @@ import * as B from '../../styles/GlobalStyle';
 import useAPI from '../../hooks/useAPI';
 import VenueGrid from '../../components/VenueGrid';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
+import { Helmet } from 'react-helmet';
 
 /**
  * Home Component
@@ -38,6 +39,10 @@ function Home() {
 
   return (
     <div>
+      <Helmet>
+        <title>Homepage - Holidaze</title>
+      </Helmet>
+
       <S.HeroSection>
         <S.HeroText>Welcome to Holidaze</S.HeroText>
       </S.HeroSection>

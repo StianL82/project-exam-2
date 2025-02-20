@@ -11,6 +11,7 @@ import BookingCard from '../../components/BookingCard';
 import VenueCard from '../../components/VenueCard';
 import MyVenueBookingCard from '../../components/MyVenueBookingCard';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
+import { Helmet } from 'react-helmet';
 
 /**
  * Profile Page Component
@@ -276,6 +277,9 @@ function Profile() {
 
   return (
     <div>
+      <Helmet>
+        <title>Profile Page - Holidaze</title>
+      </Helmet>
       <S.HeroSection bannerUrl={banner?.url}>
         <S.HeroText>{name}'s Profile</S.HeroText>
       </S.HeroSection>

@@ -10,6 +10,7 @@ import Register from '../../components/Register';
 import VenueCarousel from '../../components/Carousel';
 import BookingModal from '../../components/BookingModal';
 import BookingCalendar from '../../components/Calendar';
+import { Helmet } from 'react-helmet';
 
 /**
  * Venue Page Component
@@ -192,6 +193,9 @@ function Venue() {
 
     return (
       <div>
+        <Helmet>
+          <title>Single Venues Page - Holidaze</title>
+        </Helmet>
         <S.HeroSection
           style={{ backgroundImage: `url(${imageUrl})` }}
         ></S.HeroSection>

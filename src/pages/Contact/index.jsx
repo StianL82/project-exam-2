@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
+import { Helmet } from 'react-helmet';
 
 const schema = yup
   .object({
@@ -60,6 +61,10 @@ function Contact() {
 
   return (
     <div>
+      <Helmet>
+        <title>Contact Page - Holidaze</title>
+      </Helmet>
+
       <S.HeroSection>
         <S.HeroText>Contact Us</S.HeroText>
       </S.HeroSection>

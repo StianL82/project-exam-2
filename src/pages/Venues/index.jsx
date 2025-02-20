@@ -8,6 +8,7 @@ import VenueGrid from '../../components/VenueGrid';
 import NavigationButtons from '../../components/NavigationButtons';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
+import { Helmet } from 'react-helmet';
 
 /**
  * Venues Page Component
@@ -69,6 +70,9 @@ function Venues() {
 
   return (
     <div>
+      <Helmet>
+        <title>Venues Page - Holidaze</title>
+      </Helmet>
       <div>
         <S.HeroSection>
           <S.HeroText>Book your dream destination</S.HeroText>
