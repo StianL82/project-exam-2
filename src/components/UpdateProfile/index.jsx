@@ -204,7 +204,7 @@ const UpdateProfile = ({ showModal, closeModal, onProfileUpdate }) => {
                       checked={venueManager}
                       onChange={() => setVenueManager(!venueManager)}
                     />
-                    Be a Venue Manager?
+                    Become a Venue Manager?
                   </label>
                   <p>
                     (Becoming a Venue Manager is permanent and cannot be
