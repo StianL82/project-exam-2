@@ -93,6 +93,16 @@ const CreateVenue = ({
   const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+  };
+
+  useEffect(() => {
     if (showModal) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -103,10 +113,6 @@ const CreateVenue = ({
       document.body.style.overflow = 'auto';
     };
   }, [showModal]);
-
-  const showAlert = (message) => {
-    setAlertMessage(message);
-  };
 
   const validateField = async (name, value) => {
     try {
