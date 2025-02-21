@@ -29,11 +29,15 @@ Customer-Facing:
 - Register as a customer using a stud.noroff.no email
 - Create and manage bookings at a venue
 - View upcoming bookings
+
   Admin-Facing:
+
 - Register as a venue manager using a stud.noroff.no email
 - Create and manage venues (add, update, delete venues)
 - View and manage bookings for venues
+
   General Features:
+
 - User login/logout functionality
 - Profile management with avatar updates
 - Error handling for user actions and API interactions
