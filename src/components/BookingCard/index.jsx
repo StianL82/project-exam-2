@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as S from './index.styles';
 import * as B from '../../styles/GlobalStyle';
 import { API_HOLIDAZE_URL } from '../../auth/constants';
@@ -17,6 +18,7 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [bookingData, setBookingData] = useState(booking);
+  const navigate = useNavigate();
 
   if (!bookingData || !bookingData.venue) {
     return null;
@@ -73,7 +75,10 @@ const BookingCard = ({ booking, onBookingDeleted }) => {
             <strong>Number of guests:</strong> {guests}
           </S.Text>
           <S.ButtonContainer>
-            <B.OrangeButton as="a" href={`/venue/${venue.id}`}>
+            <B.OrangeButton
+              as="button"
+              onClick={() => navigate(`/venue/${venue.id}`)}
+            >
               View Venue
             </B.OrangeButton>
             <B.BlueButton onClick={() => setShowUpdateModal(true)}>

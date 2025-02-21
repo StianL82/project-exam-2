@@ -29,11 +29,13 @@ export const Image = styled.img`
 export const Content = styled.div`
   flex: 2;
   padding: 20px;
+  word-wrap: break-word;
 `;
 
 export const Title = styled.h3`
   font-size: 1.5rem;
   margin-bottom: 20px;
+  word-wrap: break-word;
 `;
 
 export const BookingInfo = styled.div`
@@ -47,6 +49,7 @@ export const Row = styled.div`
   align-items: center;
   gap: 10px;
   margin-bottom: 5px;
+  flex-wrap: wrap;
 `;
 
 export const Label = styled.span`
