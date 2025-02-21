@@ -166,11 +166,14 @@ const CreateVenue = ({
     }));
   };
 
-  const removeMediaField = (index) => {
+  const removeMediaField = (index, event) => {
+    event.preventDefault();
+
     if (formData.media.length > 1) {
+      const updatedMedia = formData.media.filter((_, i) => i !== index);
       setFormData((prev) => ({
         ...prev,
-        media: prev.media.filter((_, i) => i !== index),
+        media: updatedMedia,
       }));
     }
   };
@@ -400,7 +403,7 @@ const CreateVenue = ({
                 </S.MediaField>
 
                 {formData.media.length > 1 && (
-                  <S.DeleteButton onClick={() => removeMediaField(index)}>
+                  <S.DeleteButton onClick={(e) => removeMediaField(index, e)}>
                     <S.IconImage
                       src={`${process.env.PUBLIC_URL}/images/icons/trash.svg`}
                       alt="Delete icon"
