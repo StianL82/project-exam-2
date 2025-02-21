@@ -75,6 +75,24 @@ Start the development server
 npm start
 ```
 
+## API Setup
+
+This project uses the **Holidaze API** provided by Noroff. To interact with the API, you'll need to set up your API key.
+
+1. **Create a `.env` file**: Copy the `.env.example` file to create a `.env` file in the root of the project:
+
+```
+  cp .env.example .env
+```
+
+2. Set your API key: Open the .env file and add your API key like this:
+
+```
+  REACT_APP_API_KEY=your-api-key-here
+```
+
+The API key will be automatically injected into the app and used for API requests.
+
 [Link to Netlify-page](https://project-exam-2-stianl.netlify.app//)
 
 ### Contributing
