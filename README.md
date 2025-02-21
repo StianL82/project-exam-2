@@ -20,7 +20,7 @@ The project involved building a modern front-end interface for a booking platfor
 
 For this project, we were tasked with implementing the following features:
 
-Customer-Facing:
+**_Customer-Facing:_**
 
 - View a list of venues
 - Search for specific venues
@@ -30,13 +30,13 @@ Customer-Facing:
 - Create and manage bookings at a venue
 - View upcoming bookings
 
-  Admin-Facing:
+**_Admin-Facing:_**
 
 - Register as a venue manager using a stud.noroff.no email
 - Create and manage venues (add, update, delete venues)
 - View and manage bookings for venues
 
-  General Features:
+**_General Features:_**
 
 - User login/logout functionality
 - Profile management with avatar updates
