@@ -9,7 +9,7 @@ export const StyledCarousel = styled.div`
     border-radius: 10px;
     object-fit: cover;
     width: 100%;
-    height: 350x;
+    height: 350px;
   }
 
   .carousel-control-prev-icon,
