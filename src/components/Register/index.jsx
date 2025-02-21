@@ -21,7 +21,14 @@ import * as S from './index.styles';
 
 const Register = ({ showModal, closeModal, openLogin }) => {
   const schema = yup.object({
-    name: yup.string().min(3, 'At least 3 characters.').required(),
+    name: yup
+      .string()
+      .min(3, 'At least 3 characters.')
+      .matches(
+        /^[A-Za-z0-9_ ]*$/,
+        'Name can only contain letters, numbers, spaces, and underscores. (Can not contain æ, ø, å)'
+      )
+      .required('Name is required'),
     email: yup
       .string()
       .email('Invalid email address.')
